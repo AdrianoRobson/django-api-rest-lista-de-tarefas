@@ -2,24 +2,27 @@ var lst_tarefa = []
 
 $(document).ready(function(){    
     
+    SlickLoader.setText('Processando','Aguarde...'); 
+    
+    //send()
+
     lst_tarefa = document.querySelectorAll('#home a')
     
     for(let i = 0; i< lst_tarefa.length; i++){        
 
-        $("#"+lst_tarefa[i].id).click(function () {   
-
+        $("#"+lst_tarefa[i].id).click(function () {  
+             
             console.log(lst_tarefa[i].id)
 
         });    
 
-    }
-
-    SlickLoader.setText('Processando','Aguarde...');   
+    } 
 
     $(".btn").click(function () { 
 
-    });    
+    }); 
     
+    //$(".alert").alert() 
 });
 
 
@@ -33,45 +36,41 @@ function mostrarTarefa(){
     $("#home").hide()
 }
 
-
-
-function send(tarefa_id) { 
+function send(tarefa_id='') { 
 
     SlickLoader.enable();
 
     $.ajax({
 
-        url: 'http://localhost:8001/tarefa/'+tarefa_id,
-        type: 'post',
+        url: 'http://127.0.0.1:8000/lista/',
+        type: 'GET',
         dataType: 'json',
         contentType: 'application/json',
         error: function(jqxhr, settings, thrownError) {
             
-            console.log('Houve um erro! ' + thrownError); 
+            console.log('Houve um erro! '); 
 
-            SlickLoader.disable();
+            SlickLoader.disable(); 
 
-            mostrarHome() 
-
-            $(".alert").alert()
-
-            $("#msg").text("Houve um problema: "+thrownError) 
-
+            mostrarHome()  
+ 
         },
-        success: function (data) {
-            
-            console.log('DATA MSG: ',data.msg);
+        success: function (data) { 
 
-            SlickLoader.disable();
+            mostrarTarefa() 
 
-            data = JSON.stringify(data)
+            for(i=0; i<data.length; i++){
+                
+                console.log('data: ',data[i].titulo)
 
-            console.log('DATA STRINGIFY: ',data);
+                $('#home').append('<a href="#" class="list-group-item list-group-item-action" id="'+data[i].id+'">'+data[i].titulo+'</a>')
 
-            mostrarTarefa()
+            }
 
-        },
-        
-        //data: JSON.stringify(person)
+            SlickLoader.disable();   
+
+            mostrarTarefa() 
+
+        }, 
     });
 }
