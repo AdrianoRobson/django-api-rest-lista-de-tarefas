@@ -1,3 +1,11 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Lista, Tarefa  
+ 
+@admin.register(Lista)
+class ListaAdmin(admin.ModelAdmin):
+    list_display = ['titulo']
+
+@admin.register(Tarefa)
+class TarefaAdmin(admin.ModelAdmin):
+    list_display = ['lista_id', 'tarefa_texto', 'status']
