@@ -7,6 +7,8 @@ class ListaSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class TarefaSerializer(serializers.ModelSerializer):
+    
     class Meta:
         model = Tarefa
-        fields = '__all__'
+        fields = '__all__' 
+        
