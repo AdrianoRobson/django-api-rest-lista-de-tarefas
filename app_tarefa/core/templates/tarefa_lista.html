@@ -1,0 +1,9 @@
+<div class="col-12">
+  <ul class="list-group" id='tarefa_lista'>  
+    {% for l in lst_tarefas %} 
+    <a href="#" class="list-group-item list-group-item-action" id="{{l.id}}">{{l.tarefa_texto}}</a> 
+    {% endfor %}   
+  </ul>
+</div>
+
+ 

@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+
+  db:
+    image: mysql:5.7 
+    container_name: mysql_container
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    env_file:
+      - ./api/env/db.env
+    ports:
+      - 3306:3306
+    volumes:
+      - .api/mysql:/var/lib/mysql 
+  
+  web_api:
+    build: ./api/
+    command: python manage.py runserver 0.0.0.0:8000
+    image: adriano08andrade/api:v1
+    container_name: api-tarefa_container
+    restart: always
+    ports:
+      - "8000:8000" 
+    volumes:
+      - ./api:/code 
+    depends_on:
+      - db  
+  
+  web:
+    build: ./app_tarefa/
+    command: python manage.py runserver 0.0.0.0:8001
+    image: adriano08andrade/app-tarefa:v1
+    container_name: app-tarefa_container
+    restart: always
+    ports:
+      - "8001:8001" 
+    volumes:
+      - ./app_tarefa:/code 
+    depends_on:
+      - web_api
+ 
