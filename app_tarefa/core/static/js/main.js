@@ -1,4 +1,5 @@
 var lst_tarefa = []
+var id_tarefa = 0
 
 $(document).ready(function(){    
     
@@ -6,8 +7,9 @@ $(document).ready(function(){
     
     send(1) 
 
-    $(".btn").click(function () { 
+    $(".btn").click(function () {  
 
+        tarefas(campoDigitaNota(), (document.querySelectorAll('.list-group-item-action').length)+1)
     });
      
 });
@@ -24,6 +26,31 @@ function mostrarTarefa(){
     $("#home").hide() 
 }
 
+function campoDigitaNota(){
+        
+    form = '<input type="email" class="form-control" id="anotacao_tarefa" placeholder="Tarefa de máximo 50 caracteres">'     
+    
+    return form
+}
+
+function tarefas(tarefa_texto, id){ 
+
+    $('#tarefa_lista').append('<li class="list-group-item rounded-0">'+    
+    '    <div class="row">'+         
+    '      <div class="col-10 list-group-item-action" id="textoId'+id+'" >'+ 
+    '        <div> '+tarefa_texto+' </div>'+
+    '      </div>'+    
+    '      <div class="col-2">'+ 
+    '        <div class="custom-control custom-checkbox">'+
+    '           <input class="custom-control-input" id="customCheck'+id+'" type="checkbox">'+ 
+    '           <label class="cursor-pointer custom-control-label" for="customCheck'+id+'"></label>'+
+    '        </div>'+
+    '      </div>'+    
+    '    </div>'+   
+    '</li>')
+
+}
+
 function carregaTarefa(data){
 
     mostrarTarefa()
@@ -34,36 +61,15 @@ function carregaTarefa(data){
                 
         console.log('datas: ',data[i].tarefa_texto)
 
-        //$('#tarefa_lista').append('<a href="#" class="list-group-item list-group-item-action" id="'+data[i].id+'">'+data[i].tarefa_texto+'</a>')
-        
-        /*$('#tarefa_lista').append('<li class="list-group-item rounded-0">'+
-        '<div class="custom-control custom-checkbox">'+
-        '    <input class="custom-control-input" id="customCheck'+data[i].id+'" type="checkbox">'+
-        '    <label class="cursor-pointer custom-control-label" for="customCheck'+data[i].id+'">Martinsssi</label>'+
-        '</div>'+
-        '</li>')*/
-
-        $('#tarefa_lista').append('<li class="list-group-item rounded-0">'+    
-        '    <div class="row">'+         
-        '      <div class="col-8">'+
-        '        <div>'+data[i].tarefa_texto+'</div>'+
-        '      </div>'+    
-        '      <div class="col-4">'+ 
-        '        <div class="custom-control custom-checkbox">'+
-        '          <input class="custom-control-input" id="customCheck'+data[i].id+'" type="checkbox">'+ 
-        '    <label class="cursor-pointer custom-control-label" for="customCheck'+data[i].id+'"></label>'+
-        '        </div>'+
-        '      </div>'+    
-        '    </div>'+   
-        '</li>')
-
-
+        tarefas(data[i].tarefa_texto, data[i].id)   
 
     }   
 
-    /*lst_tarefa = document.querySelectorAll('#tarefa_lista a')
+    lst_tarefa = document.querySelectorAll('.list-group-item-action')
 
-    for(let i = 0; i< lst_tarefa.length; i++){        
+    for(let i = 0; i< lst_tarefa.length; i++){ 
+        
+        console.log('lsit: ',i)
 
         $("#"+lst_tarefa[i].id).click(function () {  
         
@@ -71,7 +77,7 @@ function carregaTarefa(data){
 
         });
     
-    }*/
+    }
 
 }
 
@@ -97,6 +103,7 @@ function carregaLista(data){
         $("#"+lst_lista[i].id).click(function () {  
         
             console.log(lst_lista[i].id)
+
             send(lst_lista[i].id)
 
         });

@@ -3,12 +3,12 @@ from .serializers import TarefaSerializer, ListaSerializer
 from rest_framework import generics 
 #from rest_framework.permissions import IsAuthenticated
  
-class ListaList(generics.ListCreateAPIView):      
+class ListaList(generics.ListAPIView):      
     serializer_class = ListaSerializer
     queryset = Lista.objects.all()   
      
 
-class TarefaList(generics.ListCreateAPIView):    
+class TarefaList(generics.ListAPIView):    
     serializer_class = TarefaSerializer 
     # queryset = Tarefa.objects.all() 
 
