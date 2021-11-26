@@ -5,7 +5,9 @@ $(document).ready(function(){
     
     SlickLoader.setText('Processando','Aguarde...'); 
     
-    send(1) 
+    //send(1)
+    
+    send2()
 
     $(".btn").click(function () {  
 
@@ -81,6 +83,7 @@ function carregaTarefa(data){
 
 }
 
+ 
 
 function carregaLista(data){
 
@@ -110,6 +113,55 @@ function carregaLista(data){
     
     }
 }
+
+
+
+
+function send2() { 
+
+    data2 = JSON.stringify({
+        "id": 6,
+        "criado": "2021-11-25T22:39:40.241758-03:00",
+        "modificado": "2021-11-25T22:39:40.241915-03:00",
+        "tarefa_texto": "TOMA NO API POS",
+        "status": false,
+        "lista_id": 1
+    })
+
+    SlickLoader.enable();
+
+    $.ajax({
+
+        //url: 'http://127.0.0.1:8000/cria/tarefa/', POST JSON.stringify({"tarefa_texto": "SOU UM PROGRAMADOR MUITO FODA"}),
+        url: 'http://127.0.0.1:8000/atualiza/tarefa/6/',
+        type: 'PUT',
+        data: JSON.stringify({"tarefa_texto": "SOU UM PROGRAMADOR MUITO FODA"}),
+        dataType: 'json',
+        contentType: 'application/json',
+        error: function(jqxhr, settings, thrownError) {
+            
+            console.log('Houve um erro! '); 
+
+            SlickLoader.disable(); 
+
+            mostrarHome()  
+ 
+        },
+        success: function (data) { 
+            
+            console.log('DATA RETORNO: ', data.msg)
+            
+            SlickLoader.disable();    
+
+        }, 
+    });
+}
+
+
+
+
+
+
 
 function send(tarefa_id='') { 
 
