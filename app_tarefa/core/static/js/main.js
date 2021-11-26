@@ -117,25 +117,16 @@ function carregaLista(data){
 
 
 
-function send2() { 
-
-    data2 = JSON.stringify({
-        "id": 6,
-        "criado": "2021-11-25T22:39:40.241758-03:00",
-        "modificado": "2021-11-25T22:39:40.241915-03:00",
-        "tarefa_texto": "TOMA NO API POS",
-        "status": false,
-        "lista_id": 1
-    })
+function send2() {  
 
     SlickLoader.enable();
 
     $.ajax({
 
         //url: 'http://127.0.0.1:8000/cria/tarefa/', POST JSON.stringify({"tarefa_texto": "SOU UM PROGRAMADOR MUITO FODA"}),
-        url: 'http://127.0.0.1:8000/atualiza/tarefa/6/',
-        type: 'PUT',
-        data: JSON.stringify({"tarefa_texto": "SOU UM PROGRAMADOR MUITO FODA"}),
+        url: 'http://127.0.0.1:8000/api/notas/1/',
+        type: 'GET',
+        //data: JSON.stringify({"tarefa_texto": "SOU UM PROGRAMADOR MUITO FODA"}),
         dataType: 'json',
         contentType: 'application/json',
         error: function(jqxhr, settings, thrownError) {
@@ -149,7 +140,7 @@ function send2() {
         },
         success: function (data) { 
             
-            console.log('DATA RETORNO: ', data.msg)
+            console.log('DATA RETORNO: ', data)
             
             SlickLoader.disable();    
 
