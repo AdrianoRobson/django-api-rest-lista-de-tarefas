@@ -5,30 +5,51 @@ from rest_framework.parsers import JSONParser
 from rest_framework import status  
 from rest_framework.decorators import api_view 
 
+  
 
+# cria e retorna listas
+@api_view(['POST', 'GET'])
+def lista_cria_retorna(request):
 
+    if request.method == 'POST':            
+        lista_data = JSONParser().parse(request)
+        lista_serializer = ListaSerializer(data=lista_data)
 
+        if lista_serializer.is_valid():
+            lista_serializer.save()
+            return JsonResponse(lista_serializer.data, status=status.HTTP_201_CREATED)
 
-@api_view(['GET', 'POST', 'DELETE'])
-def tarefa_lista(request):
-
-    if request.method == 'GET':
-        #tarefas = Tarefa.objects.filter(lista_id=pk)   
-        #tarefas_serializer = TarefaSerializer(tarefas, many=True)
-        #return JsonResponse(tarefas_serializer.data, safe=False) 
-        pass 
- 
-    elif request.method == 'POST':
-        tarefa_data = JSONParser().parse(request)
-        tarefa_serializer = TarefaSerializer(data=tarefa_data)
-        if tarefa_serializer.is_valid():
-            tarefa_serializer.save()
-            return JsonResponse(tarefa_serializer.data, status=status.HTTP_201_CREATED) 
-        return JsonResponse(tarefa_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse(lista_serializer.errors, status=status.HTTP_400_BAD_REQUEST)    
     
-    elif request.method == 'DELETE':
-        count = Tarefa.objects.all().delete()
-        return JsonResponse({'message': '{} Tutorials were deleted successfully!'.format(count[0])}, status=status.HTTP_204_NO_CONTENT)
+    elif request.method == 'GET':
+        
+        listas = Lista.objects.all()
+        
+        listas_serializer = ListaSerializer(listas, many=True)
+
+        return JsonResponse(listas_serializer.data, safe=False)   
+ 
+
+# Atualiza, Deleta listas
+@api_view(['PUT', 'DELETE'])
+def lista_atualiza_deleta(request, pk):
+    try: 
+        lista = Lista.objects.get(pk=pk) 
+    except Lista.DoesNotExist: 
+        return JsonResponse({'message': 'The lista does not exist'}, status=status.HTTP_404_NOT_FOUND) 
+   
+    if request.method == 'PUT': 
+        lista_data = JSONParser().parse(request) 
+        lista_serializer = ListaSerializer(lista, data=lista_data) 
+        if lista_serializer.is_valid(): 
+            lista_serializer.save() 
+            return JsonResponse(lista_serializer.data) 
+        return JsonResponse(lista_serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
+ 
+    elif request.method == 'DELETE': 
+        lista.delete() 
+        return JsonResponse({'message': 'Lista was deleted successfully!'}, status=status.HTTP_204_NO_CONTENT)
+      
 
 
 # Cria uma nota
@@ -46,7 +67,7 @@ def nota_cria(request):
 
 # Retorna lista de notas
 @api_view(['GET'])
-def nota_lista(request, pk):    
+def nota_lista_retorna(request, pk):    
   
     if tarefas := Tarefa.objects.filter(lista_id=pk):   
         tarefas_serializer = TarefaSerializer(tarefas, many=True)
@@ -57,7 +78,7 @@ def nota_lista(request, pk):
 
 # Retorna, Atualiza, Deleta nota
 @api_view(['GET', 'PUT', 'DELETE'])
-def nota_detail(request, pk):
+def nota_retorna_atualiza_deleta(request, pk):
     try: 
         tarefa = Tarefa.objects.get(pk=pk) 
     except Tarefa.DoesNotExist: 
