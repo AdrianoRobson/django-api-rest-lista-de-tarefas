@@ -5,16 +5,54 @@ $(document).ready(function(){
     
     SlickLoader.setText('Processando','Aguarde...'); 
     
-    //send(1)
+    send(1)
     
-    send2()
+   // send2()
 
     $(".btn").click(function () {  
+        
+        console.log('icone: ', $(".btn i").attr("class"))
+        
+        if($(".btn i").attr("class").includes('fa-edit')){ 
+            
+            console.log('criar editar nota')
 
-        tarefas(campoDigitaNota(), (document.querySelectorAll('.list-group-item-action').length)+1)
+            tarefas(campoDigitaNota(), idUltimaNota(), botaoFechar())
+        }
+        else if($(".btn i").attr("class").includes('fa-check')){
+
+            if($("#anotacao_tarefa").val().trim().length > 0){
+                
+                console.log('envia para servidor') 
+
+                var nota = $("#anotacao_tarefa").val().trim()
+
+                $("#linha"+idUltimaNota()).remove() 
+                
+                tarefas(nota, idUltimaNota())   
+
+                clickEventNotas()
+
+                botaoPadrao()
+
+                send3(nota,1)
+            } 
+             
+        }        
     });
      
 });
+
+function idUltimaNota(){
+
+     if (lst_tarefa) {
+         
+        return parseInt((lst_tarefa[lst_tarefa.length-1].id).replace(/[^0-9]/g, ''))+1;
+
+     } 
+
+    return 0
+}
 
 
 function mostrarHome(){ 
@@ -30,27 +68,59 @@ function mostrarTarefa(){
 
 function campoDigitaNota(){
         
-    form = '<input type="email" class="form-control" id="anotacao_tarefa" placeholder="Tarefa de máximo 50 caracteres">'     
+    form = '<input type="email" class="form-control" id="anotacao_tarefa" placeholder="Tarefa de no máximo 50 caracteres">'     
     
     return form
 }
 
-function tarefas(tarefa_texto, id){ 
+function check(id){
+   ret = '           <input class="custom-control-input" id="customCheck'+id+'" type="checkbox">'+ 
+    '           <label class="cursor-pointer custom-control-label" for="customCheck'+id+'"></label>'
 
-    $('#tarefa_lista').append('<li class="list-group-item rounded-0">'+    
+    return ret
+}
+
+function botaoFechar(){  
+    return '<i class="fas fa-times fa-2x" id="fechar"></i>'       
+}
+
+
+function tarefas(tarefa_texto, id, elemento=check(id)){ 
+
+    $('#tarefa_lista').append('<li class="list-group-item rounded-0" id="linha'+id+'">'+    
     '    <div class="row">'+         
     '      <div class="col-10 list-group-item-action" id="textoId'+id+'" >'+ 
     '        <div> '+tarefa_texto+' </div>'+
     '      </div>'+    
     '      <div class="col-2">'+ 
     '        <div class="custom-control custom-checkbox">'+
-    '           <input class="custom-control-input" id="customCheck'+id+'" type="checkbox">'+ 
-    '           <label class="cursor-pointer custom-control-label" for="customCheck'+id+'"></label>'+
+                elemento+
     '        </div>'+
     '      </div>'+    
     '    </div>'+   
     '</li>')
 
+    if (elemento.startsWith("<i class")){
+
+        $("#fechar").click(function () {   
+            
+            botaoPadrao()
+
+             $("#linha"+idUltimaNota()).remove()  
+
+        });
+
+        $(".btn i").remove()
+        $(".btn").append('<i class="fas fa-check fa-2x"></i>')
+
+       
+    }
+
+}
+
+function botaoPadrao(){
+    $(".btn i").remove()             
+    $(".btn").append('<i class="fas fa-edit fa-2x" id="icon"></i>')
 }
 
 function carregaTarefa(data){
@@ -67,6 +137,15 @@ function carregaTarefa(data){
 
     }   
 
+    clickEventNotas() 
+
+    //console.log('ULTIMO ELMENTO: ', (lst_tarefa[lst_tarefa.length-1].id).replace(/[^0-9]/g, ''))
+
+}
+
+
+function clickEventNotas(){
+
     lst_tarefa = document.querySelectorAll('.list-group-item-action')
 
     for(let i = 0; i< lst_tarefa.length; i++){ 
@@ -79,8 +158,7 @@ function carregaTarefa(data){
 
         });
     
-    }
-
+    } 
 }
 
  
@@ -113,6 +191,34 @@ function carregaLista(data){
     
     }
 }
+
+
+
+
+
+function send3(nota, lista_id) {    
+
+    $.ajax({ 
+          
+        url: 'http://127.0.0.1:8000/api/nota/',
+        type: 'POST',
+        data: JSON.stringify({"lista_id": lista_id, "tarefa_texto": nota}),
+        dataType: 'json',
+        contentType: 'application/json',
+        error: function(jqxhr, settings, thrownError) {
+            
+            console.log('Houve um erro! ');   
+        },
+        success: function (data) { 
+            
+            console.log('DATA RETORNO: ', data)
+            
+             
+
+        }, 
+    });
+}
+ 
 
 
 
@@ -150,17 +256,13 @@ function send2() {
 
 
 
-
-
-
-
 function send(tarefa_id='') { 
 
     SlickLoader.enable();
 
     $.ajax({
 
-        url: 'http://127.0.0.1:8000/lista/'+tarefa_id,
+        url: 'http://127.0.0.1:8000/api/notas/'+tarefa_id,
         type: 'GET',
         dataType: 'json',
         contentType: 'application/json',
@@ -187,3 +289,11 @@ function send(tarefa_id='') {
         }, 
     });
 }
+
+
+
+
+
+
+
+ 
