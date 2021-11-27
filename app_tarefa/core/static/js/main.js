@@ -1,12 +1,14 @@
 var lst_tarefa = []
-var id_tarefa = 0
+
+var id_ult_edit = 0
+var text_ult_edit = ''
 
 $(document).ready(function(){    
     
     SlickLoader.setText('Processando','Aguarde...'); 
     
-    send(2)
-    
+    send(2) 
+     
    // send2()
 
     $(".btn").click(function () {  
@@ -24,24 +26,53 @@ $(document).ready(function(){
             if($("#anotacao_tarefa").val().trim().length > 0){
                 
                 console.log('envia para servidor') 
-
+                
                 var nota = $("#anotacao_tarefa").val().trim()
 
-                $("#linha"+idUltimaNota()).remove() 
+                if (id_ult_edit == 0){
+                    
+                    //var nota = $("#anotacao_tarefa").val().trim()
+
+                    $("#linha"+idUltimaNota()).remove() 
+                    
+                    tarefas(nota, idUltimaNota())   
+
+                    clickEventNotas()
+
+                    botaoPadrao()
+
+                    // CRIA NOTA
+                    send3(nota,2)
+
+                }
+                else if(id_ult_edit > 0){  
+
+                    console.log('edit envia server: ', nota)
+
+                    removeInput(id_ult_edit, nota) 
+
+                    // ATUALIZA NOTA
+                    send4(nota, 2, id_ult_edit)  
+
+                    editReset()
+
+                    botaoPadrao()
+
+                }
                 
-                tarefas(nota, idUltimaNota())   
-
-                clickEventNotas()
-
-                botaoPadrao()
-
-                send3(nota,2)
             } 
              
         }        
     });
      
 });
+
+function editReset(){
+
+    id_ult_edit = 0
+    text_ult_edit = ''
+
+}
 
 function ehBotaoPadrao(){
     
@@ -77,6 +108,9 @@ function idUltimaNota(){
     return 0
 }
 
+function extraiNumero(text){
+    return text.replace(/[^0-9]/g, '') 
+}
 
 function mostrarHome(){ 
    $("#tarefa_lista").hide();
@@ -116,7 +150,7 @@ function tarefas(tarefa_texto, id, elemento=check(id)){
     '        <div id="nota'+id+'"> '+tarefa_texto+' </div>'+
     '      </div>'+    
     '      <div class="col-2">'+ 
-    '        <div class="custom-control custom-checkbox">'+
+    '        <div class="custom-control custom-checkbox" id="checkId'+id+'">'+
                 elemento+
     '        </div>'+
     '      </div>'+    
@@ -126,24 +160,43 @@ function tarefas(tarefa_texto, id, elemento=check(id)){
     if (elemento.startsWith("<i class")){
 
         $("#fechar").click(function () {   
-            
+ 
             botaoPadrao()
 
              $("#linha"+idUltimaNota()).remove()  
 
-        });
+        });        
 
-        $(".btn i").remove()
-        $(".btn").append('<i class="fas fa-check fa-2x"></i>')
+        botaoSalvar()  
+    } 
 
-       
-    }
+    
 
+}
+
+function botaoExcluir(id){
+
+    $("#fechar").click(function () {   
+ 
+        botaoPadrao()
+
+        $("#linha"+id).remove()
+        
+        // EXCLUIR UMA NOTA
+        send5(id)
+    });
+
+    botaoSalvar()
 }
 
 function botaoPadrao(){
     $(".btn i").remove()             
     $(".btn").append('<i class="fas fa-edit fa-2x" id="icon"></i>')
+}
+
+function botaoSalvar(){
+    $(".btn i").remove()
+    $(".btn").append('<i class="fas fa-check fa-2x"></i>')
 }
 
 function carregaTarefa(data){
@@ -173,34 +226,96 @@ function clickEventNotas(){
 
     for(let i = 0; i< lst_tarefa.length; i++){ 
         
-        //console.log('lsit: ',st_tarefa[i].id)
+       
 
-        $("#"+lst_tarefa[i].id).click(function () {   
+        $("#"+lst_tarefa[i].id).mousedown(function (e) {   
+ 
+             
+            console.log('ID: ',    $(this).text().trim().length)
 
-            console.log('VEJA: ', (lst_tarefa[i].id))  
+            if($(this).text().trim().length == 0){
+                
+                console.log('entro')
 
-            let nota = $(this).text()
+                return
+            } 
+
+            let nota = $(this).text()      
+
+            if( id_ult_edit > 0){
+                
+                console.log('EDIT ATIVADO: ', id_ult_edit ) 
+
+                /*$("#textoId"+id_ult_edit).empty()
+
+                $("#textoId"+id_ult_edit).append('<div id="nota'+id_ult_edit+'"> '+text_ult_edit+' </div>') 
+
+                $("#checkId"+id_ult_edit).empty()
+
+                $("#checkId"+id_ult_edit).append(check(id_ult_edit))*/
+
+                removeInput(id_ult_edit, text_ult_edit)
+            }
 
             if(nota)
             {
-                $(this).empty()
+                adicionaIput(extraiNumero(lst_tarefa[i].id), nota)
+
+                /*$(this).empty()
+                
                 $(this).append(campoDigitaNota())
+
                 $("#anotacao_tarefa").val(nota)
+
+                text_ult_edit = nota
+
+                id_ult_edit = extraiNumero(lst_tarefa[i].id)
+
+                $("#checkId"+id_ult_edit).empty()
+
+                $("#checkId"+id_ult_edit).append(botaoFechar())*/
+
+
+                botaoSalvar()
             }
+
+           // e.preventDefault();
              
- 
-  
-               // $(this).hide()
-
-                //$(this).append(campoDigitaNota())
-
-                //$("#anotacao_tarefa").val(nota) 
-
         });
     
     } 
 }
 
+function removeInput(id, texto_nota){
+
+    $("#textoId"+id).empty()
+
+    $("#textoId"+id).append('<div id="nota'+id+'"> '+texto_nota+' </div>') 
+
+    $("#checkId"+id).empty()
+
+    $("#checkId"+id).append(check(id))
+}
+
+function adicionaIput(id, nota){
+
+    $("#textoId"+id).empty()
+                
+    $("#textoId"+id).append(campoDigitaNota())
+
+    $("#anotacao_tarefa").val(nota)
+
+    text_ult_edit = nota
+
+    id_ult_edit = id
+
+    $("#checkId"+id_ult_edit).empty()
+
+    $("#checkId"+id_ult_edit).append(botaoFechar())
+
+    botaoExcluir(id)
+
+}
  
 
 function carregaLista(data){
@@ -251,16 +366,54 @@ function send3(nota, lista_id) {
         },
         success: function (data) { 
             
-            console.log('DATA RETORNO: ', data)
-            
-             
+            console.log('DATA RETORNO: ', data)  
 
         }, 
     });
 }
  
 
+function send4(nota, lista_id, nota_id) {    
 
+    $.ajax({ 
+          
+        url: 'http://127.0.0.1:8000/api/nota/'+nota_id+'/',
+        type: 'PUT',
+        data: JSON.stringify({"lista_id": lista_id, "tarefa_texto": nota}),
+        dataType: 'json',
+        contentType: 'application/json',
+        error: function(jqxhr, settings, thrownError) {
+            
+            console.log('Houve um erro! ');   
+        },
+        success: function (data) { 
+            
+            console.log('DATA RETORNO: ', data)  
+
+        }, 
+    });
+}
+
+
+function send5(nota_id) {    
+
+    $.ajax({ 
+          
+        url: 'http://127.0.0.1:8000/api/nota/'+nota_id+'/',
+        type: 'DELETE', 
+        dataType: 'json',
+        contentType: 'application/json',
+        error: function(jqxhr, settings, thrownError) {
+            
+            console.log('Houve um erro! ');   
+        },
+        success: function (data) { 
+            
+            console.log('DATA RETORNO: ', data)  
+
+        }, 
+    });
+}
 
 
 function send2() {  
