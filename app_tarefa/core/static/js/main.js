@@ -5,7 +5,7 @@ $(document).ready(function(){
     
     SlickLoader.setText('Processando','Aguarde...'); 
     
-    send(1)
+    send(2)
     
    // send2()
 
@@ -13,13 +13,13 @@ $(document).ready(function(){
         
         console.log('icone: ', $(".btn i").attr("class"))
         
-        if($(".btn i").attr("class").includes('fa-edit')){ 
+        if(ehBotaoPadrao()){ 
             
             console.log('criar editar nota')
 
             tarefas(campoDigitaNota(), idUltimaNota(), botaoFechar())
         }
-        else if($(".btn i").attr("class").includes('fa-check')){
+        else if(ehBotaoSalvar()){
 
             if($("#anotacao_tarefa").val().trim().length > 0){
                 
@@ -35,13 +35,36 @@ $(document).ready(function(){
 
                 botaoPadrao()
 
-                send3(nota,1)
+                send3(nota,2)
             } 
              
         }        
     });
      
 });
+
+function ehBotaoPadrao(){
+    
+    if($(".btn i").attr("class").includes('fa-edit')){
+        
+        return true
+
+    }
+
+    return false    
+}
+
+
+function ehBotaoSalvar(){
+    
+    if($(".btn i").attr("class").includes('fa-check')){
+        
+        return true
+
+    }
+
+    return false    
+}
 
 function idUltimaNota(){
 
@@ -90,7 +113,7 @@ function tarefas(tarefa_texto, id, elemento=check(id)){
     $('#tarefa_lista').append('<li class="list-group-item rounded-0" id="linha'+id+'">'+    
     '    <div class="row">'+         
     '      <div class="col-10 list-group-item-action" id="textoId'+id+'" >'+ 
-    '        <div> '+tarefa_texto+' </div>'+
+    '        <div id="nota'+id+'"> '+tarefa_texto+' </div>'+
     '      </div>'+    
     '      <div class="col-2">'+ 
     '        <div class="custom-control custom-checkbox">'+
@@ -150,11 +173,28 @@ function clickEventNotas(){
 
     for(let i = 0; i< lst_tarefa.length; i++){ 
         
-        console.log('lsit: ',i)
+        //console.log('lsit: ',st_tarefa[i].id)
 
-        $("#"+lst_tarefa[i].id).click(function () {  
-        
-            console.log(lst_tarefa[i].id)
+        $("#"+lst_tarefa[i].id).click(function () {   
+
+            console.log('VEJA: ', (lst_tarefa[i].id))  
+
+            let nota = $(this).text()
+
+            if(nota)
+            {
+                $(this).empty()
+                $(this).append(campoDigitaNota())
+                $("#anotacao_tarefa").val(nota)
+            }
+             
+ 
+  
+               // $(this).hide()
+
+                //$(this).append(campoDigitaNota())
+
+                //$("#anotacao_tarefa").val(nota) 
 
         });
     
