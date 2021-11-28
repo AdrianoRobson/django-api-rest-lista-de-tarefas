@@ -1,7 +1,10 @@
 var lst_tarefa = []
 
 var id_ult_edit = 0
+
 var text_ult_edit = ''
+
+var notas_vazia = 0
 
 $(document).ready(function(){    
     
@@ -99,13 +102,15 @@ function ehBotaoSalvar(){
 
 function idUltimaNota(){
 
-     if (lst_tarefa) {
+     if (lst_tarefa.length > 0) {
          
         return parseInt((lst_tarefa[lst_tarefa.length-1].id).replace(/[^0-9]/g, ''))+1;
 
      } 
 
-    return 0
+    console.log('ULTIMO ID TABELA TAREFA: ', notas_vazia)
+
+    return notas_vazia + 1
 }
 
 function extraiNumero(text){
@@ -205,13 +210,29 @@ function carregaTarefa(data){
 
     $("#tarefa_lista a").remove(); 
 
-    for(i=0; i<data.length; i++){
+    if(Array.isArray((data))){
+
+        console.log('é array')
+
+        for(i=0; i<data.length; i++){
                 
-        console.log('datas: ',data[i].tarefa_texto)
+            console.log('datas: ',data[i].tarefa_texto)
+    
+            tarefas(data[i].tarefa_texto, data[i].id)   
+    
+        }   
+    }
+    else{
+        console.log('___data: ', data)
 
-        tarefas(data[i].tarefa_texto, data[i].id)   
+        if ('lastnoteid' in data){
+            console.log('lastnoteid existe')
+            notas_vazia = data.lastnoteid
+        } 
+    }
 
-    }   
+    
+   
 
     clickEventNotas() 
 
@@ -461,19 +482,12 @@ function send(tarefa_id='') {
     $.ajax({
 
         url: 'http://127.0.0.1:8000/api/notas/'+tarefa_id,
-        type: 'GET',
+        type: 'GET', 
         dataType: 'json',
-        contentType: 'application/json',
-        error: function(jqxhr, settings, thrownError) {
-            
-            console.log('Houve um erro! '); 
-
-            SlickLoader.disable(); 
-
-            mostrarHome()  
- 
-        },
+        contentType: "application/json;charset=utf-8",
         success: function (data) { 
+
+            console.log('DATA: ',typeof( data))
             
             if(tarefa_id){
                 carregaTarefa(data)
@@ -485,6 +499,16 @@ function send(tarefa_id='') {
             SlickLoader.disable();    
 
         }, 
+        error: function(jqxhr, settings, thrownError) {
+            
+            console.log('Houve um erro! '); 
+
+            SlickLoader.disable(); 
+
+            mostrarHome()  
+ 
+        },
+     
     });
 }
 

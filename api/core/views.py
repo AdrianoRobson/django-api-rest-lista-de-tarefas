@@ -69,12 +69,14 @@ def nota_cria(request):
 @api_view(['GET'])
 def nota_lista_retorna(request, pk):    
   
-    if tarefas := Tarefa.objects.filter(lista_id=pk):   
-        tarefas_serializer = TarefaSerializer(tarefas, many=True)
-        return JsonResponse(tarefas_serializer.data, safe=False) 
-  
-    return JsonResponse({'message': 'The tarefa does not exist'}, status=status.HTTP_404_NOT_FOUND) 
-  
+    tarefas = Tarefa.objects.filter(lista_id=pk)   
+    
+    if(tarefas):
+        tarefas_serializer = TarefaSerializer(tarefas, many=True)    
+        return JsonResponse(tarefas_serializer.data, safe=False)   
+
+    return JsonResponse({'lastnoteid': Tarefa.objects.last().id})
+     
 
 # Retorna, Atualiza, Deleta nota
 @api_view(['GET', 'PUT', 'DELETE'])
