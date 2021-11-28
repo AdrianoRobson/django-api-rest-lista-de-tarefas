@@ -233,6 +233,11 @@ function clickEventNotas(){
              
             console.log('ID: ',    $(this).text().trim().length)
 
+            if ($("#anotacao_tarefa").is(":visible") && id_ult_edit==0){  
+
+                return
+            }
+
             if($(this).text().trim().length == 0){
                 
                 console.log('entro')
