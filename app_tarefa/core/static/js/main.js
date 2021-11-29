@@ -186,7 +186,7 @@ function tarefas(tarefa_texto, id, elemento=check(id)){
 function botaoExcluir(id){
 
     $("#fechar").click(function () {    
-        
+
         // EXCLUIR UMA NOTA
         send5(lst_db[id]) 
 
@@ -222,7 +222,9 @@ function carregaTarefa(data){
 
             lst_db.push(data[i].id)
     
-            tarefas(data[i].tarefa_texto, i)   
+            tarefas(data[i].tarefa_texto, i)            
+            
+            $("#customCheck"+i).prop( "checked", data[i].status );
     
         }   
     }
@@ -239,24 +241,7 @@ function carregaTarefa(data){
 }
 
 
-function idReset(){
-
-    lst = document.querySelectorAll('.list-group-item-action')  
-
-    for(let i = 0; i< lst.length; i++){      
-
-        id = extraiNumero(lst[i].id)
-        $("#linha"+id).attr("id", "linha"+i)
-        $("#textoId"+id).attr("id", "textoId"+i)
-        $("#nota"+id).attr("id", "nota"+i)
-        $("#checkId"+id).attr("id", "checkId"+i) 
-        $("#customCheck"+id).attr("id", "customCheck"+i)  
-        $("#customCheck"+id).attr("for", "customCheck"+i)
-        $("label[for=customCheck"+id+"]").attr("for", "customCheck"+i); 
-    }
-
-}
-
+ 
 
 function clickEventNotas(){
 
@@ -264,7 +249,20 @@ function clickEventNotas(){
 
     lst_tarefa = document.querySelectorAll('.list-group-item-action')
 
-    for(let i = 0; i < lst_tarefa.length; i++){       
+    for(let i = 0; i < lst_tarefa.length; i++){ 
+        
+        
+
+        $("#customCheck"+i).change(function (e){
+
+            let checked = $("#customCheck"+i).is(":checked") ? "true" : "false";
+
+            console.log(checked)
+
+            send04(checked, 2, lst_db[i])
+
+        });
+        
        
 
         $("#textoId"+i).mousedown(function (e) {   
@@ -287,15 +285,7 @@ function clickEventNotas(){
 
             if( id_ult_edit != -1){
                 
-                console.log('EDIT ATIVADO: ', id_ult_edit ) 
-
-                /*$("#textoId"+id_ult_edit).empty()
-
-                $("#textoId"+id_ult_edit).append('<div id="nota'+id_ult_edit+'"> '+text_ult_edit+' </div>') 
-
-                $("#checkId"+id_ult_edit).empty()
-
-                $("#checkId"+id_ult_edit).append(check(id_ult_edit))*/
+                console.log('EDIT ATIVADO: ', id_ult_edit )  
 
                 removeInput(id_ult_edit, text_ult_edit)
             }
@@ -304,25 +294,10 @@ function clickEventNotas(){
             {
                 adicionaIput(i, nota)
 
-                /*$(this).empty()
-                
-                $(this).append(campoDigitaNota())
-
-                $("#anotacao_tarefa").val(nota)
-
-                text_ult_edit = nota
-
-                id_ult_edit = extraiNumero(lst_tarefa[i].id)
-
-                $("#checkId"+id_ult_edit).empty()
-
-                $("#checkId"+id_ult_edit).append(botaoFechar())*/
-
-
+                 
                 botaoSalvar()
             }
-
-           // e.preventDefault();
+ 
              
         });
     
@@ -438,6 +413,33 @@ function send4(nota, lista_id, nota_id) {
         }, 
     });
 }
+
+
+
+
+function send04(status, lista_id, nota_id) {    
+
+    $.ajax({ 
+             //http://127.0.0.1:8000/api/nota/536/
+        url: 'http://127.0.0.1:8000/api/nota/'+nota_id+'/',
+        type: 'PATCH',
+        data: JSON.stringify({"lista_id": lista_id, "status": status}),
+        dataType: 'json',
+        contentType: 'application/json',
+        error: function(jqxhr, settings, thrownError) {
+            
+            console.log('Houve um erro! ');   
+        },
+        success: function (data) { 
+            
+            console.log('DATA RETORNO: ', data)  
+
+        }, 
+    });
+}
+
+
+
 
 
 function send5(nota_id) {    

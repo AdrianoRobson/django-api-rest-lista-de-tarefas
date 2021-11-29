@@ -49,7 +49,8 @@ def lista_atualiza_deleta(request, pk):
     elif request.method == 'DELETE': 
         lista.delete() 
         return JsonResponse({'message': 'Lista was deleted successfully!'}, status=status.HTTP_204_NO_CONTENT)
-      
+
+ 
 
 
 # Cria uma nota
@@ -78,8 +79,28 @@ def nota_lista_retorna(request, pk):
     return JsonResponse({'lastnoteid': Tarefa.objects.last().id})
      
 
+
+@api_view(['PATCH'])
+def lista_atualiza_parcial(request, pk):
+    try:
+        tarefa = Tarefa.objects.get(pk=pk)
+    except Tarefa.DoesNotExist:
+        return JsonResponse({'message': 'The tarefa doew not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+    tarefa_data = JSONParser().parse(request)
+    tarefa_serializer = TarefaSerializer(tarefa, data=tarefa_data, partial=True)
+    
+    if tarefa_serializer.is_valid():
+        tarefa_serializer.save()
+        return JsonResponse(tarefa_serializer.data)
+
+    return JsonResponse(tarefa_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
 # Retorna, Atualiza, Deleta nota
-@api_view(['GET', 'PUT', 'DELETE'])
+@api_view(['GET', 'PUT', 'DELETE', 'PATCH'])
 def nota_retorna_atualiza_deleta(request, pk):
     try: 
         tarefa = Tarefa.objects.get(pk=pk) 
@@ -97,6 +118,14 @@ def nota_retorna_atualiza_deleta(request, pk):
             tarefa_serializer.save() 
             return JsonResponse(tarefa_serializer.data) 
         return JsonResponse(tarefa_serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
+    
+    elif request.method == 'PATCH':
+        tarefa_data = JSONParser().parse(request)
+        tarefa_serializer = TarefaSerializer(tarefa, data=tarefa_data, partial=True)    
+        if tarefa_serializer.is_valid():
+            tarefa_serializer.save()
+            return JsonResponse(tarefa_serializer.data)
+        return JsonResponse(tarefa_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
  
     elif request.method == 'DELETE': 
         tarefa.delete() 
