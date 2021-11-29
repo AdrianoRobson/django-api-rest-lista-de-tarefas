@@ -14,7 +14,7 @@ $(document).ready(function(){
     
     send(2) 
      
-   // send2()
+       // send()
 
     $(".btn").click(function () {  
         
