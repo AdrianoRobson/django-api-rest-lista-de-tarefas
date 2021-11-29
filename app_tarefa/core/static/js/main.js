@@ -6,9 +6,7 @@ var id_ult_edit = -1
 
 var status_checked = false
 
-var text_ult_edit = ''
-
-var notas_vazia = 0
+var text_ult_edit = ''  
 
 $(document).ready(function(){    
     
@@ -109,17 +107,10 @@ function ehBotaoSalvar(){
     return false    
 }
 
-function idUltimaNota(){
-
-     if (lst_tarefa.length > 0) {
+function idUltimaNota(){ 
          
-        return parseInt((lst_tarefa[lst_tarefa.length-1].id).replace(/[^0-9]/g, ''))+1;
+    return lst_db.length
 
-     } 
-
-    console.log('ULTIMO ID TABELA TAREFA: ', notas_vazia)
-
-    return notas_vazia + 1
 }
 
 function extraiNumero(text){
@@ -235,12 +226,7 @@ function carregaTarefa(data){
         }   
     }
     else{
-        console.log('___data: ', data)
-
-        if ('lastnoteid' in data){
-            console.log('lastnoteid existe')
-            notas_vazia = data.lastnoteid
-        } 
+        console.log('___data: ', data) 
     } 
 
     clickEventNotas()  
