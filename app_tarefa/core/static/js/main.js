@@ -1,6 +1,8 @@
 var lst_tarefa = []
 
-var id_ult_edit = 0
+var lst_db = []
+
+var id_ult_edit = -1
 
 var text_ult_edit = ''
 
@@ -32,7 +34,7 @@ $(document).ready(function(){
                 
                 var nota = $("#anotacao_tarefa").val().trim()
 
-                if (id_ult_edit == 0){
+                if (id_ult_edit == -1){
                     
                     //var nota = $("#anotacao_tarefa").val().trim()
 
@@ -47,15 +49,17 @@ $(document).ready(function(){
                     // CRIA NOTA
                     send3(nota,2)
 
+                    editReset()
+
                 }
-                else if(id_ult_edit > 0){  
+                else if(id_ult_edit != -1){  
 
                     console.log('edit envia server: ', nota)
 
                     removeInput(id_ult_edit, nota) 
 
                     // ATUALIZA NOTA
-                    send4(nota, 2, id_ult_edit)  
+                    send4(nota, 2, lst_db[id_ult_edit])  
 
                     editReset()
 
@@ -72,7 +76,7 @@ $(document).ready(function(){
 
 function editReset(){
 
-    id_ult_edit = 0
+    id_ult_edit = -1
     text_ult_edit = ''
 
 }
@@ -181,14 +185,12 @@ function tarefas(tarefa_texto, id, elemento=check(id)){
 
 function botaoExcluir(id){
 
-    $("#fechar").click(function () {   
- 
-        botaoPadrao()
-
-        $("#linha"+id).remove()
+    $("#fechar").click(function () {    
         
         // EXCLUIR UMA NOTA
-        send5(id)
+        send5(lst_db[id]) 
+
+        location.reload()
     });
 
     botaoSalvar()
@@ -217,8 +219,10 @@ function carregaTarefa(data){
         for(i=0; i<data.length; i++){
                 
             console.log('datas: ',data[i].tarefa_texto)
+
+            lst_db.push(data[i].id)
     
-            tarefas(data[i].tarefa_texto, data[i].id)   
+            tarefas(data[i].tarefa_texto, i)   
     
         }   
     }
@@ -229,32 +233,45 @@ function carregaTarefa(data){
             console.log('lastnoteid existe')
             notas_vazia = data.lastnoteid
         } 
+    } 
+
+    clickEventNotas()  
+}
+
+
+function idReset(){
+
+    lst = document.querySelectorAll('.list-group-item-action')  
+
+    for(let i = 0; i< lst.length; i++){      
+
+        id = extraiNumero(lst[i].id)
+        $("#linha"+id).attr("id", "linha"+i)
+        $("#textoId"+id).attr("id", "textoId"+i)
+        $("#nota"+id).attr("id", "nota"+i)
+        $("#checkId"+id).attr("id", "checkId"+i) 
+        $("#customCheck"+id).attr("id", "customCheck"+i)  
+        $("#customCheck"+id).attr("for", "customCheck"+i)
+        $("label[for=customCheck"+id+"]").attr("for", "customCheck"+i); 
     }
-
-    
-   
-
-    clickEventNotas() 
-
-    //console.log('ULTIMO ELMENTO: ', (lst_tarefa[lst_tarefa.length-1].id).replace(/[^0-9]/g, ''))
 
 }
 
 
 function clickEventNotas(){
 
+    lst_tarefa = []
+
     lst_tarefa = document.querySelectorAll('.list-group-item-action')
 
-    for(let i = 0; i< lst_tarefa.length; i++){ 
-        
+    for(let i = 0; i < lst_tarefa.length; i++){       
        
 
-        $("#"+lst_tarefa[i].id).mousedown(function (e) {   
- 
-             
-            console.log('ID: ',    $(this).text().trim().length)
+        $("#textoId"+i).mousedown(function (e) {   
+              
+            console.log('ID: ',    lst_tarefa[i].id)
 
-            if ($("#anotacao_tarefa").is(":visible") && id_ult_edit==0){  
+            if ($("#anotacao_tarefa").is(":visible") && id_ult_edit==-1){  
 
                 return
             }
@@ -266,9 +283,9 @@ function clickEventNotas(){
                 return
             } 
 
-            let nota = $(this).text()      
+            let nota = $(this).text().trim()      
 
-            if( id_ult_edit > 0){
+            if( id_ult_edit != -1){
                 
                 console.log('EDIT ATIVADO: ', id_ult_edit ) 
 
@@ -285,7 +302,7 @@ function clickEventNotas(){
 
             if(nota)
             {
-                adicionaIput(extraiNumero(lst_tarefa[i].id), nota)
+                adicionaIput(i, nota)
 
                 /*$(this).empty()
                 
@@ -393,6 +410,8 @@ function send3(nota, lista_id) {
         success: function (data) { 
             
             console.log('DATA RETORNO: ', data)  
+
+            lst_db.push(data.id)
 
         }, 
     });
