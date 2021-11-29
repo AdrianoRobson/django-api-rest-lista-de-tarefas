@@ -133,6 +133,33 @@ $(document).ready(function(){
     }); 
 
     $(".slick-loader").click(function(e){ 
+ 
+        
+        if ($("#anotacao_tarefa").is(":visible")){ 
+
+            var nota = $("#anotacao_tarefa").val().trim()
+
+        if(id_ult_edit != -1){  
+                console.log('edit envia server: ', nota)
+                if(identificador !=0){
+                    removeInput(id_ult_edit, nota, status_checked)    
+                    editReset()
+                    botaoPadrao()
+                    checkEventNotas()
+                }
+                else{
+                    removeInput(id_ult_edit, nota, status_checked)    
+                    editReset()
+                    botaoPadrao() 
+                    checkEventNotas()
+                }
+            
+            }
+
+        } 
+
+        
+
 
        
     })
