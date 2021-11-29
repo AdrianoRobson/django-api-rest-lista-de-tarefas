@@ -8,13 +8,15 @@ var status_checked = false
 
 var text_ult_edit = ''  
 
+var identificador = 0 
+
 $(document).ready(function(){    
     
     SlickLoader.setText('Processando','Aguarde...'); 
     
-    send(2) 
+    // notas send(2) 
      
-       // send()
+    server_listas()
 
     $(".btn").click(function () {  
         
@@ -43,6 +45,7 @@ $(document).ready(function(){
                     tarefas(nota, idUltimaNota())   
 
                     clickEventNotas()
+
                     checkEventNotas()
 
                     botaoPadrao()
@@ -57,16 +60,36 @@ $(document).ready(function(){
 
                     console.log('edit envia server: ', nota)
 
-                    removeInput(id_ult_edit, nota, status_checked) 
+                    if(identificador !=0){
 
-                    // ATUALIZA NOTA
-                    send4(nota, 2, lst_db[id_ult_edit], status_checked)  
+                        removeInput(id_ult_edit, nota, status_checked)  
+                        // ATUALIZA NOTA
+                        send4(nota, 2, lst_db[id_ult_edit], status_checked)  
+    
+                        editReset()
+    
+                        botaoPadrao()
+    
+                        checkEventNotas()
 
-                    editReset()
+                    }
+                    else{
 
-                    botaoPadrao()
+                        removeInput(id_ult_edit, nota, status_checked)  
 
-                    checkEventNotas() 
+                        // ATUALIZA LISTA
+                        atualizaLista(nota, lst_db[id_ult_edit])   
+                         
+    
+                        editReset()
+    
+                        botaoPadrao() 
+    
+                        checkEventNotas()
+
+                    }
+
+                   
                 }
                 
             } 
@@ -118,14 +141,14 @@ function extraiNumero(text){
 }
 
 function mostrarHome(){ 
-   $("#tarefa_lista").hide();
-   $("#home").show() 
+   //$("#tarefa_lista").hide();
+   //$("#home").show() 
 }  
 
 
 function mostrarTarefa(){
-    $("#tarefa_lista").show();
-    $("#home").hide() 
+    //$("#tarefa_lista").show();
+    //$("#home").hide() 
 }
 
 function campoDigitaNota(){
@@ -146,36 +169,64 @@ function botaoFechar(){
     return '<i class="fas fa-times fa-2x" id="fechar"></i>'       
 }
 
+function botaoEditarLista(id){
+    //return '<i class="fas fa-pen-square" ></i>'
+
+    return '<i class="fas fa-pen-square fa-2x" id="editarLista'+id+'"></i>'
+}
+
 
 function tarefas(tarefa_texto, id, elemento=check(id)){ 
 
-    $('#tarefa_lista').append('<li class="list-group-item rounded-0" id="linha'+id+'">'+    
-    '    <div class="row">'+         
-    '      <div class="col-10 list-group-item-action" id="textoId'+id+'" >'+ 
-    '        <div id="nota'+id+'"> '+tarefa_texto+' </div>'+
-    '      </div>'+    
-    '      <div class="col-2">'+ 
-    '        <div class="custom-control custom-checkbox" id="checkId'+id+'">'+
-                elemento+
-    '        </div>'+
-    '      </div>'+    
-    '    </div>'+   
-    '</li>')
+    if(identificador != 0){
 
-    if (elemento.startsWith("<i class")){
+        $('#tarefa_lista').append('<li class="list-group-item rounded-0" id="linha'+id+'">'+    
+        '    <div class="row">'+         
+        '      <div class="col-10 list-group-item-action" id="textoId'+id+'" >'+ 
+        '        <div id="nota'+id+'"> '+tarefa_texto+' </div>'+
+        '      </div>'+    
+        '      <div class="col-2">'+  
+        '        <div class="custom-control custom-checkbox" id="checkId'+id+'">'+
+                    elemento+
+        '        </div>'+ 
+        '      </div>'+    
+        '    </div>'+   
+        '</li>')
 
-        $("#fechar").click(function () {   
- 
-            botaoPadrao()
+        if (elemento.startsWith("<i class")){
 
-             $("#linha"+idUltimaNota()).remove()  
+            $("#fechar").click(function () {   
+     
+                botaoPadrao()
+    
+                 $("#linha"+idUltimaNota()).remove()  
+    
+            });        
+    
+            botaoSalvar()  
+        } 
 
-        });        
+    }
+    else{
 
-        botaoSalvar()  
-    } 
+        $('#tarefa_lista').append('<li class="list-group-item rounded-0" id="linha'+id+'">'+    
+        '    <div class="row">'+         
+        '      <div class="col-10 list-group-item-action" id="textoId'+id+'" >'+ 
+        '        <div id="nota'+id+'"> '+tarefa_texto+' </div>'+
+        '      </div>'+    
+        '      <div class="col-2">'+  
+        '        <div class="custom-control custom-checkbox" id="checkId'+id+'">'+
+                    elemento+
+        '        </div>'+ 
+        '      </div>'+    
+        '    </div>'+   
+        '</li>')
+
+    }
+   
 
     
+ 
 
 }
 
@@ -183,8 +234,15 @@ function botaoExcluir(id){
 
     $("#fechar").click(function () {    
 
-        // EXCLUIR UMA NOTA
-        send5(lst_db[id]) 
+        if(identificador != 0){
+            // EXCLUIR UMA NOTA
+            send5(lst_db[id]) 
+        }
+        else{
+            // EXLCLUI LISTA
+            deletaLista(lst_db[id])
+        }
+        
 
         location.reload()
 
@@ -205,23 +263,39 @@ function botaoSalvar(){
 
 function carregaTarefa(data){
 
-    mostrarTarefa()
+    //mostrarTarefa()
 
-    $("#tarefa_lista a").remove(); 
+    $("#tarefa_lista li").remove(); 
 
     if(Array.isArray((data))){
 
         console.log('é array')
 
         for(i=0; i<data.length; i++){
-                
-            console.log('datas: ',data[i].tarefa_texto)
 
-            lst_db.push(data[i].id)
-    
-            tarefas(data[i].tarefa_texto, i)            
-            
-            $("#customCheck"+i).prop( "checked", data[i].status );
+            if(identificador != 0){
+
+                console.log('datas: ',data[i].tarefa_texto)
+
+                lst_db.push(data[i].id)
+        
+                tarefas(data[i].tarefa_texto, i)            
+                
+                $("#customCheck"+i).prop( "checked", data[i].status );
+            }
+            else{
+
+                console.log('datas: ',data[i].titulo)
+
+                lst_db.push(data[i].id)
+        
+                tarefas(data[i].titulo, i, botaoEditarLista(i))            
+                
+              //  $("#customCheck"+i).prop( "checked", data[i].status );
+
+            }
+                
+           
     
         }   
     }
@@ -230,7 +304,14 @@ function carregaTarefa(data){
     } 
 
     clickEventNotas()  
-    checkEventNotas()
+
+    if(identificador != 0){
+        checkEventNotas()
+    }
+    else{
+        clickEventEditarLista()
+    }
+    
 }
 
 
@@ -247,6 +328,56 @@ function clickEventNotas(){
         $("#textoId"+i).unbind();
 
         $("#textoId"+i).mousedown(function (e) {   
+
+            if (identificador != 0){
+                
+                console.log('ID: ',    lst_tarefa[i].id)
+
+                if ($("#anotacao_tarefa").is(":visible") && id_ult_edit==-1){  
+
+                    return
+                }
+
+                if($(this).text().trim().length == 0){
+                    
+                    console.log('entro')
+
+                    return
+                } 
+
+                let nota = $(this).text().trim()      
+
+                if( id_ult_edit != -1){
+                    
+                    console.log('EDIT ATIVADO: ', id_ult_edit )  
+
+                    removeInput(id_ult_edit, text_ult_edit, status_checked)
+                }
+
+                if(nota)
+                {
+                    adicionaIput(i, nota, statuCheckBox(i)) 
+
+                    botaoSalvar()
+                }
+            } 
+
+        }); 
+    
+    } 
+}
+
+
+
+function clickEventEditarLista(){
+  
+    lst = document.querySelectorAll('.list-group-item-action')
+
+    for(let i = 0; i < lst.length; i++){   
+
+        $("#editarLista"+i).unbind(); 
+
+        $("#editarLista"+i).click(function (e){   
               
             console.log('ID: ',    lst_tarefa[i].id)
 
@@ -255,20 +386,20 @@ function clickEventNotas(){
                 return
             }
 
-            if($(this).text().trim().length == 0){
+            if($("#nota"+i).text().trim().length == 0){
                 
                 console.log('entro')
 
                 return
             } 
 
-            let nota = $(this).text().trim()      
+            let nota = $("#nota"+i).text().trim()      
 
             if( id_ult_edit != -1){
                 
                 console.log('EDIT ATIVADO: ', id_ult_edit )  
 
-                removeInput(id_ult_edit, text_ult_edit, status_checked)
+                removeInput(id_ult_edit, text_ult_edit)
             }
 
             if(nota)
@@ -277,9 +408,10 @@ function clickEventNotas(){
 
                 botaoSalvar()
             }
- 
-             
-        }); 
+
+           console.log('id', i) 
+
+        });
     
     } 
 }
@@ -320,7 +452,7 @@ function statuCheckBox(id){
 
 
 
-
+ 
 function removeInput(id, texto_nota, status=false){
 
     $("#textoId"+id).empty()
@@ -329,9 +461,20 @@ function removeInput(id, texto_nota, status=false){
 
     $("#checkId"+id).empty()
 
-    $("#checkId"+id).append(check(id))
+    if(identificador!=0){
 
-    $("#customCheck"+id).prop("checked", status);  
+        $("#checkId"+id).append(check(id))
+
+        $("#customCheck"+id).prop("checked", status); 
+    }
+    else{
+
+        $("#checkId"+id).append(botaoEditarLista(id)) 
+
+        clickEventEditarLista()
+
+    }
+    
 }
 
 function adicionaIput(id, nota, status=false){
@@ -412,7 +555,32 @@ function send3(nota, lista_id) {
         }, 
     });
 }
- 
+
+
+
+function atualizaLista(titulo, lista_id) {    
+
+    $.ajax({ 
+          
+        url: 'http://127.0.0.1:8000/api/lista/'+lista_id+'/',
+        type: 'PUT',
+        data: JSON.stringify({"id": lista_id, "titulo": titulo}),
+        dataType: 'json',
+        contentType: 'application/json',
+        error: function(jqxhr, settings, thrownError) {
+            
+            console.log('Houve um erro! ');   
+        },
+        success: function (data) { 
+            
+            console.log('DATA RETORNO: ', data)  
+
+        }, 
+    });
+}
+
+
+
 
 function send4(nota, lista_id, nota_id, status=false) {    
 
@@ -460,6 +628,26 @@ function send04(status, lista_id, nota_id) {
 }
 
 
+
+function deletaLista(lista_id) {    
+
+    $.ajax({ 
+          
+        url: 'http://127.0.0.1:8000/api/lista/'+lista_id+'/',
+        type: 'DELETE', 
+        dataType: 'json',
+        contentType: 'application/json',
+        error: function(jqxhr, settings, thrownError) {
+            
+            console.log('Houve um erro! ');   
+        },
+        success: function (data) { 
+            
+            console.log('DATA RETORNO: ', data)  
+
+        }, 
+    });
+}
 
 
 
@@ -512,6 +700,47 @@ function send2() {
             SlickLoader.disable();    
 
         }, 
+    });
+}
+
+
+//http://127.0.0.1:8000/api/lista/
+
+function server_listas(){ 
+
+    SlickLoader.enable();
+
+    $.ajax({
+
+        url: 'http://127.0.0.1:8000/api/lista/',
+        type: 'GET', 
+        dataType: 'json',
+        contentType: "application/json;charset=utf-8",
+        success: function (data) { 
+
+            console.log('DATA: ',typeof( data))
+            
+            /*if(tarefa_id){
+                carregaTarefa(data)
+            }            
+            else{ 
+                carregaLista(data)
+            } */
+
+            carregaTarefa(data)
+
+            SlickLoader.disable();    
+
+        }, 
+        error: function(jqxhr, settings, thrownError) {
+            
+            console.log('Houve um erro! '); 
+
+            SlickLoader.disable(); 
+
+            mostrarHome()   
+        },
+     
     });
 }
 
