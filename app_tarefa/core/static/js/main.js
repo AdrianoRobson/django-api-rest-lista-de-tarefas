@@ -10,13 +10,32 @@ var text_ult_edit = ''
 
 var identificador = 0 
 
+var id_lista_storage = 0
+
+
+
 $(document).ready(function(){    
     
     SlickLoader.setText('Processando','Aguarde...'); 
     
-    // notas send(2) 
-     
-    server_listas()
+
+    if (JSON.parse(getListLocalStorage('lista'))){ 
+        
+        identificador = JSON.parse(getListLocalStorage('lista')).identificador
+
+        id_lista_storage =  JSON.parse(getListLocalStorage('lista')).id_lista
+    
+    } 
+  
+    if(identificador == 0){
+        server_listas()
+    }
+    else{
+        carrega_notas_server(id_lista_storage)
+    }   
+   
+
+
 
     $(".btn").click(function () {  
         
@@ -53,7 +72,7 @@ $(document).ready(function(){
                         botaoPadrao()
 
                         // CRIA NOTA
-                        send3(nota,2)
+                        send3(nota, id_lista_storage)
 
                         editReset()
 
@@ -407,6 +426,16 @@ function clickEventNotas(){
 
                     botaoSalvar()
                 }
+            }
+            else{
+
+                //listSetLocalStorage(1, lst_db[i])
+
+                carrega_notas_server(lst_db[i])
+
+                identificador = 1 
+                
+                console.log(lst_db[i])
             } 
 
         }); 
@@ -476,7 +505,7 @@ function checkEventNotas(){
 
         $("#customCheck"+i).change(function (e){ 
 
-            send04(statuCheckBox(i), 2, lst_db[i])  
+            server_atualiza_nota_parcial(statuCheckBox(i), id_lista_storage, lst_db[i])   
 
             e.preventDefault() 
 
@@ -678,10 +707,11 @@ function send4(nota, lista_id, nota_id, status=false) {
 
 
 
-function send04(status, lista_id, nota_id) {    
+function server_atualiza_nota_parcial(status, lista_id, nota_id) {    
 
     $.ajax({  
-        
+
+        //    http://127.0.0.1:8000/api/nota/60/        
         url: 'http://127.0.0.1:8000/api/nota/'+nota_id+'/',
         type: 'PATCH',
         data: JSON.stringify({"lista_id": lista_id, "status": status}),
@@ -818,13 +848,17 @@ function server_listas(){
 
 
 
-function send(tarefa_id='') { 
+
+
+
+
+function carrega_notas_server(lista_id) { 
 
     SlickLoader.enable();
 
     $.ajax({
 
-        url: 'http://127.0.0.1:8000/api/notas/'+tarefa_id,
+        url: 'http://127.0.0.1:8000/api/notas/'+lista_id,
         type: 'GET', 
         dataType: 'json',
         contentType: "application/json;charset=utf-8",
@@ -832,12 +866,10 @@ function send(tarefa_id='') {
 
             console.log('DATA: ',typeof( data))
             
-            if(tarefa_id){
-                carregaTarefa(data)
-            }            
-            else{ 
-                carregaLista(data)
-            } 
+            carregaTarefa(data)
+
+            setlistLocalStorage(1, lista_id)
+
 
             SlickLoader.disable();    
 
@@ -855,7 +887,22 @@ function send(tarefa_id='') {
     });
 }
 
+function setlistLocalStorage(identificador, id_lista, ){  
+    window.localStorage.setItem('lista', JSON.stringify( {identificador: identificador,id_lista: id_lista} )) 
+}
 
+function getListLocalStorage(key){
+    return window.localStorage.getItem(key);
+}
+
+function removeListLocalStorage(key){
+    localStorage.removeItem(key)
+}
+
+function clearListLocalStorage(){
+    localStorage.clear()
+    console.log("clear records");
+}
 
 
 
