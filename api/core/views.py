@@ -76,7 +76,7 @@ def nota_lista_retorna(request, pk):
         tarefas_serializer = TarefaSerializer(tarefas, many=True)    
         return JsonResponse(tarefas_serializer.data, safe=False)   
 
-    return JsonResponse({'lastnoteid': Tarefa.objects.last().id})
+    return JsonResponse({'message': 'empty'})
      
 
 

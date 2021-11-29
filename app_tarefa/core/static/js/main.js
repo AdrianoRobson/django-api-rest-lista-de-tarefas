@@ -249,21 +249,8 @@ function clickEventNotas(){
 
     lst_tarefa = document.querySelectorAll('.list-group-item-action')
 
-    for(let i = 0; i < lst_tarefa.length; i++){ 
-        
-        
-
-        $("#customCheck"+i).change(function (e){
-
-            let checked = $("#customCheck"+i).is(":checked") ? "true" : "false";
-
-            console.log(checked)
-
-            send04(checked, 2, lst_db[i])
-
-        });
-        
-       
+    for(let i = 0; i < lst_tarefa.length; i++){  
+          
 
         $("#textoId"+i).mousedown(function (e) {   
               
@@ -299,6 +286,17 @@ function clickEventNotas(){
             }
  
              
+        });
+
+
+        $("#customCheck"+i).change(function (e){
+
+            let checked = $("#customCheck"+i).is(":checked") ? "true" : "false";
+
+            console.log(checked)
+
+            send04(checked, 2, lst_db[i]) 
+
         });
     
     } 
@@ -419,8 +417,8 @@ function send4(nota, lista_id, nota_id) {
 
 function send04(status, lista_id, nota_id) {    
 
-    $.ajax({ 
-             //http://127.0.0.1:8000/api/nota/536/
+    $.ajax({  
+        
         url: 'http://127.0.0.1:8000/api/nota/'+nota_id+'/',
         type: 'PATCH',
         data: JSON.stringify({"lista_id": lista_id, "status": status}),
