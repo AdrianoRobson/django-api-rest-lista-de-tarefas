@@ -4,6 +4,8 @@ var lst_db = []
 
 var id_ult_edit = -1
 
+var status_checked = false
+
 var text_ult_edit = ''
 
 var notas_vazia = 0
@@ -43,6 +45,7 @@ $(document).ready(function(){
                     tarefas(nota, idUltimaNota())   
 
                     clickEventNotas()
+                    checkEventNotas()
 
                     botaoPadrao()
 
@@ -56,15 +59,16 @@ $(document).ready(function(){
 
                     console.log('edit envia server: ', nota)
 
-                    removeInput(id_ult_edit, nota) 
+                    removeInput(id_ult_edit, nota, status_checked) 
 
                     // ATUALIZA NOTA
-                    send4(nota, 2, lst_db[id_ult_edit])  
+                    send4(nota, 2, lst_db[id_ult_edit], status_checked)  
 
                     editReset()
 
                     botaoPadrao()
 
+                    checkEventNotas() 
                 }
                 
             } 
@@ -78,6 +82,7 @@ function editReset(){
 
     id_ult_edit = -1
     text_ult_edit = ''
+    status_checked = false
 
 }
 
@@ -191,6 +196,7 @@ function botaoExcluir(id){
         send5(lst_db[id]) 
 
         location.reload()
+
     });
 
     botaoSalvar()
@@ -238,6 +244,7 @@ function carregaTarefa(data){
     } 
 
     clickEventNotas()  
+    checkEventNotas()
 }
 
 
@@ -250,7 +257,8 @@ function clickEventNotas(){
     lst_tarefa = document.querySelectorAll('.list-group-item-action')
 
     for(let i = 0; i < lst_tarefa.length; i++){  
-          
+        
+        $("#textoId"+i).unbind();
 
         $("#textoId"+i).mousedown(function (e) {   
               
@@ -274,35 +282,60 @@ function clickEventNotas(){
                 
                 console.log('EDIT ATIVADO: ', id_ult_edit )  
 
-                removeInput(id_ult_edit, text_ult_edit)
+                removeInput(id_ult_edit, text_ult_edit, status_checked)
             }
 
             if(nota)
             {
-                adicionaIput(i, nota)
+                adicionaIput(i, nota, statuCheckBox(i)) 
 
-                 
                 botaoSalvar()
             }
  
              
-        });
+        }); 
+    
+    } 
+}
 
 
-        $("#customCheck"+i).change(function (e){
 
-            let checked = $("#customCheck"+i).is(":checked") ? "true" : "false";
 
-            console.log(checked)
+function checkEventNotas(){
+  
+    lst = document.querySelectorAll('.list-group-item-action')
 
-            send04(checked, 2, lst_db[i]) 
+    for(let i = 0; i < lst.length; i++){   
+
+        $("#customCheck"+i).unbind(); 
+
+        $("#customCheck"+i).change(function (e){ 
+
+            send04(statuCheckBox(i), 2, lst_db[i])  
+
+            e.preventDefault() 
 
         });
     
     } 
 }
 
-function removeInput(id, texto_nota){
+
+function statuCheckBox(id){
+
+    let check = $("#customCheck"+id).is(":checked") ? true : false;
+
+    console.log(' ________________________STATUS CHECKBOX: ', check)
+
+    return check
+
+}
+
+
+
+
+
+function removeInput(id, texto_nota, status=false){
 
     $("#textoId"+id).empty()
 
@@ -311,9 +344,11 @@ function removeInput(id, texto_nota){
     $("#checkId"+id).empty()
 
     $("#checkId"+id).append(check(id))
+
+    $("#customCheck"+id).prop("checked", status);  
 }
 
-function adicionaIput(id, nota){
+function adicionaIput(id, nota, status=false){
 
     $("#textoId"+id).empty()
                 
@@ -324,6 +359,8 @@ function adicionaIput(id, nota){
     text_ult_edit = nota
 
     id_ult_edit = id
+
+    status_checked = status
 
     $("#checkId"+id_ult_edit).empty()
 
@@ -391,13 +428,13 @@ function send3(nota, lista_id) {
 }
  
 
-function send4(nota, lista_id, nota_id) {    
+function send4(nota, lista_id, nota_id, status=false) {    
 
     $.ajax({ 
           
         url: 'http://127.0.0.1:8000/api/nota/'+nota_id+'/',
         type: 'PUT',
-        data: JSON.stringify({"lista_id": lista_id, "tarefa_texto": nota}),
+        data: JSON.stringify({"lista_id": lista_id, "tarefa_texto": nota, "status": status}),
         dataType: 'json',
         contentType: 'application/json',
         error: function(jqxhr, settings, thrownError) {
