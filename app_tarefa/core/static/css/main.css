@@ -15,8 +15,27 @@ body{
     margin: 20px 4px;
   }
 
-  
+ 
+  .fa-pen-square, .fa-home{
+    color: #04AA6D;
+  }
 
+  .fa-times{
+    color:lightcoral
+  }
+  
+  .navbar{
+    background-color: #04AA6D;
+  }
+
+  .fa-home{
+    color: white;
+  }
+
+  .navbar.fixed-top.navbar-light a {
+    color: white;
+    font-weight: bold;
+}
   .custom-control.custom-checkbox{
       padding-left: 0;
       text-align: right;
@@ -31,3 +50,8 @@ body{
     right: 0;
     left: auto;
   }
+
+
+
+
+  

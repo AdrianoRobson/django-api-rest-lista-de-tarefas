@@ -19,22 +19,17 @@ $(document).ready(function(){
     SlickLoader.setText('Processando','Aguarde...'); 
     
 
-    if (JSON.parse(getListLocalStorage('lista'))){ 
-        
-        identificador = JSON.parse(getListLocalStorage('lista')).identificador
-
-        id_lista_storage =  JSON.parse(getListLocalStorage('lista')).id_lista
-    
-    } 
+    carregaStorage()
   
-    if(identificador == 0){
-        server_listas()
-    }
-    else{
-        carrega_notas_server(id_lista_storage)
-    }   
-   
+    carregaListaTarefa() 
 
+    $('#home_lista').click(function(e){
+        
+        setListLocalStorage(0, 0) 
+
+        location.reload()
+
+    })
 
 
     $(".btn").click(function () {  
@@ -58,9 +53,7 @@ $(document).ready(function(){
                 if (id_ult_edit == -1){
                     
                     if(identificador != 0){
-
-                        //var nota = $("#anotacao_tarefa").val().trim()
-
+  
                         $("#linha"+idUltimaNota()).remove() 
                         
                         tarefas(nota, idUltimaNota())   
@@ -72,13 +65,12 @@ $(document).ready(function(){
                         botaoPadrao()
 
                         // CRIA NOTA
-                        send3(nota, id_lista_storage)
+                        cria_nota(nota, id_lista_storage)
 
                         editReset()
 
                     }
-                    else{
-                        //var nota = $("#anotacao_tarefa").val().trim()
+                    else{ 
 
                         $("#linha"+idUltimaNota()).remove() 
                         
@@ -108,7 +100,7 @@ $(document).ready(function(){
 
                         removeInput(id_ult_edit, nota, status_checked)  
                         // ATUALIZA NOTA
-                        send4(nota, 2, lst_db[id_ult_edit], status_checked)  
+                        atualiza_nota(nota, id_lista_storage, lst_db[id_ult_edit], status_checked)   
     
                         editReset()
     
@@ -123,8 +115,7 @@ $(document).ready(function(){
 
                         // ATUALIZA LISTA
                         atualizaLista(nota, lst_db[id_ult_edit])   
-                         
-    
+                             
                         editReset()
     
                         botaoPadrao() 
@@ -139,9 +130,36 @@ $(document).ready(function(){
             } 
              
         }        
-    });
-     
+    }); 
+
+    $(".slick-loader").click(function(e){ 
+
+       
+    })
+    
 });
+
+function carregaStorage(){
+    
+    if (JSON.parse(getListLocalStorage('lista'))){ 
+        
+        identificador = JSON.parse(getListLocalStorage('lista')).identificador
+
+        id_lista_storage =  JSON.parse(getListLocalStorage('lista')).id_lista 
+    } 
+
+}
+
+function carregaListaTarefa(){
+
+    if(identificador == 0){
+        server_listas()
+    }
+    else{ 
+
+        carrega_notas_server(id_lista_storage)
+    }   
+}
 
 function editReset(){
 
@@ -331,6 +349,8 @@ function carregaTarefa(data){
 
     //mostrarTarefa()
 
+    lst_db = []
+
     $("#tarefa_lista li").remove(); 
 
     if(Array.isArray((data))){
@@ -355,13 +375,9 @@ function carregaTarefa(data){
 
                 lst_db.push(data[i].id)
         
-                tarefas(data[i].titulo, i, botaoEditarLista(i))            
-                
-              //  $("#customCheck"+i).prop( "checked", data[i].status );
+                tarefas(data[i].titulo, i, botaoEditarLista(i))    
 
-            }
-                
-           
+            } 
     
         }   
     }
@@ -429,9 +445,21 @@ function clickEventNotas(){
             }
             else{
 
-                //listSetLocalStorage(1, lst_db[i])
+                if ($("#anotacao_tarefa").is(":visible") && id_ult_edit==-1){  
 
-                carrega_notas_server(lst_db[i])
+                    return
+                }
+
+                if($(this).text().trim().length == 0){
+                    
+                    console.log('entro')
+
+                    return
+                } 
+ 
+                setListTitleLocalStorage($('#nota'+i).text())   
+
+                carrega_notas_server(lst_db[i])  
 
                 identificador = 1 
                 
@@ -634,7 +662,7 @@ function criaLista(titulo) {
 
 
 
-function send3(nota, lista_id) {    
+function cria_nota(nota, lista_id) {    
 
     $.ajax({ 
           
@@ -683,7 +711,7 @@ function atualizaLista(titulo, lista_id) {
 
 
 
-function send4(nota, lista_id, nota_id, status=false) {    
+function atualiza_nota(nota, lista_id, nota_id, status=false) {    
 
     $.ajax({ 
           
@@ -711,7 +739,6 @@ function server_atualiza_nota_parcial(status, lista_id, nota_id) {
 
     $.ajax({  
 
-        //    http://127.0.0.1:8000/api/nota/60/        
         url: 'http://127.0.0.1:8000/api/nota/'+nota_id+'/',
         type: 'PATCH',
         data: JSON.stringify({"lista_id": lista_id, "status": status}),
@@ -820,14 +847,7 @@ function server_listas(){
         contentType: "application/json;charset=utf-8",
         success: function (data) { 
 
-            console.log('DATA: ',typeof( data))
-            
-            /*if(tarefa_id){
-                carregaTarefa(data)
-            }            
-            else{ 
-                carregaLista(data)
-            } */
+            console.log('DATA: ',typeof( data))  
 
             carregaTarefa(data)
 
@@ -868,9 +888,12 @@ function carrega_notas_server(lista_id) {
             
             carregaTarefa(data)
 
-            setlistLocalStorage(1, lista_id)
+            setListLocalStorage(1, lista_id) 
 
+            carregaStorage()
 
+            $('#titulo_tarefa').text(JSON.parse(getListLocalStorage('titulo')).titulo)
+  
             SlickLoader.disable();    
 
         }, 
@@ -887,8 +910,12 @@ function carrega_notas_server(lista_id) {
     });
 }
 
-function setlistLocalStorage(identificador, id_lista, ){  
-    window.localStorage.setItem('lista', JSON.stringify( {identificador: identificador,id_lista: id_lista} )) 
+function setListLocalStorage(identificador, id_lista, titulo=''){  
+    window.localStorage.setItem('lista', JSON.stringify( {identificador: identificador, id_lista: id_lista} )) 
+}
+
+function setListTitleLocalStorage(lista_titulo){
+    window.localStorage.setItem('titulo', JSON.stringify({titulo: lista_titulo}))
 }
 
 function getListLocalStorage(key){
