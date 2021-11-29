@@ -38,22 +38,47 @@ $(document).ready(function(){
 
                 if (id_ult_edit == -1){
                     
-                    //var nota = $("#anotacao_tarefa").val().trim()
+                    if(identificador != 0){
 
-                    $("#linha"+idUltimaNota()).remove() 
+                        //var nota = $("#anotacao_tarefa").val().trim()
+
+                        $("#linha"+idUltimaNota()).remove() 
+                        
+                        tarefas(nota, idUltimaNota())   
+
+                        clickEventNotas()
+
+                        checkEventNotas()
+
+                        botaoPadrao()
+
+                        // CRIA NOTA
+                        send3(nota,2)
+
+                        editReset()
+
+                    }
+                    else{
+                        //var nota = $("#anotacao_tarefa").val().trim()
+
+                        $("#linha"+idUltimaNota()).remove() 
+                        
+                        tarefas(nota, idUltimaNota(), botaoEditarLista(idUltimaNota()))   
+
+                        clickEventNotas() 
+
+                        clickEventEditarLista()
+
+                        botaoPadrao()
+
+                        // CRIA lista
+                        criaLista(nota)
+
+                        editReset()
+                    }
                     
-                    tarefas(nota, idUltimaNota())   
 
-                    clickEventNotas()
 
-                    checkEventNotas()
-
-                    botaoPadrao()
-
-                    // CRIA NOTA
-                    send3(nota,2)
-
-                    editReset()
 
                 }
                 else if(id_ult_edit != -1){  
@@ -153,7 +178,7 @@ function mostrarTarefa(){
 
 function campoDigitaNota(){
         
-    form = '<input type="email" class="form-control" id="anotacao_tarefa" placeholder="Tarefa de no máximo 50 caracteres">'     
+    form = '<input type="text" class="form-control" id="anotacao_tarefa" placeholder="Tarefa de no máximo 50 caracteres" autocomplete="off">'     
     
     return form
 }
@@ -221,6 +246,28 @@ function tarefas(tarefa_texto, id, elemento=check(id)){
         '      </div>'+    
         '    </div>'+   
         '</li>')
+
+      //  console.log('teste.................: ', elemento)
+         
+        
+
+        if (elemento.startsWith('<i class="fas fa-times fa-2x"')){
+
+           
+            $("#fechar").click(function () {   
+                
+                console.log('fffffffffffffffffffffffffffffffffffff')
+                
+                botaoPadrao()
+    
+                 $("#linha"+idUltimaNota()).remove()  
+    
+            });   
+            
+            
+    
+           botaoSalvar()  
+        } 
 
     }
    
@@ -529,6 +576,31 @@ function carregaLista(data){
     }
 }
 
+
+
+
+function criaLista(titulo) {    
+
+    $.ajax({ 
+          
+        url: 'http://127.0.0.1:8000/api/lista/',
+        type: 'POST',
+        data: JSON.stringify({"titulo": titulo}),
+        dataType: 'json',
+        contentType: 'application/json',
+        error: function(jqxhr, settings, thrownError) {
+            
+            console.log('Houve um erro! ');   
+        },
+        success: function (data) { 
+            
+            console.log('DATA RETORNO: ', data)  
+
+            lst_db.push(data.id)
+
+        }, 
+    });
+}
 
 
 
