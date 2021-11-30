@@ -16,7 +16,7 @@ var id_lista_storage = 0
 
 $(document).ready(function(){    
     
-    SlickLoader.setText('Processando','Aguarde...'); 
+    SlickLoader.setText('Aguarde','carregando...'); 
     
 
     carregaStorage()
@@ -228,21 +228,10 @@ function idUltimaNota(){
 function extraiNumero(text){
     return text.replace(/[^0-9]/g, '') 
 }
-
-function mostrarHome(){ 
-   //$("#tarefa_lista").hide();
-   //$("#home").show() 
-}  
-
-
-function mostrarTarefa(){
-    //$("#tarefa_lista").show();
-    //$("#home").hide() 
-}
-
+  
 function campoDigitaNota(){
         
-    form = '<input type="text" class="form-control" id="anotacao_tarefa" placeholder="Tarefa de no máximo 50 caracteres" autocomplete="off">'     
+    form = '<input type="text" class="form-control" id="anotacao_tarefa" placeholder="50 caracteres no máximo" autocomplete="off">'     
     
     return form
 }
@@ -258,8 +247,7 @@ function botaoFechar(){
     return '<i class="fas fa-times fa-2x" id="fechar"></i>'       
 }
 
-function botaoEditarLista(id){
-    //return '<i class="fas fa-pen-square" ></i>'
+function botaoEditarLista(id){ 
 
     return '<i class="fas fa-pen-square fa-2x" id="editarLista'+id+'"></i>'
 }
@@ -347,7 +335,7 @@ function botaoExcluir(id){
 
         if(identificador != 0){
             // EXCLUIR UMA NOTA
-            send5(lst_db[id]) 
+            excluir_nota(lst_db[id]) 
         }
         else{
             // EXLCLUI LISTA
@@ -372,9 +360,7 @@ function botaoSalvar(){
     $(".btn").append('<i class="fas fa-check fa-2x"></i>')
 }
 
-function carregaTarefa(data){
-
-    //mostrarTarefa()
+function carregaTarefa(data){ 
 
     lst_db = []
 
@@ -631,39 +617,14 @@ function adicionaIput(id, nota, status=false){
 }
  
 
-function carregaLista(data){
-
-    mostrarHome()
-
-    $("#home a").remove(); 
-
-    for(i=0; i<data.length; i++){
-                
-        console.log('data: ',data[i].titulo)
-
-        $('#home').append('<a href="#" class="list-group-item list-group-item-action" id="'+data[i].id+'">'+data[i].titulo+'</a>')
-          
-    }   
-
-    lst_lista = document.querySelectorAll('#home a')
-
-    for(let i = 0; i< lst_lista.length; i++){        
-
-        $("#"+lst_lista[i].id).click(function () {  
-        
-            console.log(lst_lista[i].id)
-
-            send(lst_lista[i].id)
-
-        });
-    
-    }
+function loadingInfo(info1, info2){
+    SlickLoader.setText(info1, info2); 
+    SlickLoader.enable();
 }
 
-
-
-
-function criaLista(titulo) {    
+function criaLista(titulo) { 
+    
+    loadingInfo('Aguarde...',"Salvando lista!")
 
     $.ajax({ 
           
@@ -682,7 +643,12 @@ function criaLista(titulo) {
 
             lst_db.push(data.id)
 
-        }, 
+        },
+        complete: function(data) {
+
+            SlickLoader.disable();  
+        
+        } 
     });
 }
 
@@ -690,6 +656,8 @@ function criaLista(titulo) {
 
 
 function cria_nota(nota, lista_id) {    
+
+    loadingInfo('Aguarde...',"Salvando nota!")
 
     $.ajax({ 
           
@@ -708,13 +676,20 @@ function cria_nota(nota, lista_id) {
 
             lst_db.push(data.id)
 
-        }, 
+        },
+        complete: function(data) {
+
+            SlickLoader.disable();  
+        
+        } 
     });
 }
 
 
 
-function atualizaLista(titulo, lista_id) {    
+function atualizaLista(titulo, lista_id) { 
+    
+    loadingInfo('Aguarde...',"Atualizando lista!")
 
     $.ajax({ 
           
@@ -731,14 +706,21 @@ function atualizaLista(titulo, lista_id) {
             
             console.log('DATA RETORNO: ', data)  
 
-        }, 
+        },
+        complete: function(data) {
+
+            SlickLoader.disable();  
+        
+        } 
     });
 }
 
 
 
 
-function atualiza_nota(nota, lista_id, nota_id, status=false) {    
+function atualiza_nota(nota, lista_id, nota_id, status=false) {  
+    
+    loadingInfo('Aguarde...',"Atualizando nota!")
 
     $.ajax({ 
           
@@ -755,14 +737,21 @@ function atualiza_nota(nota, lista_id, nota_id, status=false) {
             
             console.log('DATA RETORNO: ', data)  
 
-        }, 
+        },
+        complete: function(data) {
+
+            SlickLoader.disable();  
+        
+        } 
     });
 }
 
 
 
 
-function server_atualiza_nota_parcial(status, lista_id, nota_id) {    
+function server_atualiza_nota_parcial(status, lista_id, nota_id) {  
+    
+    loadingInfo('Aguarde...',"Atualizando check!")
 
     $.ajax({  
 
@@ -779,13 +768,21 @@ function server_atualiza_nota_parcial(status, lista_id, nota_id) {
             
             console.log('DATA RETORNO: ', data)  
 
-        }, 
+
+        },
+        complete: function(data) {
+
+            SlickLoader.disable();  
+        
+        } 
     });
 }
 
 
 
 function deletaLista(lista_id) {    
+
+    loadingInfo('Aguarde...',"Deletando lista!")
 
     $.ajax({ 
           
@@ -801,13 +798,22 @@ function deletaLista(lista_id) {
             
             console.log('DATA RETORNO: ', data)  
 
-        }, 
+        },
+        complete: function(data) {
+
+            SlickLoader.disable();  
+        
+        }
+        
+        
     });
 }
 
 
 
-function send5(nota_id) {    
+function excluir_nota(nota_id) { 
+    
+    loadingInfo("Aguarde...", "Excluindo nota!")
 
     $.ajax({ 
           
@@ -823,48 +829,20 @@ function send5(nota_id) {
             
             console.log('DATA RETORNO: ', data)  
 
-        }, 
-    });
-}
-
-
-function send2() {  
-
-    SlickLoader.enable();
-
-    $.ajax({
-
-        //url: 'http://127.0.0.1:8000/cria/tarefa/', POST JSON.stringify({"tarefa_texto": "SOU UM PROGRAMADOR MUITO FODA"}),
-        url: 'http://127.0.0.1:8000/api/notas/1/',
-        type: 'GET',
-        //data: JSON.stringify({"tarefa_texto": "SOU UM PROGRAMADOR MUITO FODA"}),
-        dataType: 'json',
-        contentType: 'application/json',
-        error: function(jqxhr, settings, thrownError) {
-            
-            console.log('Houve um erro! '); 
-
-            SlickLoader.disable(); 
-
-            mostrarHome()  
- 
         },
-        success: function (data) { 
-            
-            console.log('DATA RETORNO: ', data)
-            
-            SlickLoader.disable();    
+        complete: function(data) {
 
-        }, 
+            SlickLoader.disable();  
+        
+        } 
     });
 }
 
-
-//http://127.0.0.1:8000/api/lista/
+ 
 
 function server_listas(){ 
 
-    SlickLoader.enable();
+    loadingInfo("Aguarde...", "Carregando listas!")
 
     $.ajax({
 
@@ -876,19 +854,19 @@ function server_listas(){
 
             console.log('DATA: ',typeof( data))  
 
-            carregaTarefa(data)
-
-            SlickLoader.disable();    
+            carregaTarefa(data) 
 
         }, 
         error: function(jqxhr, settings, thrownError) {
             
-            console.log('Houve um erro! '); 
-
-            SlickLoader.disable(); 
-
-            mostrarHome()   
+            console.log('Houve um erro! ');  
+ 
         },
+        complete: function(data) {
+
+            SlickLoader.disable();  
+        
+        }
      
     });
 }
@@ -901,7 +879,7 @@ function server_listas(){
 
 function carrega_notas_server(lista_id) { 
 
-    SlickLoader.enable();
+    loadingInfo("Aguarde...", "Carregando notas!")
 
     $.ajax({
 
@@ -920,19 +898,18 @@ function carrega_notas_server(lista_id) {
             carregaStorage()
 
             $('#titulo_tarefa').text(JSON.parse(getListLocalStorage('titulo')).titulo)
-  
-            SlickLoader.disable();    
-
+     
         }, 
         error: function(jqxhr, settings, thrownError) {
             
-            console.log('Houve um erro! '); 
-
-            SlickLoader.disable(); 
-
-            mostrarHome()  
+            console.log('Houve um erro! ');  
  
         },
+        complete: function(data) {
+
+            SlickLoader.disable();  
+        
+        }
      
     });
 }
