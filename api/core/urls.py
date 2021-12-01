@@ -21,9 +21,9 @@ urlpatterns = [
     path('api/nota/',nota_cria), 
 
     # cria e retorna listas
-    path('api/lista/', lista_cria_retorna),
+    path('api/lista/', lista_cria_retorna, name='lista_cria_retorna'),
 
     # Atualiza, Deleta listas
-    path('api/lista/<str:pk>/', lista_atualiza_deleta),
+    path('api/lista/<str:pk>/', lista_atualiza_deleta, name='lista_atualiza_deleta'),
 
 ] 

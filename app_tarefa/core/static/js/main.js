@@ -641,7 +641,7 @@ function criaLista(titulo) {
 
     $.ajax({ 
           
-        url: 'https://api-adr.herokuapp.com/api/lista/',
+        url: 'http://127.0.0.1:8000/api/lista/',
         type: 'POST',
         data: JSON.stringify({"titulo": titulo}),
         dataType: 'json',
@@ -672,7 +672,7 @@ function cria_nota(nota, lista_id) {
 
     $.ajax({ 
           
-        url: 'https://api-adr.herokuapp.com/api/nota/',
+        url: 'http://127.0.0.1:8000/api/nota/',
         type: 'POST',
         data: JSON.stringify({"lista_id": lista_id, "tarefa_texto": nota}),
         dataType: 'json',
@@ -704,7 +704,7 @@ function atualizaLista(titulo, lista_id) {
 
     $.ajax({ 
           
-        url: 'https://api-adr.herokuapp.com/api/lista/'+lista_id+'/',
+        url: 'http://127.0.0.1:8000/api/lista/'+lista_id+'/',
         type: 'PUT',
         data: JSON.stringify({"id": lista_id, "titulo": titulo}),
         dataType: 'json',
@@ -735,7 +735,7 @@ function atualiza_nota(nota, lista_id, nota_id, status=false) {
 
     $.ajax({ 
           
-        url: 'https://api-adr.herokuapp.com/api/nota/'+nota_id+'/',
+        url: 'http://127.0.0.1:8000/api/nota/'+nota_id+'/',
         type: 'PUT',
         data: JSON.stringify({"lista_id": lista_id, "tarefa_texto": nota, "status": status}),
         dataType: 'json',
@@ -766,7 +766,7 @@ function server_atualiza_nota_parcial(status, lista_id, nota_id) {
 
     $.ajax({  
 
-        url: 'https://api-adr.herokuapp.com/api/nota/'+nota_id+'/',
+        url: 'http://127.0.0.1:8000/api/nota/'+nota_id+'/',
         type: 'PATCH',
         data: JSON.stringify({"lista_id": lista_id, "status": status}),
         dataType: 'json',
@@ -797,7 +797,7 @@ function deletaLista(lista_id) {
 
     $.ajax({ 
           
-        url: 'https://api-adr.herokuapp.com/api/lista/'+lista_id+'/',
+        url: 'http://127.0.0.1:8000/api/lista/'+lista_id+'/',
         type: 'DELETE', 
         dataType: 'json',
         contentType: 'application/json',
@@ -828,7 +828,7 @@ function excluir_nota(nota_id) {
 
     $.ajax({ 
           
-        url: 'https://api-adr.herokuapp.com/api/nota/'+nota_id+'/',
+        url: 'http://127.0.0.1:8000/api/nota/'+nota_id+'/',
         type: 'DELETE', 
         dataType: 'json',
         contentType: 'application/json',
@@ -857,7 +857,7 @@ function server_listas(){
 
     $.ajax({
 
-        url: 'https://api-adr.herokuapp.com/api/lista/',
+        url: 'http://127.0.0.1:8000/api/lista/',
         type: 'GET', 
         dataType: 'json',
         contentType: "application/json;charset=utf-8",
@@ -894,7 +894,7 @@ function carrega_notas_server(lista_id) {
 
     $.ajax({
 
-        url: 'https://api-adr.herokuapp.com/api/notas/'+lista_id,
+        url: 'http://127.0.0.1:8000/api/notas/'+lista_id,
         type: 'GET', 
         dataType: 'json',
         contentType: "application/json;charset=utf-8",

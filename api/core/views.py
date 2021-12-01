@@ -9,14 +9,14 @@ from rest_framework.decorators import api_view
 
 # cria e retorna listas
 @api_view(['POST', 'GET'])
-def lista_cria_retorna(request):
-
+def lista_cria_retorna(request): 
+  
     if request.method == 'POST':            
         lista_data = JSONParser().parse(request)
-        lista_serializer = ListaSerializer(data=lista_data)
+        lista_serializer = ListaSerializer(data=lista_data) 
 
         if lista_serializer.is_valid():
-            lista_serializer.save()
+            lista_serializer.save() 
             return JsonResponse(lista_serializer.data, status=status.HTTP_201_CREATED)
 
         return JsonResponse(lista_serializer.errors, status=status.HTTP_400_BAD_REQUEST)    
@@ -27,7 +27,7 @@ def lista_cria_retorna(request):
         
         listas_serializer = ListaSerializer(listas, many=True)
 
-        return JsonResponse(listas_serializer.data, safe=False)   
+        return JsonResponse(listas_serializer.data, safe=False, status=status.HTTP_200_OK)   
  
 
 # Atualiza, Deleta listas
@@ -43,7 +43,7 @@ def lista_atualiza_deleta(request, pk):
         lista_serializer = ListaSerializer(lista, data=lista_data) 
         if lista_serializer.is_valid(): 
             lista_serializer.save() 
-            return JsonResponse(lista_serializer.data) 
+            return JsonResponse(lista_serializer.data, status.HTTP_204_NO_CONTENT) 
         return JsonResponse(lista_serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
  
     elif request.method == 'DELETE': 
@@ -79,7 +79,7 @@ def nota_lista_retorna(request, pk):
     return JsonResponse({'message': 'empty'})
      
 
-
+# Parcial update tarefa status check
 @api_view(['PATCH'])
 def lista_atualiza_parcial(request, pk):
     try:

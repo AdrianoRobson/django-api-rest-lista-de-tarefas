@@ -3,4 +3,5 @@ djangorestframework==3.12.2
 PyMySQL==1.0.2
 mysqlclient==2.1.0
 django-cors-headers==3.10.0
-model-mommy==2.0.0 
+model-mommy==2.0.0
+coverage==5.5
