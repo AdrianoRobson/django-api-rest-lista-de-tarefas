@@ -288,7 +288,9 @@ function tarefas(tarefa_texto, id, elemento=check(id)){
     }
     else{
 
-        $('#tarefa_lista').append('<li class="list-group-item rounded-0" id="linha'+id+'">'+    
+        $('#tarefa_lista').append(
+        '<li class="list-group-item rounded-0" id="linha'+id+'">'+    
+       
         '    <div class="row">'+         
         '      <div class="col-10 list-group-item-action" id="textoId'+id+'" >'+ 
         '        <div id="nota'+id+'"> '+tarefa_texto+' </div>'+
@@ -299,7 +301,8 @@ function tarefas(tarefa_texto, id, elemento=check(id)){
         '        </div>'+ 
         '      </div>'+    
         '    </div>'+   
-        '</li>')
+        '</li>' 
+        )
 
       //  console.log('teste.................: ', elemento)
          
