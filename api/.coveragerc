@@ -1,0 +1,30 @@
+[run]
+source = .
+
+omit =
+    ./venv/*,
+    *testes*,
+    *apps.py,
+    *manage.py,
+    *settings.py,
+    *__init__.py,
+    *migrations*,
+    *asgi*,
+    *wsgi*,
+    *admin.py,
+    *urls.py,
+
+
+[report]
+omit =
+    ./venv/*,
+    *testes*,
+    *apps.py,
+    *manage.py,
+    *settings.py,
+    *__init__.py,
+    *migrations*,
+    *asgi*,
+    *wsgi*,
+    *admin.py,
+    *urls.py,

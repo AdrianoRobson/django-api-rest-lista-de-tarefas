@@ -28,6 +28,11 @@ coverage.xml
 
 .coverage
 
-*.sqlite3
+*.sqlite3 
+ 
+data 
 
+htmlcov/ 
+
+coverage.xml 
 
