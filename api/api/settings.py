@@ -44,6 +44,14 @@ INSTALLED_APPS = [
     'corsheaders',
 ]
 
+
+
+REST_FRAMEWORK = {
+
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
+    
+} 
+
 """
 REST_FRAMEWORK = {
 

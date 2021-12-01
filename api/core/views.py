@@ -43,7 +43,7 @@ def lista_atualiza_deleta(request, pk):
         lista_serializer = ListaSerializer(lista, data=lista_data) 
         if lista_serializer.is_valid(): 
             lista_serializer.save() 
-            return JsonResponse(lista_serializer.data, status.HTTP_204_NO_CONTENT) 
+            return JsonResponse(lista_serializer.data, status=status.HTTP_200_OK) 
         return JsonResponse(lista_serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
  
     elif request.method == 'DELETE': 
@@ -79,7 +79,7 @@ def nota_lista_retorna(request, pk):
     return JsonResponse({'message': 'empty'})
      
 
-# Parcial update tarefa status check
+
 @api_view(['PATCH'])
 def lista_atualiza_parcial(request, pk):
     try:

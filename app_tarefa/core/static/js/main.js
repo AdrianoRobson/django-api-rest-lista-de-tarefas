@@ -706,7 +706,7 @@ function atualizaLista(titulo, lista_id) {
           
         url: 'http://127.0.0.1:8000/api/lista/'+lista_id+'/',
         type: 'PUT',
-        data: JSON.stringify({"id": lista_id, "titulo": titulo}),
+        data: JSON.stringify({"titulo": titulo}),
         dataType: 'json',
         contentType: 'application/json',
         error: function(jqxhr, settings, thrownError) {
