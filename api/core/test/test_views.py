@@ -2,16 +2,16 @@ import json
 from django.http import response
 from django.test import TestCase, Client 
 from django.urls import reverse_lazy
-from model_mommy import mommy 
-#from rest_framework.test import APIRequestFactory
+from model_mommy import mommy  
 from django.urls import reverse
 from rest_framework import status
-from core.models import Lista
-from core.serializers import ListaSerializer
+from core.models import Lista, Tarefa
+from core.serializers import ListaSerializer, TarefaSerializer
+from rest_framework.parsers import JSONParser 
 
 client = Client()
 
-class Lista_create_retornaCreateTestCase(TestCase):
+class ListaCreateTestCase(TestCase):
 
         """ Módulo de teste para criar uma nova Lista """
     
@@ -35,7 +35,7 @@ class Lista_create_retornaCreateTestCase(TestCase):
             )
             self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-class Lista_create_retornaGetAllTestCase(TestCase):
+class ListaGetAllTestCase(TestCase):
 
     """ Módulo de teste para retornar todas as Listas """
     
@@ -50,7 +50,7 @@ class Lista_create_retornaGetAllTestCase(TestCase):
         self.assertEqual(json.loads(response.content), serializer.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-class Lista_atualiza_deletaUpdateTestCase(TestCase):
+class ListaUpdateTestCase(TestCase):
 
     """ Módulo de teste para atualizar lista """
     
@@ -77,10 +77,9 @@ class Lista_atualiza_deletaUpdateTestCase(TestCase):
             content_type='application/json'
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)    
+ 
 
-
-
-class Lista_atualiza_deletaDeleteTestCase(TestCase):
+class ListaDeleteTestCase(TestCase):
 
     def setUp(self):
         self.lista = mommy.make('Lista', _quantity=3)
@@ -95,6 +94,74 @@ class Lista_atualiza_deletaDeleteTestCase(TestCase):
 
  
 
+ ###################################### MODELS TAREFA #######################################################
  
+   
+class TarefaCreateTestCase(TestCase):   
+    """ Módulo de teste para criar uma nova nota """
+
+    def setUp(self):   
+       self.lista = mommy.make('Lista', pk='1', titulo='test')
+       self.lista = mommy.make('Lista', pk='2', titulo='test')
+
+       self.valid_payload = {'lista_id':'1', 'tarefa_texto':'teste'}
+       self.invalid_payload = {'lista_id':'2', 'tarefa_texto':''}
+    
+    def test_create_valid_nota(self): 
  
+        response = client.post(
+            reverse_lazy('nota_cria'),
+            data=json.dumps(self.valid_payload),
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+ 
+    
+    def test_create_invalid_nota(self):
+            response = client.post(
+                reverse('nota_cria'),
+                data=json.dumps(self.invalid_payload),
+                content_type='application/json',
+            )
+            self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+
+class NotaGetAllTestCase(TestCase):
+
+    """ Módulo de teste para retornar todas as notas de uma lista """
+    
+    def setUp(self): 
+        self.lista = mommy.make('Lista', pk='1') 
+        mommy.make('Tarefa', lista_id=self.lista)
+
+    def test_get_listas(self):        
+        response = client.get(reverse('nota_lista_retorna', kwargs={'pk':1}))  
+
+        notas = Tarefa.objects.all() 
+        serializer = TarefaSerializer(notas, many=True)       
+        self.assertEqual(json.loads(response.content), serializer.data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+class NotaUpdateTestCase(TestCase):
+
+    """ Módulo de teste para atualizar notas """
+    
+    def setUp(self): 
+
+        self.lista1 = mommy.make('Lista', pk='1') 
+        self.tarefa1 = mommy.make('Tarefa', lista_id=self.lista1) 
+        self.tarefa2 = mommy.make('Tarefa', lista_id=self.lista1)  
+ 
+
+    def test_invalid_update_lista(self): 
+        response = client.put(
+            reverse('nota_retorna_atualiza_deleta', kwargs={'pk': self.lista[0].pk}),
+            data=json.dumps(self.valid_payload),
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+ 
+   
  

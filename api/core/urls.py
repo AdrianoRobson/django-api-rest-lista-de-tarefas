@@ -12,13 +12,13 @@ urlpatterns = [
     path('token-auth/', obtain_auth_token, name='api_token_auth'),  
 
     # retorna notas
-    path('api/notas/<str:pk>/', nota_lista_retorna),
+    path('api/notas/<str:pk>/', nota_lista_retorna, name='nota_lista_retorna'),
 
     # retorna, atualiza, deleta nota
-    path('api/nota/<str:pk>/', nota_retorna_atualiza_deleta), 
+    path('api/nota/<str:pk>/', nota_retorna_atualiza_deleta, name='nota_retorna_atualiza_deleta'), 
 
     # cria nota
-    path('api/nota/',nota_cria), 
+    path('api/nota/',nota_cria, name='nota_cria'), 
 
     # cria e retorna listas
     path('api/lista/', lista_cria_retorna, name='lista_cria_retorna'),

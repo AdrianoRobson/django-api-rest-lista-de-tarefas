@@ -18,15 +18,11 @@ def lista_cria_retorna(request):
         if lista_serializer.is_valid():
             lista_serializer.save() 
             return JsonResponse(lista_serializer.data, status=status.HTTP_201_CREATED)
-
         return JsonResponse(lista_serializer.errors, status=status.HTTP_400_BAD_REQUEST)    
     
-    elif request.method == 'GET':
-        
-        listas = Lista.objects.all()
-        
+    elif request.method == 'GET':        
+        listas = Lista.objects.all()        
         listas_serializer = ListaSerializer(listas, many=True)
-
         return JsonResponse(listas_serializer.data, safe=False, status=status.HTTP_200_OK)   
  
 
@@ -55,15 +51,18 @@ def lista_atualiza_deleta(request, pk):
 
 # Cria uma nota
 @api_view(['POST'])
-def nota_cria(request):
-    nota_data = JSONParser().parse(request)
-    nota_serializer = TarefaSerializer(data=nota_data)
+def nota_cria(request): 
+        nota_data = JSONParser().parse(request)
+        nota_serializer = TarefaSerializer(data=nota_data)
 
-    if nota_serializer.is_valid():
-        nota_serializer.save()
-        return JsonResponse(nota_serializer.data, status=status.HTTP_201_CREATED)
+        if nota_serializer.is_valid():
+            nota_serializer.save()
+            return JsonResponse(nota_serializer.data, status=status.HTTP_201_CREATED)
 
-    return JsonResponse(nota_serializer.errors, status=status.HTTP_400_BAD_REQUEST)    
+        return JsonResponse(nota_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+           
+
+     
 
 
 # Retorna lista de notas
@@ -74,9 +73,10 @@ def nota_lista_retorna(request, pk):
     
     if(tarefas):
         tarefas_serializer = TarefaSerializer(tarefas, many=True)    
-        return JsonResponse(tarefas_serializer.data, safe=False)   
+        return JsonResponse(tarefas_serializer.data, safe=False, status=status.HTTP_200_OK)   
 
-    return JsonResponse({'message': 'empty'})
+    return JsonResponse({'message': 'empty'}, status=status.HTTP_200_OK)
+    
      
 
 
@@ -109,7 +109,7 @@ def nota_retorna_atualiza_deleta(request, pk):
  
     if request.method == 'GET': 
         tarefa_serializer = TarefaSerializer(tarefa) 
-        return JsonResponse(tarefa_serializer.data, safe=False) 
+        return JsonResponse(tarefa_serializer.data, safe=False, status=status.HTTP_200_OK) 
  
     elif request.method == 'PUT': 
         tarefa_data = JSONParser().parse(request) 
