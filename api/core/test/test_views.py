@@ -60,7 +60,7 @@ class ListaUpdateTestCase(TestCase):
         self.invalid_payload = {'titulo': ''} 
  
 
-    def test_invalid_update_lista(self): 
+    def test_valid_update_lista(self): 
         response = client.put(
             reverse('lista_atualiza_deleta', kwargs={'pk': self.lista[0].pk}),
             data=json.dumps(self.valid_payload),
