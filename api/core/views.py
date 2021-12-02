@@ -78,7 +78,7 @@ def nota_lista_retorna(request, pk):
     return JsonResponse({'message': 'empty'}, status=status.HTTP_200_OK)
     
      
-
+"""
 
 @api_view(['PATCH'])
 def lista_atualiza_parcial(request, pk):
@@ -95,7 +95,7 @@ def lista_atualiza_parcial(request, pk):
         return JsonResponse(tarefa_serializer.data)
 
     return JsonResponse(tarefa_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+"""
 
 
 
@@ -116,7 +116,7 @@ def nota_retorna_atualiza_deleta(request, pk):
         tarefa_serializer = TarefaSerializer(tarefa, data=tarefa_data) 
         if tarefa_serializer.is_valid(): 
             tarefa_serializer.save() 
-            return JsonResponse(tarefa_serializer.data) 
+            return JsonResponse(tarefa_serializer.data, status=status.HTTP_200_OK) 
         return JsonResponse(tarefa_serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
     
     elif request.method == 'PATCH':
@@ -124,7 +124,7 @@ def nota_retorna_atualiza_deleta(request, pk):
         tarefa_serializer = TarefaSerializer(tarefa, data=tarefa_data, partial=True)    
         if tarefa_serializer.is_valid():
             tarefa_serializer.save()
-            return JsonResponse(tarefa_serializer.data)
+            return JsonResponse(tarefa_serializer.data, status=status.HTTP_200_OK)
         return JsonResponse(tarefa_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
  
     elif request.method == 'DELETE': 

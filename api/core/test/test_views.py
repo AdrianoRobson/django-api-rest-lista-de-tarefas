@@ -150,18 +150,80 @@ class NotaUpdateTestCase(TestCase):
     def setUp(self): 
 
         self.lista1 = mommy.make('Lista', pk='1') 
-        self.tarefa1 = mommy.make('Tarefa', lista_id=self.lista1) 
-        self.tarefa2 = mommy.make('Tarefa', lista_id=self.lista1)  
- 
+        self.tarefa1 = mommy.make('Tarefa', pk='1', lista_id=self.lista1) 
+        self.tarefa2 = mommy.make('Tarefa', pk='2', lista_id=self.lista1)   
 
-    def test_invalid_update_lista(self): 
+        self.valid_payload = {  
+            "lista_id": 1,
+            "tarefa_texto": "Ir à praia de miguelópis",
+            "status": True
+        } 
+
+        self.invalid_payload = {  
+            "lista_id": 1,
+            "tarefa_texto": "",
+            "status": True
+        }
+
+
+        self.patch_valid_payload = {  
+            "lista_id": 1, 
+            "status": True
+        } 
+
+        self.patch_invalid_payload = {  
+            "lista_id": 1, 
+            "status": ""
+        } 
+
+    def test_valid_patch_nota(self): 
+        response = client.patch(
+            reverse('nota_retorna_atualiza_deleta', kwargs={'pk': 1}),
+            data=json.dumps(self.patch_valid_payload),
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    
+    def test_invalid_patch_nota(self): 
+        response = client.patch(
+            reverse('nota_retorna_atualiza_deleta', kwargs={'pk': 1}),
+            data=json.dumps(self.patch_invalid_payload),
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)      
+
+
+    def test_valid_update_nota(self): 
         response = client.put(
-            reverse('nota_retorna_atualiza_deleta', kwargs={'pk': self.lista[0].pk}),
+            reverse('nota_retorna_atualiza_deleta', kwargs={'pk': 1}),
             data=json.dumps(self.valid_payload),
             content_type='application/json',
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+
+    def test_invalid_update_nota(self):
  
+        response = client.put(
+            reverse('nota_retorna_atualiza_deleta', kwargs={'pk': 1}),
+            data=json.dumps(self.invalid_payload),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)    
+ 
+
+class NotaDeleteTestCase(TestCase):
+
+    def setUp(self):
+        self.tarefa = mommy.make('Tarefa', _quantity=3)
+
+    def test_valid_delete_nota(self):
+        response = client.delete(reverse('nota_retorna_atualiza_deleta', kwargs={'pk': self.tarefa[0].pk}))
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_invalid_delete_nota(self):
+        response = client.delete(reverse('nota_retorna_atualiza_deleta', kwargs={'pk': 20}))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
    
  
