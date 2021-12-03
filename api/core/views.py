@@ -1,5 +1,5 @@
 from .models import Tarefa, Lista
-from .serializers import TarefaSerializer, ListaSerializer, UserSerializer, RegisterSerializer
+from .serializers import LoginSerializer, TarefaSerializer, ListaSerializer, UserSerializer, RegisterSerializer
 from django.http.response import JsonResponse
 from rest_framework.parsers import JSONParser 
 from rest_framework import status  
@@ -13,7 +13,6 @@ from rest_framework.authtoken.serializers import AuthTokenSerializer
 from knox.views import LoginView as KnoxLoginView
 
 
-# Register API
 class RegisterAPI(generics.GenericAPIView):
     
     serializer_class = RegisterSerializer
@@ -28,32 +27,34 @@ class RegisterAPI(generics.GenericAPIView):
         "token": AuthToken.objects.create(user)[1]
         })
  
-class LoginAPI(KnoxLoginView):
+class LoginAPI(generics.GenericAPIView):
+
+    serializer_class = LoginSerializer
     
-    permission_classes = (permissions.AllowAny,)
-
-    def post(self, request, format=None):
-        serializer = AuthTokenSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        login(request, user)
-        return super(LoginAPI, self).post(request, format=None)
-
-
-
-
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid()
+        user = serializer.validated_data
+        
+        return Response({
+        "user": UserSerializer(user, context=self.get_serializer_context()).data,
+        "token": AuthToken.objects.create(user)[1]
+        })
  
 
+class UserAPI(generics.RetrieveAPIView): 
+    permission_classes = [permissions.IsAuthenticated,] 
+    serializer_class = UserSerializer
+
+    def get_object(self):
+        return self.request.user
  
-
-
   
 
 # cria e retorna listas
 @api_view(['POST', 'GET'])
-def lista_cria_retorna(request): 
-  
-    if request.method == 'POST':            
+def lista_cria_retorna(request):   
+    if request.method == 'POST':  
         lista_data = JSONParser().parse(request)
         lista_serializer = ListaSerializer(data=lista_data) 
 

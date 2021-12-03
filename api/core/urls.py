@@ -1,16 +1,21 @@
-from django.urls import path
+from django.urls import path, include
 from .views import nota_lista_retorna, \
 nota_retorna_atualiza_deleta, \
 nota_cria,\
 lista_cria_retorna, \
 lista_atualiza_deleta, \
-RegisterAPI, LoginAPI
+RegisterAPI, LoginAPI, UserAPI
 
 from knox import views as knox_views
  
-urlpatterns = [
+urlpatterns = [ 
     
-    # Regitra usuário
+    # Retorna id, name, email usuario autênticado
+    path('api/user/', UserAPI.as_view()),    
+
+    # path('api/user/logout/', knox_views.LogoutAllView.as_view()), 
+
+    # Registra usuário
     path('api/register/', RegisterAPI.as_view(), name='register'),
 
     # Login usuário
@@ -18,6 +23,9 @@ urlpatterns = [
 
     # Logout usuário
     path('api/logoutall/', knox_views.LogoutAllView.as_view(), name='logoutall'),
+
+
+
 
     # Retorna notas
     path('api/notas/<str:pk>/', nota_lista_retorna, name='nota_lista_retorna'),

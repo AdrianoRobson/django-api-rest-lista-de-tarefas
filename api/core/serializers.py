@@ -32,7 +32,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(validated_data['username'], validated_data['email'], validated_data['password'])
         return user
         
-
+ 
 # Login Serializer
 # Usando o serializer para validar o usuário autenticado
 class LoginSerializer(serializers.Serializer):
@@ -44,3 +44,4 @@ class LoginSerializer(serializers.Serializer):
         if user and user.is_active:
             return user
         raise serializers.ValidationError('Credenciais incorretas!')
+ 
