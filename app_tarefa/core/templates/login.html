@@ -5,19 +5,25 @@
           <div class="modal-content">
                
                     <div class="form">
-                      <form class="register-form">
-                        <input type="text" placeholder="name"/>
-                        <input type="password" placeholder="password"/>
-                        <input type="text" placeholder="email address"/>
-                        <button>create</button>
+                      
+                      <form class="register-form" id="form_registra">                        
+                        
+                        <input type="text" id="nome" placeholder="Nome" autocomplete="off"/>
+                        <input type="email" id="email" placeholder="Email" autocomplete="off"/>
+                        <input type="password" id="senha" placeholder="Senha"/>
+                        <input type="password" id="senha2" placeholder="Confirme a senha"/>    
+                      
+                        <button id="registra_usuario">create</button>
                         <p class="message">Already registered? <a href="#">Sign In</a></p>
                       </form>
+
                       <form class="login-form">
-                        <input type="text" placeholder="username"/>
-                        <input type="password" placeholder="password"/>
-                        <button>login</button>
+                        <input type="text" id="nomeLogin" placeholder="Nome" autocomplete="off"/>
+                        <input type="password" id="senhalogin" placeholder="Senha"/>
+                        <button id="cria_usuario">login</button>
                         <p class="message">Not registered? <a href="#">Create an account</a></p>
                       </form>
+
                     </div> 
 
             </div>

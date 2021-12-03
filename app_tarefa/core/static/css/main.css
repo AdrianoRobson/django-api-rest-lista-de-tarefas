@@ -15,6 +15,9 @@ body{
     margin: 20px 4px;
   } 
 
+  form.error{
+    color: red;
+   }
  
 
  .rounded-0{

@@ -32,15 +32,36 @@ $(document).ready(function(){
     })
 
     // **********************USER LOGIN***********************************
-    $('#home_user').click(function(e){
-         
+    $('#registra_usuario').click(function(e){ 
+        
+        let nome = $("#nome").val().trim()
+        let email = $("#email").val().trim()
+        let senha = $("#senha").val().trim()
+        let senha2 = $("#senha2").val().trim()
+
+        console.log('Nome: ', nome, ' | Emai: ', email,' | Senha: ', senha,' | Senha2: ', senha2)
+
+        registra_usario(nome, email, senha)
+
+    }) 
+
+    $('#login_usuario').click(function(e){ 
+        
+        let nome = $("#nomeLogin").val().trim()
+        let email = $("#senhalogin").val().trim()
+        let senha = $("#senha").val().trim()
+        let senha2 = $("#senha2").val().trim()
+
+        console.log('Nome: ', nome, ' | Emai: ', email,' | Senha: ', senha,' | Senha2: ', senha2)
+
+        registra_usario(nome, email, senha)
 
     }) 
 
     $('.message a').click(function(){
         $('form').animate({height: "toggle", opacity: "toggle"}, "slow");
-     });
-  
+    });
+     
     // *********************************************************
 
     $("#btn_edit_save").click(function () {  
@@ -178,6 +199,13 @@ $(document).ready(function(){
     })
     
 });
+
+
+// ************ USER LOGIN ***************
+ 
+ 
+
+// ***************************************
 
 function carregaStorage(){
     
@@ -638,6 +666,35 @@ function adicionaIput(id, nota, status=false){
 
     botaoExcluir(id)
 
+}
+
+
+function registra_usario(user, email, pass) { 
+
+    loadingInfo("Aguarde...", "Registrando usuário!") 
+
+    $.ajax({ 
+          
+        url: 'http://127.0.0.1:8000/api/register/',
+        type: 'POST',
+        data: JSON.stringify({"username": user, "email": email, "password": pass}),
+        dataType: 'json',
+        contentType: 'application/json',
+        error: function(jqxhr, settings, thrownError) {
+            
+            console.log('Houve um erro! ');   
+        },
+        success: function (data) { 
+            
+            console.log('DATA RETORNO: ', data)   
+
+        },
+        complete: function(data) {
+
+            SlickLoader.disable();  
+        
+        } 
+    });
 }
  
 
