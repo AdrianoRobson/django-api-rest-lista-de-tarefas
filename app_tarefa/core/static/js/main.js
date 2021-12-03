@@ -31,10 +31,21 @@ $(document).ready(function(){
 
     })
 
+    // **********************USER LOGIN***********************************
+    $('#home_user').click(function(e){
+         
 
-    $(".btn").click(function () {  
+    }) 
+
+    $('.message a').click(function(){
+        $('form').animate({height: "toggle", opacity: "toggle"}, "slow");
+     });
+  
+    // *********************************************************
+
+    $("#btn_edit_save").click(function () {  
         
-        console.log('icone: ', $(".btn i").attr("class"))
+        console.log('icone: ', $("#btn_edit_save i").attr("class"))
         
         if(ehBotaoPadrao()){ 
             
@@ -200,7 +211,7 @@ function editReset(){
 
 function ehBotaoPadrao(){
     
-    if($(".btn i").attr("class").includes('fa-edit')){
+    if($("#btn_edit_save i").attr("class").includes('fa-edit')){
         
         return true
 
@@ -212,7 +223,7 @@ function ehBotaoPadrao(){
 
 function ehBotaoSalvar(){
     
-    if($(".btn i").attr("class").includes('fa-check')){
+    if($("#btn_edit_save i").attr("class").includes('fa-check')){
         
         return true
 
@@ -354,13 +365,13 @@ function botaoExcluir(id){
 }
 
 function botaoPadrao(){
-    $(".btn i").remove()             
-    $(".btn").append('<i class="fas fa-edit fa-2x" id="icon"></i>')
+    $("#btn_edit_save i").remove()             
+    $("#btn_edit_save").append('<i class="fas fa-edit fa-2x" id="icon"></i>')
 }
 
 function botaoSalvar(){
-    $(".btn i").remove()
-    $(".btn").append('<i class="fas fa-check fa-2x"></i>')
+    $("#btn_edit_save i").remove()
+    $("#btn_edit_save").append('<i class="fas fa-check fa-2x"></i>')
 }
 
 function carregaTarefa(data){ 

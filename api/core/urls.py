@@ -1,26 +1,34 @@
-from django.urls import path 
-from rest_framework.authtoken.views import obtain_auth_token  
-
+from django.urls import path
 from .views import nota_lista_retorna, \
 nota_retorna_atualiza_deleta, \
 nota_cria,\
 lista_cria_retorna, \
-lista_atualiza_deleta
+lista_atualiza_deleta, \
+RegisterAPI, LoginAPI
+
+from knox import views as knox_views
  
 urlpatterns = [
     
-    path('token-auth/', obtain_auth_token, name='api_token_auth'),  
+    # Regitra usuário
+    path('api/register/', RegisterAPI.as_view(), name='register'),
 
-    # retorna notas
+    # Login usuário
+    path('api/login/', LoginAPI.as_view(), name='login'),
+
+    # Logout usuário
+    path('api/logoutall/', knox_views.LogoutAllView.as_view(), name='logoutall'),
+
+    # Retorna notas
     path('api/notas/<str:pk>/', nota_lista_retorna, name='nota_lista_retorna'),
 
-    # retorna, atualiza, deleta nota
+    # Retorna, atualiza, deleta nota
     path('api/nota/<str:pk>/', nota_retorna_atualiza_deleta, name='nota_retorna_atualiza_deleta'), 
 
-    # cria nota
+    # Cria nota
     path('api/nota/',nota_cria, name='nota_cria'), 
 
-    # cria e retorna listas
+    # Cria e retorna listas
     path('api/lista/', lista_cria_retorna, name='lista_cria_retorna'),
 
     # Atualiza, Deleta listas

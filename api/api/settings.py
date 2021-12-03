@@ -38,9 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'core',
-    'rest_framework.authtoken',
+    'core', 
     'rest_framework',   
+    'knox',
     'corsheaders',
 ]
 
@@ -49,24 +49,14 @@ INSTALLED_APPS = [
 REST_FRAMEWORK = {
 
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',
+
+    'DEFAULT_AUTHENTICATION_CLASSES': [ 
+
+        'knox.auth.TokenAuthentication',
+    ]
     
 } 
 
-"""
-REST_FRAMEWORK = {
-
-    'TEST_REQUEST_DEFAULT_FORMAT': 'json'
-    
-   
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
-    ],
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
-    ] 
-    
-} 
-"""
 
 MIDDLEWARE = [ 
 
