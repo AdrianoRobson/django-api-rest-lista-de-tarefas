@@ -159,3 +159,4 @@ CORS_ALLOWED_ORIGINS = [
     "http://192.168.2.104:8001",
     
 ]
+ 

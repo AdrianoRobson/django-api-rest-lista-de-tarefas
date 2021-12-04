@@ -15,6 +15,7 @@ from knox.views import LoginView as KnoxLoginView
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
 
+import json
 
 class RegisterAPI(generics.GenericAPIView):
     
@@ -55,16 +56,17 @@ class UserAPI(generics.RetrieveAPIView):
   
 
 # cria e retorna listas
-@api_view(['POST', 'GET'])
-#@permission_classes([IsAuthenticated])
-def lista_cria_retorna(request):       
+@permission_classes([IsAuthenticated])
+@api_view(['POST', 'GET']) 
+def lista_cria_retorna(request): 
 
-    print(f'************************** request.user: {request.user.pk}') 
+    lista_data = {} 
+    if 'titulo' in request.data:       
+        lista_data = {"usuario": request.user.pk, "titulo": request.data["titulo"]} 
+        print(f'************************** lista_data: {lista_data}')  
 
-
-    if request.method == 'POST':  
-        lista_data = JSONParser().parse(request)
-        lista_serializer = ListaSerializer(data=lista_data) 
+    if request.method == 'POST':   
+        lista_serializer = ListaSerializer(data=lista_data)  
 
         if lista_serializer.is_valid():
             lista_serializer.save() 
@@ -72,21 +74,28 @@ def lista_cria_retorna(request):
         return JsonResponse(lista_serializer.errors, status=status.HTTP_400_BAD_REQUEST)    
     
     elif request.method == 'GET':        
-        listas = Lista.objects.all()        
+        listas = Lista.objects.filter(usuario_id=request.user.pk)        
         listas_serializer = ListaSerializer(listas, many=True)
         return JsonResponse(listas_serializer.data, safe=False, status=status.HTTP_200_OK)   
  
 
-# Atualiza, Deleta listas
+# Atualiza, Deleta listas 
 @api_view(['PUT', 'DELETE'])
-def lista_atualiza_deleta(request, pk):
+@permission_classes([IsAuthenticated])
+def lista_atualiza_deleta(request, pk):  
+
     try: 
         lista = Lista.objects.get(pk=pk) 
     except Lista.DoesNotExist: 
         return JsonResponse({'message': 'lista não existe!'}, status=status.HTTP_404_NOT_FOUND) 
+    
+    
+    lista_data = {} 
+    if 'titulo' in request.data:   
+        lista_data = {"usuario": request.user.pk, "titulo": request.data["titulo"]} 
+        print(f'************************** lista_data: {lista_data}')  
    
-    if request.method == 'PUT': 
-        lista_data = JSONParser().parse(request) 
+    if request.method == 'PUT':   
         lista_serializer = ListaSerializer(lista, data=lista_data) 
         if lista_serializer.is_valid(): 
             lista_serializer.save() 
@@ -113,15 +122,26 @@ def nota_cria(request):
 
 # Retorna lista de notas
 @api_view(['GET'])
-def nota_lista_retorna(request, pk):    
-  
+@permission_classes([IsAuthenticated])
+def nota_lista_retorna(request, pk):  
+    
+    # Para não permitir que um usuário autenticado acesse notas de outro usuário
+    try: 
+        usuario = Lista.objects.get(pk=pk).usuario_id 
+
+        if usuario != request.user.pk:
+            raise Lista.DoesNotExist
+
+    except Lista.DoesNotExist: 
+        return JsonResponse({'message': 'vazio'}, status=status.HTTP_404_NOT_FOUND)   
+
     tarefas = Tarefa.objects.filter(lista_id=pk)   
     
     if(tarefas):
         tarefas_serializer = TarefaSerializer(tarefas, many=True)    
         return JsonResponse(tarefas_serializer.data, safe=False, status=status.HTTP_200_OK)  
         
-    return JsonResponse({'message': 'vazio'}, status=status.HTTP_200_OK)
+    return JsonResponse({'message': 'vazio'}, status=status.HTTP_404_NOT_FOUND)
     
   
 # Retorna, Atualiza, Deleta nota

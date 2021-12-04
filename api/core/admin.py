@@ -4,7 +4,7 @@ from .models import Lista, Tarefa
  
 @admin.register(Lista)
 class ListaAdmin(admin.ModelAdmin):
-    list_display = ['titulo']
+    list_display = ['id', 'usuario', 'titulo']
 
 @admin.register(Tarefa)
 class TarefaAdmin(admin.ModelAdmin):

@@ -3,10 +3,16 @@ from .models import Lista, Tarefa
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 
+from django.contrib.auth import get_user_model
+
+User=get_user_model()
+
 class ListaSerializer(serializers.ModelSerializer):
+    
+    #print(f'+++++++++++++++++++++++++++++ get_user_model(): {get_user_model().objects.get(pk=2)}') 
     class Meta:
         model = Lista
-        fields = '__all__'
+        fields = ('id', 'usuario', 'titulo')
 
 class TarefaSerializer(serializers.ModelSerializer):
     

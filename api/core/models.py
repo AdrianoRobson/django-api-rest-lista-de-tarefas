@@ -1,16 +1,19 @@
 from django.db import models  
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User 
+
+from django.conf import settings
 
 class Base(models.Model):
     criado = models.DateTimeField('criação', auto_now_add=True)
     modificado = models.DateTimeField('ctualização', auto_now=True)
-    status = models.BooleanField('ctatus', default=True) 
+    status = models.BooleanField('status', default=True) 
 
     class Meta:
         abstract = True 
 
-class Lista(Base): 
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+class Lista(Base):  
+    
+    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  
     titulo = models.CharField('Titulo', max_length=40, help_text="Máximo 40 caracteres")
     
     class Meta:
