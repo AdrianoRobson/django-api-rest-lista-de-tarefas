@@ -12,7 +12,7 @@ services:
     ports:
       - 3306:3306
     volumes:
-      - .api/mysql:/var/lib/mysql 
+      - ./api/mysql:/var/lib/mysql 
   
   web_api:
     build: ./api/

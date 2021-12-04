@@ -1,4 +1,5 @@
 from django.db import models  
+from django.contrib.auth.models import User
 
 class Base(models.Model):
     criado = models.DateTimeField('criação', auto_now_add=True)
@@ -8,7 +9,8 @@ class Base(models.Model):
     class Meta:
         abstract = True 
 
-class Lista(Base):
+class Lista(Base): 
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     titulo = models.CharField('Titulo', max_length=40, help_text="Máximo 40 caracteres")
     
     class Meta:
