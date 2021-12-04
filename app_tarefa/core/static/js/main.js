@@ -34,38 +34,8 @@ $(document).ready(function(){
     })
 
     // **********************USER LOGIN***********************************
-    $('#registra_usuario').click(function(e){ 
-        
-        let nome = $("#nome").val().trim()
-        let email = $("#email").val().trim()
-        let senha = $("#senha").val().trim()
-        let senha2 = $("#senha2").val().trim()
-
-        console.log('Nome: ', nome, ' | Emai: ', email,' | Senha: ', senha,' | Senha2: ', senha2)
-
-        registra_usario(nome, email, senha)
-
-    }) 
-
-    $('#cria_usuario').click(function(e){ 
-        
-        let nome = $("#nomeLogin").val().trim()
-        let senha = $("#senhalogin").val().trim() 
-
-        console.log('Nome: ', nome, ' | Senha: ', senha)
-
-        login_usario(nome, senha)
  
-
-    }) 
-
-    $('.message a').click(function(){
-        $('form').animate({height: "toggle", opacity: "toggle"}, "slow");
-    });
-
-
-   
-     
+ 
     // *********************************************************
 
     $("#btn_edit_save").click(function () {  
@@ -209,6 +179,7 @@ $(document).ready(function(){
  
 
 function limpaCamposFormulario(){
+
     $("#nome").val('')
     $("#email").val('')
     $("#senha").val('')
@@ -216,6 +187,76 @@ function limpaCamposFormulario(){
     $("#nomeLogin").val('')
     $("#senhalogin").val('')     
 
+}
+
+
+function loginFormularioDinamico(login){
+
+    $('#login-form').empty()
+    $("#login_usuario").unbind();
+    $("#registra_usuario").unbind();
+    $("#logout_usuario").unbind();
+    $(".message a").unbind();
+
+    if(login){
+        $('#login-form').append(
+            '<form class="login-form">'+
+            '<input type="text" id="nomeLogin" placeholder="Nome" value="admin7" autocomplete="off"/>'+
+            '<input type="password" id="senhalogin" value="Password@123" placeholder="Senha"/>'+                        
+            '<button id="login_usuario">login</button>'+
+            '<p class="message">Not registered? <a href="#">Create an account</a></p>'+
+            '</form>'
+        )
+    }
+    else{
+        $('#login-form').append(
+            '<form class="login-form">'+ 
+            '<button id="logout_usuario">logout</button>'+
+            '<p class="message"><a href="#">Create an account</a></p>'+
+            '</form>'
+        )
+    }
+
+
+    $('#registra_usuario').click(function(e){ 
+        
+        let nome = $("#nome").val().trim()
+        let email = $("#email").val().trim()
+        let senha = $("#senha").val().trim()
+        let senha2 = $("#senha2").val().trim()
+
+        console.log('Nome: ', nome, ' | Emai: ', email,' | Senha: ', senha,' | Senha2: ', senha2)
+
+        registra_usario(nome, email, senha)
+
+    }) 
+
+    $('#login_usuario').click(function(e){ 
+        
+        let nome = $("#nomeLogin").val().trim()
+        let senha = $("#senhalogin").val().trim() 
+
+        console.log('Nome: ', nome, ' | Senha: ', senha)
+
+        login_usario(nome, senha)
+ 
+
+    }) 
+
+
+    $('#logout_usuario').click(function(e){ 
+         
+        console.log('****************************************** logout')  
+
+        logout_usario()
+
+    }) 
+ 
+
+    $('.message a').click(function(){
+        $('form').animate({height: "toggle", opacity: "toggle"}, "slow");
+    });
+    
 }
  
 
@@ -232,14 +273,21 @@ function carregaStorage(){
     } 
 
    nomeUsuario()
+   
 
 }
 
 function nomeUsuario(){
+
     if (JSON.parse(getLocalStorage('token'))){
 
         $('#titulo_tarefa').text('Olá '+ JSON.parse(getLocalStorage('token')).user_name)
+
+        loginFormularioDinamico(false)
         
+    }
+    else{
+        loginFormularioDinamico(true)
     }
 }
 
@@ -708,6 +756,43 @@ function registroLogou(token, nome){
 
 
 
+function logout_usario() {
+    
+    status_code = 0
+
+    loadingInfo("Aguarde...", "Deslogando usuário!") 
+
+    $.ajax({ 
+          
+        url: 'http://127.0.0.1:8000/api/logoutall/',
+        type: 'POST', 
+        dataType: 'json',
+        headers: {"Authorization": "Token " + JSON.parse(getLocalStorage('token')).token},
+        contentType: 'application/json',
+        error: function(jqxhr, settings, thrownError) {
+            
+            console.log('Houve um erro! '); 
+            
+            status_code = jqxhr.status
+        },
+        success: function (data) {  
+             
+            
+            clearLocalStorage()
+
+            location.reload() 
+             
+        },
+        complete: function(data) {
+
+            SlickLoader.disable();  
+        
+        } 
+    });
+}
+
+
+
 function login_usario(user, pass) {
     
     status_code = 0
@@ -733,9 +818,7 @@ function login_usario(user, pass) {
 
             console.log('DATA USER NAME: ', data['user']['username'])
             
-            registroLogou(data['token'], data['user']['username']) 
-
-            
+            registroLogou(data['token'], data['user']['username'])  
 
         },
         complete: function(data) {
