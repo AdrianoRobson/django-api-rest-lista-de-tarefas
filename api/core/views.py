@@ -12,6 +12,9 @@ from rest_framework import permissions
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from knox.views import LoginView as KnoxLoginView
 
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
+
 
 class RegisterAPI(generics.GenericAPIView):
     
@@ -53,7 +56,12 @@ class UserAPI(generics.RetrieveAPIView):
 
 # cria e retorna listas
 @api_view(['POST', 'GET'])
-def lista_cria_retorna(request):   
+#@permission_classes([IsAuthenticated])
+def lista_cria_retorna(request):       
+
+    print(f'************************** request.user: {request.user.pk}') 
+
+
     if request.method == 'POST':  
         lista_data = JSONParser().parse(request)
         lista_serializer = ListaSerializer(data=lista_data) 

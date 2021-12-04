@@ -12,6 +12,8 @@ var identificador = 0
 
 var id_lista_storage = 0
 
+var status_code = 0
+
 
 
 $(document).ready(function(){    
@@ -45,22 +47,24 @@ $(document).ready(function(){
 
     }) 
 
-    $('#login_usuario').click(function(e){ 
+    $('#cria_usuario').click(function(e){ 
         
         let nome = $("#nomeLogin").val().trim()
-        let email = $("#senhalogin").val().trim()
-        let senha = $("#senha").val().trim()
-        let senha2 = $("#senha2").val().trim()
+        let senha = $("#senhalogin").val().trim() 
 
-        console.log('Nome: ', nome, ' | Emai: ', email,' | Senha: ', senha,' | Senha2: ', senha2)
+        console.log('Nome: ', nome, ' | Senha: ', senha)
 
-        registra_usario(nome, email, senha)
+        login_usario(nome, senha)
+ 
 
     }) 
 
     $('.message a').click(function(){
         $('form').animate({height: "toggle", opacity: "toggle"}, "slow");
     });
+
+
+   
      
     // *********************************************************
 
@@ -203,19 +207,40 @@ $(document).ready(function(){
 
 // ************ USER LOGIN ***************
  
+
+function limpaCamposFormulario(){
+    $("#nome").val('')
+    $("#email").val('')
+    $("#senha").val('')
+    $("#senha2").val('')   
+    $("#nomeLogin").val('')
+    $("#senhalogin").val('')     
+
+}
  
 
 // ***************************************
 
 function carregaStorage(){
-    
-    if (JSON.parse(getListLocalStorage('lista'))){ 
-        
-        identificador = JSON.parse(getListLocalStorage('lista')).identificador
 
-        id_lista_storage =  JSON.parse(getListLocalStorage('lista')).id_lista 
+     
+    if (JSON.parse(getLocalStorage('lista'))){ 
+        
+        identificador = JSON.parse(getLocalStorage('lista')).identificador
+
+        id_lista_storage =  JSON.parse(getLocalStorage('lista')).id_lista 
     } 
 
+   nomeUsuario()
+
+}
+
+function nomeUsuario(){
+    if (JSON.parse(getLocalStorage('token'))){
+
+        $('#titulo_tarefa').text('Olá '+ JSON.parse(getLocalStorage('token')).user_name)
+        
+    }
 }
 
 function carregaListaTarefa(){
@@ -669,7 +694,63 @@ function adicionaIput(id, nota, status=false){
 }
 
 
+function registroLogou(token, nome){
+    
+    setTokenLocalStorage(token, nome)
+
+    nomeUsuario()
+
+    $('#exampleModalCenter').modal('hide') 
+
+    limpaCamposFormulario()
+    
+}
+
+
+
+function login_usario(user, pass) {
+    
+    status_code = 0
+
+    loadingInfo("Aguarde...", "Logando usuário!") 
+
+    $.ajax({ 
+          
+        url: 'http://127.0.0.1:8000/api/login/',
+        type: 'POST',
+        data: JSON.stringify({"username": user, "password": pass}),
+        dataType: 'json',
+        contentType: 'application/json',
+        error: function(jqxhr, settings, thrownError) {
+            
+            console.log('Houve um erro! '); 
+            
+            status_code = jqxhr.status
+        },
+        success: function (data) { 
+            
+            console.log('DATA RETORNO: ', data)   
+
+            console.log('DATA USER NAME: ', data['user']['username'])
+            
+            registroLogou(data['token'], data['user']['username']) 
+
+            
+
+        },
+        complete: function(data) {
+
+            SlickLoader.disable();  
+        
+        } 
+    });
+}
+
+
+
 function registra_usario(user, email, pass) { 
+
+    status_code = 0
 
     loadingInfo("Aguarde...", "Registrando usuário!") 
 
@@ -683,10 +764,14 @@ function registra_usario(user, email, pass) {
         error: function(jqxhr, settings, thrownError) {
             
             console.log('Houve um erro! ');   
+
+            status_code = jqxhr.status
         },
         success: function (data) { 
             
-            console.log('DATA RETORNO: ', data)   
+            console.log('DATA RETORNO: ', data) 
+            
+            registroLogou(data['token'], data['user']['username']) 
 
         },
         complete: function(data) {
@@ -704,6 +789,8 @@ function loadingInfo(info1, info2){
 }
 
 function criaLista(titulo) { 
+
+    status_code = 0
     
     loadingInfo('Aguarde...',"Salvando lista!")
 
@@ -717,6 +804,8 @@ function criaLista(titulo) {
         error: function(jqxhr, settings, thrownError) {
             
             console.log('Houve um erro! ');   
+
+            status_code = jqxhr.status
         },
         success: function (data) { 
             
@@ -736,6 +825,8 @@ function criaLista(titulo) {
 
 function cria_nota(nota, lista_id) {    
 
+    status_code = 0
+
     loadingInfo('Aguarde...',"Salvando nota!")
 
     $.ajax({ 
@@ -748,6 +839,8 @@ function cria_nota(nota, lista_id) {
         error: function(jqxhr, settings, thrownError) {
             
             console.log('Houve um erro! ');   
+
+            status_code = jqxhr.status
         },
         success: function (data) { 
             
@@ -767,6 +860,8 @@ function cria_nota(nota, lista_id) {
 
 
 function atualizaLista(titulo, lista_id) { 
+
+    status_code = 0
     
     loadingInfo('Aguarde...',"Atualizando lista!")
 
@@ -780,6 +875,8 @@ function atualizaLista(titulo, lista_id) {
         error: function(jqxhr, settings, thrownError) {
             
             console.log('Houve um erro! ');   
+
+            status_code = jqxhr.status
         },
         success: function (data) { 
             
@@ -798,6 +895,8 @@ function atualizaLista(titulo, lista_id) {
 
 
 function atualiza_nota(nota, lista_id, nota_id, status=false) {  
+
+    status_code = 0
     
     loadingInfo('Aguarde...',"Atualizando nota!")
 
@@ -811,6 +910,8 @@ function atualiza_nota(nota, lista_id, nota_id, status=false) {
         error: function(jqxhr, settings, thrownError) {
             
             console.log('Houve um erro! ');   
+
+            status_code = jqxhr.status
         },
         success: function (data) { 
             
@@ -828,7 +929,9 @@ function atualiza_nota(nota, lista_id, nota_id, status=false) {
 
 
 
-function server_atualiza_nota_parcial(status, lista_id, nota_id) {  
+function server_atualiza_nota_parcial(status, lista_id, nota_id) { 
+    
+    status_code = 0
     
     loadingInfo('Aguarde...',"Atualizando check!")
 
@@ -842,6 +945,8 @@ function server_atualiza_nota_parcial(status, lista_id, nota_id) {
         error: function(jqxhr, settings, thrownError) {
             
             console.log('Houve um erro! ');   
+
+            status_code = jqxhr.status
         },
         success: function (data) { 
             
@@ -861,6 +966,8 @@ function server_atualiza_nota_parcial(status, lista_id, nota_id) {
 
 function deletaLista(lista_id) {    
 
+    status_code = 0
+
     loadingInfo('Aguarde...',"Deletando lista!")
 
     $.ajax({ 
@@ -872,6 +979,8 @@ function deletaLista(lista_id) {
         error: function(jqxhr, settings, thrownError) {
             
             console.log('Houve um erro! ');   
+
+            status_code = jqxhr.status
         },
         success: function (data) { 
             
@@ -891,6 +1000,8 @@ function deletaLista(lista_id) {
 
 
 function excluir_nota(nota_id) { 
+
+    status_code = 0
     
     loadingInfo("Aguarde...", "Excluindo nota!")
 
@@ -903,6 +1014,8 @@ function excluir_nota(nota_id) {
         error: function(jqxhr, settings, thrownError) {
             
             console.log('Houve um erro! ');   
+
+            status_code = jqxhr.status
         },
         success: function (data) { 
             
@@ -921,6 +1034,8 @@ function excluir_nota(nota_id) {
 
 function server_listas(){ 
 
+    status_code = 0
+
     loadingInfo("Aguarde...", "Carregando listas!")
 
     $.ajax({
@@ -938,7 +1053,9 @@ function server_listas(){
         }, 
         error: function(jqxhr, settings, thrownError) {
             
-            console.log('Houve um erro! ');  
+            console.log('Houve um erro! CODE: ',jqxhr.status);  
+
+            status_code = jqxhr.status
  
         },
         complete: function(data) {
@@ -958,6 +1075,8 @@ function server_listas(){
 
 function carrega_notas_server(lista_id) { 
 
+    status_code = 0
+
     loadingInfo("Aguarde...", "Carregando notas!")
 
     $.ajax({
@@ -976,12 +1095,14 @@ function carrega_notas_server(lista_id) {
 
             carregaStorage()
 
-            $('#titulo_tarefa').text(JSON.parse(getListLocalStorage('titulo')).titulo)
+            $('#titulo_tarefa').text(JSON.parse(getLocalStorage('titulo')).titulo)
      
         }, 
         error: function(jqxhr, settings, thrownError) {
             
             console.log('Houve um erro! ');  
+
+            status_code = jqxhr.status
  
         },
         complete: function(data) {
@@ -993,6 +1114,10 @@ function carrega_notas_server(lista_id) {
     });
 }
 
+function setTokenLocalStorage(token, user_name=''){
+    window.localStorage.setItem('token', JSON.stringify({'token': token, 'user_name': user_name}))
+}
+
 function setListLocalStorage(identificador, id_lista, titulo=''){  
     window.localStorage.setItem('lista', JSON.stringify( {identificador: identificador, id_lista: id_lista} )) 
 }
@@ -1001,15 +1126,16 @@ function setListTitleLocalStorage(lista_titulo){
     window.localStorage.setItem('titulo', JSON.stringify({titulo: lista_titulo}))
 }
 
-function getListLocalStorage(key){
+ 
+function getLocalStorage(key){
     return window.localStorage.getItem(key);
 }
 
-function removeListLocalStorage(key){
+function removeItemLocalStorage(key){
     localStorage.removeItem(key)
 }
 
-function clearListLocalStorage(){
+function clearLocalStorage(){
     localStorage.clear()
     console.log("clear records");
 }
