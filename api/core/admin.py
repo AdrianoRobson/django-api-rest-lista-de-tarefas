@@ -8,4 +8,4 @@ class ListaAdmin(admin.ModelAdmin):
 
 @admin.register(Tarefa)
 class TarefaAdmin(admin.ModelAdmin):
-    list_display = ['lista_id', 'tarefa_texto', 'status']
+    list_display = ['id', 'lista_id', 'tarefa_texto', 'status']

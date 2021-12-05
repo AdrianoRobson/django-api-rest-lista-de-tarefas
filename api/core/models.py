@@ -11,8 +11,7 @@ class Base(models.Model):
     class Meta:
         abstract = True 
 
-class Lista(Base):  
-    
+class Lista(Base):      
     usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  
     titulo = models.CharField('Titulo', max_length=40, help_text="Máximo 40 caracteres")
     
@@ -24,7 +23,7 @@ class Lista(Base):
         return self.titulo
 
 
-class Tarefa(Base):
+class Tarefa(Base):  
     lista_id = models.ForeignKey(Lista, on_delete=models.CASCADE)
     tarefa_texto =models.CharField('tarefa', max_length=50, help_text='Máximo 50 caracteres')
     status = models.BooleanField('status', default=False)

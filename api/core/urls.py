@@ -1,7 +1,6 @@
 from django.urls import path, include
 from .views import nota_lista_retorna, \
 nota_retorna_atualiza_deleta, \
-nota_cria,\
 lista_cria_retorna, \
 lista_atualiza_deleta, \
 RegisterAPI, LoginAPI, UserAPI
@@ -30,12 +29,9 @@ urlpatterns = [
     # Retorna notas
     path('api/notas/<str:pk>/', nota_lista_retorna, name='nota_lista_retorna'),
 
-    # Retorna, atualiza, deleta nota
-    path('api/nota/<str:pk>/', nota_retorna_atualiza_deleta, name='nota_retorna_atualiza_deleta'), 
-
-    # Cria nota
-    path('api/nota/',nota_cria, name='nota_cria'), 
-
+    #Cria, Retorna, atualiza, deleta tarefa
+    path('api/nota/<str:pk>/', nota_retorna_atualiza_deleta, name='nota_retorna_atualiza_deleta'),  
+     
     # Cria e retorna listas
     path('api/lista/', lista_cria_retorna, name='lista_cria_retorna'),
 
