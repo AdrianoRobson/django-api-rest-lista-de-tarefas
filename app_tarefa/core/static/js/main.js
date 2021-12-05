@@ -39,6 +39,10 @@ $(document).ready(function(){
     // *********************************************************
 
     $("#btn_edit_save").click(function () {  
+
+        if (!usuario_logado()){
+            return
+        }
         
         console.log('icone: ', $("#btn_edit_save i").attr("class"))
         
@@ -201,7 +205,7 @@ function loginFormularioDinamico(login){
     if(login){
         $('#login-form').append(
             '<form class="login-form">'+
-            '<input type="text" id="nomeLogin" placeholder="Nome" value="admin7" autocomplete="off"/>'+
+            '<input type="text" id="nomeLogin" placeholder="Nome" value="luara" autocomplete="off"/>'+
             '<input type="password" id="senhalogin" value="Password@123" placeholder="Senha"/>'+                        
             '<button id="login_usuario">login</button>'+
             '<p class="message">Not registered? <a href="#">Create an account</a></p>'+
@@ -238,8 +242,7 @@ function loginFormularioDinamico(login){
 
         console.log('Nome: ', nome, ' | Senha: ', senha)
 
-        login_usario(nome, senha)
- 
+        login_usario(nome, senha) 
 
     }) 
 
@@ -292,6 +295,12 @@ function nomeUsuario(){
 }
 
 function carregaListaTarefa(){
+
+    if(!usuario_logado()){
+        return
+    }
+
+    console.log('PASSSSSSSSSSSSSSSSSSSSSSOU')
 
     if(identificador == 0){
         server_listas()
@@ -750,7 +759,9 @@ function registroLogou(token, nome){
 
     $('#exampleModalCenter').modal('hide') 
 
-    limpaCamposFormulario()
+    limpaCamposFormulario() 
+    
+    location.reload() 
     
 }
 
@@ -820,6 +831,8 @@ function login_usario(user, pass) {
             
             registroLogou(data['token'], data['user']['username'])  
 
+
+
         },
         complete: function(data) {
 
@@ -883,6 +896,7 @@ function criaLista(titulo) {
         type: 'POST',
         data: JSON.stringify({"titulo": titulo}),
         dataType: 'json',
+        headers: {"Authorization": "Token " + JSON.parse(getLocalStorage('token')).token},
         contentType: 'application/json',
         error: function(jqxhr, settings, thrownError) {
             
@@ -914,10 +928,11 @@ function cria_nota(nota, lista_id) {
 
     $.ajax({ 
           
-        url: 'http://127.0.0.1:8000/api/nota/',
+        url: 'http://127.0.0.1:8000/api/nota/'+lista_id+'/',
         type: 'POST',
-        data: JSON.stringify({"lista_id": lista_id, "tarefa_texto": nota}),
+        data: JSON.stringify({"tarefa_texto": nota}),
         dataType: 'json',
+        headers: {"Authorization": "Token " + JSON.parse(getLocalStorage('token')).token},
         contentType: 'application/json',
         error: function(jqxhr, settings, thrownError) {
             
@@ -954,6 +969,7 @@ function atualizaLista(titulo, lista_id) {
         type: 'PUT',
         data: JSON.stringify({"titulo": titulo}),
         dataType: 'json',
+        headers: {"Authorization": "Token " + JSON.parse(getLocalStorage('token')).token},
         contentType: 'application/json',
         error: function(jqxhr, settings, thrownError) {
             
@@ -987,8 +1003,9 @@ function atualiza_nota(nota, lista_id, nota_id, status=false) {
           
         url: 'http://127.0.0.1:8000/api/nota/'+nota_id+'/',
         type: 'PUT',
-        data: JSON.stringify({"lista_id": lista_id, "tarefa_texto": nota, "status": status}),
+        data: JSON.stringify({"tarefa_texto": nota, "status": status}),
         dataType: 'json',
+        headers: {"Authorization": "Token " + JSON.parse(getLocalStorage('token')).token},
         contentType: 'application/json',
         error: function(jqxhr, settings, thrownError) {
             
@@ -1022,8 +1039,9 @@ function server_atualiza_nota_parcial(status, lista_id, nota_id) {
 
         url: 'http://127.0.0.1:8000/api/nota/'+nota_id+'/',
         type: 'PATCH',
-        data: JSON.stringify({"lista_id": lista_id, "status": status}),
+        data: JSON.stringify({"status": status}),
         dataType: 'json',
+        headers: {"Authorization": "Token " + JSON.parse(getLocalStorage('token')).token},
         contentType: 'application/json',
         error: function(jqxhr, settings, thrownError) {
             
@@ -1058,6 +1076,7 @@ function deletaLista(lista_id) {
         url: 'http://127.0.0.1:8000/api/lista/'+lista_id+'/',
         type: 'DELETE', 
         dataType: 'json',
+        headers: {"Authorization": "Token " + JSON.parse(getLocalStorage('token')).token},
         contentType: 'application/json',
         error: function(jqxhr, settings, thrownError) {
             
@@ -1094,6 +1113,7 @@ function excluir_nota(nota_id) {
         type: 'DELETE', 
         dataType: 'json',
         contentType: 'application/json',
+        headers: {"Authorization": "Token " + JSON.parse(getLocalStorage('token')).token},
         error: function(jqxhr, settings, thrownError) {
             
             console.log('Houve um erro! ');   
@@ -1113,10 +1133,23 @@ function excluir_nota(nota_id) {
     });
 }
 
+
+function usuario_logado(){
+   
+    if (!JSON.parse(getLocalStorage('token'))){    
+        
+        $('#exampleModalCenter').modal('show')
+
+        return false
+    }
+
+    return true
+}
+
  
 
 function server_listas(){ 
-
+ 
     status_code = 0
 
     loadingInfo("Aguarde...", "Carregando listas!")
@@ -1126,6 +1159,7 @@ function server_listas(){
         url: 'http://127.0.0.1:8000/api/lista/',
         type: 'GET', 
         dataType: 'json',
+        headers: {"Authorization": "Token " + JSON.parse(getLocalStorage('token')).token},
         contentType: "application/json;charset=utf-8",
         success: function (data) { 
 
@@ -1167,6 +1201,7 @@ function carrega_notas_server(lista_id) {
         url: 'http://127.0.0.1:8000/api/notas/'+lista_id,
         type: 'GET', 
         dataType: 'json',
+        headers: {"Authorization": "Token " + JSON.parse(getLocalStorage('token')).token},
         contentType: "application/json;charset=utf-8",
         success: function (data) { 
 

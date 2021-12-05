@@ -143,7 +143,7 @@ def nota_lista_retorna(request, pk):
             raise Lista.DoesNotExist
 
     except Lista.DoesNotExist:  
-        return JsonResponse({'message': 'vazio'}, status=status.HTTP_404_NOT_FOUND)   
+        return JsonResponse({'message': 'vazio'}, status=status.HTTP_204_NO_CONTENT)   # status=status.HTTP_404_NOT_FOUND
     # ***************************************************************************************  
 
     tarefas_serializer = TarefaSerializer(tarefas, many=True)    
