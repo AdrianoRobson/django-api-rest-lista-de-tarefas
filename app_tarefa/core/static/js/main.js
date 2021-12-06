@@ -185,7 +185,7 @@ $(document).ready(function(){
 function limpaCamposFormulario(){
 
     $("#nome").val('')
-    $("#email").val('')
+    //$("#email").val('')
     $("#senha").val('')
     $("#senha2").val('')   
     $("#nomeLogin").val('')
@@ -193,6 +193,25 @@ function limpaCamposFormulario(){
 
 }
 
+function info_erro_server(error_msg){
+    $('#error_server').empty()
+    $("#alert").unbind();
+
+    $('#error_server').append(
+        '<div class="alert alert-warning alert-dismissible fade show" role="alert">'+
+        '<strong>Desculpe, houve um erro</strong><br>'+error_msg+'.'+
+        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+        '  <span aria-hidden="true">&times;</span>'+
+        '</button>'+
+        '</div>'
+    )
+
+    $('.alert').click(function(e){
+        location.reload()
+    });
+
+    $('.alert').alert()
+}
 
 function loginFormularioDinamico(login){
 
@@ -230,13 +249,16 @@ function loginFormularioDinamico(login){
         $('#info_registra_error').empty()
         
         let nome = $("#nome").val().trim()
-        let email = $("#email").val().trim()
+
+        // Email não estará em uso por enquanto
+        let email = "" //$("#email").val("").trim()
+        
         let senha = $("#senha").val().trim()
         let senha2 = $("#senha2").val().trim()
 
         console.log('Nome: ', nome, ' | Emai: ', email,' | Senha: ', senha,' | Senha2: ', senha2) 
 
-        if(((senha && senha2) && (senha == senha2)) && nome && email){
+        if(((senha && senha2) && (senha == senha2)) && nome /*&& email*/){
             
             if(nome.split(" ").length > 1){
                 nome = nome.split(" ")[0]
@@ -251,9 +273,9 @@ function loginFormularioDinamico(login){
         else if (nome==''){
             $('#info_registra_error').text('* Digite um nome') 
         }
-        else if (email==''){
+        /*else if (email==''){
             $('#info_registra_error').text('* Digite um email válido') 
-        }
+        }*/
         else if (senha==''){
             $('#info_registra_error').text('* Digite um senha') 
         }
@@ -808,12 +830,37 @@ function registroLogou(token, nome){
 
 
 
-function status_code_request(status_code){ 
+function status_code_request(status_code, error_msg='', thrownError=''){ 
+
+    SlickLoader.disable(); 
+
     if(status_code==401){ 
         clearLocalStorage()
         usuario_logado(true)
+    }
+    else if(error_msg){
+        info_erro_server(error_msg)
+    }
+    else if(thrownError){
+        info_erro_server(thrownError)
+    }
+    else{
+        info_erro_server('Verifique sua conexão com a internet!')
     } 
 }
+
+function eh_json(obj_str){
+    try{ 
+        JSON.parse(obj_str) 
+        return true
+    }
+    catch(err){
+        console.log('Não é json: ', err.message)
+    }
+
+    return false
+}
+
 
 
 
@@ -877,42 +924,45 @@ function login_usario(user, pass) {
         contentType: 'application/json',
         error: function(jqxhr, settings, thrownError) {
             
-            console.log('Houve um erro! '); 
+            console.log('Houve um erro! ');    
+
+            if(jqxhr.responseText && eh_json(jqxhr.responseText)){
+
+                response =  jQuery.parseJSON(jqxhr.responseText)
+
+                if(response['erro']){
+
+                    $.map(response['erro'], function(val, key){
+
+                        console.log('-------------- Value: ', val, ' |  key: ', key)
+    
+                        $('#info_login_error').append('* '+val+'<br>')  
+    
+                    });
+                } 
+            }
+            else if (thrownError){ 
+                
+                $('#info_login_error').empty()  
+                $('#info_login_error').append('* Descupe, houve um erro!<br>')
+                $('#info_login_error').append('* Erro: '+ jqxhr.status +' '+ thrownError)  
+                
+            }
+            else{
+                $('#info_login_error').empty()  
+                $('#info_login_error').append('* Erro de conexão! ')
+            } 
+            
             
             status_code = jqxhr.status
         },
-        success: function (data) { 
-             
+        success: function (data) {  
 
-            if(data['erro']){ 
+            console.log('DATA RETORNO: ', data)   
 
-                $('#info_login_error').empty()  
+            console.log('DATA USER NAME: ', data['user']['username']) 
 
-                $.map(data['erro'], function(val, key){
-
-                    console.log('-------------- Value: ', val, ' |  key: ', key)
-
-                    $('#info_login_error').append('* '+val)  
-
-                });
-  
-            }
-            else{
-
-                console.log('DATA RETORNO: ', data)   
-
-                console.log('DATA USER NAME: ', data['user']['username'])
-    
-                // $('#info_login_error').empty()
-
-                registroLogou(data['token'], data['user']['username'])    
-            }
-
-
-
-            
-            
-
+            registroLogou(data['token'], data['user']['username'])  
 
         },
         complete: function(data) {
@@ -940,7 +990,29 @@ function registra_usario(user, email, pass) {
         contentType: 'application/json',
         error: function(jqxhr, settings, thrownError) {
             
-            console.log('Houve um erro! ');   
+            console.log('Houve um erro: ', jqxhr.responseText); 
+
+            if(jqxhr.responseText && eh_json(jqxhr.responseText)){
+
+                response =  jQuery.parseJSON(jqxhr.responseText)
+
+                if(response['erro']){
+                    $('#info_registra_error').empty()  
+                    $('#info_registra_error').append('* '+response['erro'])  
+                } 
+            }
+            else if (thrownError){ 
+                
+                $('#info_registra_error').empty()  
+                $('#info_registra_error').append('* Descupe, houve um erro!<br>')
+                $('#info_registra_error').append('* Erro: '+ jqxhr.status +' '+ thrownError)  
+                
+            }
+            else{
+                $('#info_registra_error').empty()  
+                $('#info_registra_error').append('* Erro de conexão! ')
+            }
+ 
 
             status_code = jqxhr.status
         },
@@ -954,17 +1026,24 @@ function registra_usario(user, email, pass) {
 
                 $('#info_registra_error').empty()  
 
-                $.map(data['erro'], function(val, key){
+                if(Array.isArray((data['erro']))){
+                    $.map(data['erro'], function(val, key){
 
-                    console.log('-------------- Value: ', val, ' |  key: ', key)
-
-                    $('#info_registra_error').append('* '+val)  
-
-                });
+                        console.log('-------------- Value: ', val, ' |  key: ', key)
+    
+                        $('#info_registra_error').append('* '+val)  
+    
+                    });
+                }
+                else{
+                    $('#info_registra_error').append('* '+data['erro'])  
+                } 
   
             }
-            else{
+            else if(data['token'] && data['user']['username']){ 
+                
                 registroLogou(data['token'], data['user']['username']) 
+
             }
 
         },
@@ -1006,7 +1085,7 @@ function criaLista(titulo) {
 
             status_code = jqxhr.status
 
-            status_code_request(jqxhr.status)
+            status_code_request(jqxhr.status, jqxhr.responseTex, thrownError)
         },
         success: function (data) { 
             
@@ -1048,7 +1127,7 @@ function cria_nota(nota, lista_id) {
 
             status_code = jqxhr.status
 
-            status_code_request(jqxhr.status)
+            status_code_request(jqxhr.status, jqxhr.responseTex, thrownError)
         },
         success: function (data) { 
             
@@ -1091,7 +1170,7 @@ function atualizaLista(titulo, lista_id) {
 
             status_code = jqxhr.status
 
-            status_code_request(jqxhr.status)
+            status_code_request(jqxhr.status, jqxhr.responseTex, thrownError)
         },
         success: function (data) { 
             
@@ -1133,7 +1212,7 @@ function atualiza_nota(nota, lista_id, nota_id, status=false) {
 
             status_code = jqxhr.status
 
-            status_code_request(jqxhr.status)
+            status_code_request(jqxhr.status, jqxhr.responseTex, thrownError) 
         },
         success: function (data) { 
             
@@ -1175,7 +1254,7 @@ function server_atualiza_nota_parcial(status, lista_id, nota_id) {
 
             status_code = jqxhr.status
 
-            status_code_request(jqxhr.status)
+            status_code_request(jqxhr.status, jqxhr.responseTex, thrownError) 
         },
         success: function (data) { 
             
@@ -1216,7 +1295,7 @@ function deletaLista(lista_id) {
 
             status_code = jqxhr.status
 
-            status_code_request(jqxhr.status)
+            status_code_request(jqxhr.status, jqxhr.responseTex, thrownError)
         },
         success: function (data) { 
             
@@ -1258,7 +1337,7 @@ function excluir_nota(nota_id) {
 
             status_code = jqxhr.status
 
-            status_code_request(jqxhr.status)
+            status_code_request(jqxhr.status, jqxhr.responseTex, thrownError)
         },
         success: function (data) { 
             
@@ -1316,12 +1395,11 @@ function server_listas(){
         }, 
         error: function(jqxhr, settings, thrownError) {
             
-            console.log('Houve um erro! CODE: ',jqxhr.status);  
+            console.log('Houve um erro! CODE: ',jqxhr.status) 
 
             status_code = jqxhr.status  
 
-            status_code_request(jqxhr.status)
- 
+            status_code_request(jqxhr.status, jqxhr.responseTex, thrownError)
         },
         complete: function(data) {
 
@@ -1376,7 +1454,7 @@ function carrega_notas_server(lista_id) {
 
             status_code = jqxhr.status
 
-            status_code_request(jqxhr.status)
+            status_code_request(jqxhr.status, jqxhr.responseTex, thrownError)
  
         },
         complete: function(data) {

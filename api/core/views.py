@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from .models import Tarefa, Lista
 from .serializers import LoginSerializer, TarefaSerializer, ListaSerializer, UserSerializer, RegisterSerializer
 from django.http.response import JsonResponse
@@ -17,22 +18,31 @@ from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticate
 
 import json
 
-class RegisterAPI(generics.GenericAPIView):
-    
+class RegisterAPI(generics.GenericAPIView):    
     serializer_class = RegisterSerializer
 
     def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)  
+        serializer = self.get_serializer(data=request.data)    
+        validate_errors = None
 
         if not serializer.is_valid():
-            return Response({"erro": serializer.errors})         
-    
-        user = serializer.save() 
+            validate_errors = {"erro": serializer.errors} 
+
+        elif User.objects.filter(username=request.data['username']):
+            validate_errors = {"erro": f"O nome {request.data['username'] } já existe!"}
+ 
+        elif len(request.data['password']) < 4:
+            validate_errors = {"erro": "Senha precisa ter no mínimo 4 caracteres"}
+
+        if validate_errors:
+            return Response(validate_errors, status=status.HTTP_400_BAD_REQUEST)   
+           
+        user = serializer.save()  
 
         return Response({
         "user": UserSerializer(user, context=self.get_serializer_context()).data,
         "token": AuthToken.objects.create(user)[1]
-        })
+        }, status=status.HTTP_201_CREATED)
     
      
 
@@ -42,17 +52,17 @@ class LoginAPI(generics.GenericAPIView):
     serializer_class = LoginSerializer
     
     def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        
+        serializer = self.get_serializer(data=request.data) 
+
         if not serializer.is_valid():
-            return Response({"erro": serializer.errors})
+            return Response({"erro": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
         
         user = serializer.validated_data
         
         return Response({
         "user": UserSerializer(user, context=self.get_serializer_context()).data,
         "token": AuthToken.objects.create(user)[1]
-        })
+        }, status=status.HTTP_200_OK)
  
 
 class UserAPI(generics.RetrieveAPIView): 
@@ -60,9 +70,8 @@ class UserAPI(generics.RetrieveAPIView):
     serializer_class = UserSerializer
 
     def get_object(self):
-        return self.request.user
- 
-  
+        return self.request.user 
+
 
 # cria e retorna listas
 @permission_classes([IsAuthenticated])
@@ -77,10 +86,11 @@ def lista_cria_retorna(request):
         # *************************************************************************************** 
        
         lista_serializer = ListaSerializer(data=lista_data)  
-
+  
         if lista_serializer.is_valid():
             lista_serializer.save() 
             return JsonResponse(lista_serializer.data, status=status.HTTP_201_CREATED)
+
         return JsonResponse(lista_serializer.errors, status=status.HTTP_400_BAD_REQUEST)    
     
     elif request.method == 'GET':        
@@ -97,7 +107,7 @@ def lista_atualiza_deleta(request, pk):
     # ***************************************************************************************
     # Para não permitir que um usuário autenticado acesse notas de outro usuário
     try:  
-        usuario = Lista.objects.get(pk=pk).usuario_id 
+        usuario = Lista.objects.get(pk=pk).usuario_id  
 
         print(f'&&&&&&&&&&&&&&&&&&&&&& usuario: {usuario} |    request.user.pk: {request.user.pk}')
 
@@ -139,7 +149,7 @@ def nota_lista_retorna(request, pk):
     # ***************************************************************************************
     # Para não permitir que um usuário autenticado acesse notas de outro usuário
     try: 
-        usuario = Lista.objects.get(pk=pk).usuario_id 
+        usuario = Lista.objects.get(pk=pk).usuario_id   
 
         print(f' get @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ usuario: {usuario} |    request.user.pk: {request.user.pk}')
 

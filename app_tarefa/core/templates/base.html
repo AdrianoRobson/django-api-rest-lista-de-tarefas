@@ -10,8 +10,7 @@
     <link rel="stylesheet" href="{% static 'fa/css/all.min.css' %}"> 
     <link rel="stylesheet" href="{% static 'css/main.css' %}">  
     <link rel="stylesheet" href="{% static 'css/slick-loader.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/login.css' %}"> 
-   
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">   
 
     <title>Tarefa</title>
 
@@ -28,14 +27,9 @@
         
       </nav>
       
-      <div class="alert alert-warning alert-dismissible fade show" role="alert" hidden>
-        <strong id="msg">Houve um erro!</strong>  
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
+      <div id='error_server'></div>
       
-    </header> 
+    </header>  
 
     <div class="container">
       <div class="row">
