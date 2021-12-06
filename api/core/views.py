@@ -22,9 +22,7 @@ class RegisterAPI(generics.GenericAPIView):
     serializer_class = RegisterSerializer
 
     def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data) 
-
-        #serializer.is_valid(raise_exception=True)
+        serializer = self.get_serializer(data=request.data)  
 
         if not serializer.is_valid():
             return Response({"erro": serializer.errors})         
@@ -45,7 +43,10 @@ class LoginAPI(generics.GenericAPIView):
     
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
-        serializer.is_valid()
+        
+        if not serializer.is_valid():
+            return Response({"erro": serializer.errors})
+        
         user = serializer.validated_data
         
         return Response({
@@ -162,6 +163,7 @@ def nota_lista_retorna(request, pk):
   
 # Cria, Retorna, Atualiza, Deleta tarefa
 @api_view(['PUT', 'DELETE', 'PATCH', 'POST'])
+@permission_classes([IsAuthenticated])
 def nota_retorna_atualiza_deleta(request, pk): 
           
 

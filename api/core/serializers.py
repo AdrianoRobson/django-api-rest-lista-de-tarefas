@@ -3,13 +3,11 @@ from .models import Lista, Tarefa
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 
-from django.contrib.auth import get_user_model
-
-User=get_user_model()
+from django.contrib.auth import get_user_model 
+ 
 
 class ListaSerializer(serializers.ModelSerializer):
-    
-    #print(f'+++++++++++++++++++++++++++++ get_user_model(): {get_user_model().objects.get(pk=2)}') 
+     
     class Meta:
         model = Lista
         fields = ('id', 'usuario', 'titulo')
@@ -27,6 +25,8 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'username', 'email')
 
+
+
 # Register Serializer
 class RegisterSerializer(serializers.ModelSerializer):
     username = serializers.CharField()
@@ -35,10 +35,14 @@ class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'username', 'email', 'password')
-        extra_kwargs = {'password': {'write_only': True}}
+        extra_kwargs = {'password': {'write_only': True}}  
+
 
     def create(self, validated_data):
-        user = User.objects.create_user(validated_data['username'], validated_data['email'], validated_data['password'])
+        user = User.objects.create_user(
+            validated_data['username'], 
+            validated_data['email'], 
+            validated_data['password'])
         return user
         
  
@@ -52,5 +56,5 @@ class LoginSerializer(serializers.Serializer):
         user = authenticate(**data)
         if user and user.is_active:
             return user
-        raise serializers.ValidationError('Credenciais incorretas!')
+        raise serializers.ValidationError('usuário ou senha inválido!')
  

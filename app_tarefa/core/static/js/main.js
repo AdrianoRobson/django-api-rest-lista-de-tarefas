@@ -202,15 +202,16 @@ function loginFormularioDinamico(login){
     $("#logout_usuario").unbind();
     $(".message a").unbind(); 
 
-    $('#info_error').empty()
+    $('#info_registra_error').empty()
 
     if(login){
         $('#login-form').append(
             '<form class="login-form">'+
             '<input type="text" id="nomeLogin" placeholder="Nome" value="luara" autocomplete="off"/>'+
             '<input type="password" id="senhalogin" value="Password@123" placeholder="Senha"/>'+ 
+            '<span class="error text-danger" id="info_login_error"></span>'+
             '<button id="login_usuario">login</button>'+
-            '<p class="message">Not registered? <a href="#">Create an account</a></p>'+
+            '<p class="message">Não é cadastrado? <a href="#">Criar uma conta</a></p>'+
             '</form>'
         )
     }
@@ -218,7 +219,7 @@ function loginFormularioDinamico(login){
         $('#login-form').append(
             '<form class="login-form">'+ 
             '<button id="logout_usuario">logout</button>'+
-            '<p class="message"><a href="#">Create an account</a></p>'+
+            '<p class="message"><a href="#">Crie uma conta</a></p>'+
             '</form>'
         )
     }
@@ -226,7 +227,7 @@ function loginFormularioDinamico(login){
 
     $('#registra_usuario').click(function(e){ 
 
-        $('#info_error').empty()
+        $('#info_registra_error').empty()
         
         let nome = $("#nome").val().trim()
         let email = $("#email").val().trim()
@@ -237,35 +238,51 @@ function loginFormularioDinamico(login){
 
         if(((senha && senha2) && (senha == senha2)) && nome && email){
             
+            if(nome.split(" ").length > 1){
+                nome = nome.split(" ")[0]
+            }
+
             registra_usario(nome, email, senha)
 
         }
         else if((senha && senha2) && (senha2 != senha)){
-            $('#info_error').text('* segunda senha não corresponde com a primeira')  
+            $('#info_registra_error').text('* segunda senha não corresponde com a primeira')  
         } 
         else if (nome==''){
-            $('#info_error').text('* Digite um nome') 
+            $('#info_registra_error').text('* Digite um nome') 
         }
         else if (email==''){
-            $('#info_error').text('* Digite um email válido') 
+            $('#info_registra_error').text('* Digite um email válido') 
         }
         else if (senha==''){
-            $('#info_error').text('* Digite um senha') 
+            $('#info_registra_error').text('* Digite um senha') 
         }
         else if (senha2==''){
-            $('#info_error').text('* Confirme a senha') 
+            $('#info_registra_error').text('* Confirme a senha') 
         }
 
     }) 
 
     $('#login_usuario').click(function(e){ 
+
+        $('#info_login_error').empty()
         
         let nome = $("#nomeLogin").val().trim()
         let senha = $("#senhalogin").val().trim() 
 
         console.log('Nome: ', nome, ' | Senha: ', senha)
 
-        login_usario(nome, senha) 
+        if((nome && senha)){
+            login_usario(nome, senha) 
+        }
+        else if(nome==''){
+            $('#info_login_error').text('* digite o nome de usuário')
+        }
+        else if(senha==''){
+            $('#info_login_error').text('* digite a senha')
+        }
+
+        
 
     }) 
 
@@ -303,7 +320,8 @@ function carregaStorage(){
 
 }
 
-function nomeUsuario(){
+function nomeUsuario(){ 
+    
 
     if (JSON.parse(getLocalStorage('token'))){
 
@@ -377,7 +395,7 @@ function extraiNumero(text){
   
 function campoDigitaNota(){
         
-    form = '<input type="text" class="form-control" id="anotacao_tarefa" placeholder="50 caracteres no máximo" autocomplete="off">'     
+    form = '<input type="text" class="form-control" id="anotacao_tarefa"  maxlength="30" placeholder="30 caracteres no máximo" autocomplete="off">'     
     
     return form
 }
@@ -864,13 +882,36 @@ function login_usario(user, pass) {
             status_code = jqxhr.status
         },
         success: function (data) { 
-            
-            console.log('DATA RETORNO: ', data)   
+             
 
-            console.log('DATA USER NAME: ', data['user']['username'])
-            
-            registroLogou(data['token'], data['user']['username'])  
+            if(data['erro']){ 
 
+                $('#info_login_error').empty()  
+
+                $.map(data['erro'], function(val, key){
+
+                    console.log('-------------- Value: ', val, ' |  key: ', key)
+
+                    $('#info_login_error').append('* '+val)  
+
+                });
+  
+            }
+            else{
+
+                console.log('DATA RETORNO: ', data)   
+
+                console.log('DATA USER NAME: ', data['user']['username'])
+    
+                // $('#info_login_error').empty()
+
+                registroLogou(data['token'], data['user']['username'])    
+            }
+
+
+
+            
+            
 
 
         },
@@ -911,19 +952,19 @@ function registra_usario(user, email, pass) {
             
             if(data['erro']){ 
 
-                $('#info_error').empty()  
+                $('#info_registra_error').empty()  
 
                 $.map(data['erro'], function(val, key){
 
                     console.log('-------------- Value: ', val, ' |  key: ', key)
 
-                    $('#info_error').append('* '+val)  
+                    $('#info_registra_error').append('* '+val)  
 
                 });
   
             }
             else{
-                //registroLogou(data['token'], data['user']['username']) 
+                registroLogou(data['token'], data['user']['username']) 
             }
 
         },
@@ -1320,7 +1361,13 @@ function carrega_notas_server(lista_id) {
 
             carregaStorage()
 
-            $('#titulo_tarefa').text(JSON.parse(getLocalStorage('titulo')).titulo)
+            if (JSON.parse(getLocalStorage('titulo'))){ 
+        
+                $('#titulo_tarefa').text(JSON.parse(getLocalStorage('titulo')).titulo)
+
+            } 
+
+            
      
         }, 
         error: function(jqxhr, settings, thrownError) {
@@ -1350,6 +1397,11 @@ function setListLocalStorage(identificador, id_lista, titulo=''){
 }
 
 function setListTitleLocalStorage(lista_titulo){
+
+    if(lista_titulo.length > 20){
+        lista_titulo = lista_titulo.substring(0,20)+'...'
+    }
+    
     window.localStorage.setItem('titulo', JSON.stringify({titulo: lista_titulo}))
 }
 
