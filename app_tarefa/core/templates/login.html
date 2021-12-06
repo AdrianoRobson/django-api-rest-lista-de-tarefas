@@ -6,15 +6,21 @@
                
                     <div class="form">
                       
-                      <form class="register-form" id="form_registra">                        
+                      <form class="register-form" id="form_registra">   
+
+                        <input type="text" id="nome" placeholder="Nome" autocomplete="off" required/>      
+                       
+                        <input type="email" id="email" placeholder="Email" autocomplete="off" required/> 
                         
-                        <input type="text" id="nome" placeholder="Nome" autocomplete="off"/>
-                        <input type="email" id="email" placeholder="Email" autocomplete="off"/>
-                        <input type="password" id="senha" placeholder="Senha"/>
-                        <input type="password" id="senha2" placeholder="Confirme a senha"/>       
+                        <input type="password" id="senha" placeholder="Senha" required/> 
+                         
+                        <input type="password" id="senha2" placeholder="Confirme a senha" required/>
+
+                        <span class="error text-danger" id="info_error"></span>    
+
                         <button id="registra_usuario">create</button>
 
-                        <p class="message">Already registered? <a href="#">Sign In</a></p>
+                        <p class="message">Ja é registrado? <a href="#">Faça o Log in</a></p>
                       </form>
 
                       <form class="login-form" id="login-form">
