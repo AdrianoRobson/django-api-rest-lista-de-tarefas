@@ -108,7 +108,6 @@ def lista_atualiza_deleta(request, pk):
     # Para não permitir que um usuário autenticado acesse notas de outro usuário
     try:  
         usuario = Lista.objects.get(pk=pk).usuario_id  
-
         print(f'&&&&&&&&&&&&&&&&&&&&&& usuario: {usuario} |    request.user.pk: {request.user.pk}')
 
         if usuario != request.user.pk:
@@ -127,7 +126,6 @@ def lista_atualiza_deleta(request, pk):
         lista_data = {"usuario": request.user.pk, "titulo": request.data["titulo"]} 
         print(f'************************** lista_data: {lista_data}') 
         # ***************************************************************************************
-
         lista_serializer = ListaSerializer(lista, data=lista_data) 
       
         if lista_serializer.is_valid(): 
@@ -150,7 +148,6 @@ def nota_lista_retorna(request, pk):
     # Para não permitir que um usuário autenticado acesse notas de outro usuário
     try: 
         usuario = Lista.objects.get(pk=pk).usuario_id   
-
         print(f' get @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ usuario: {usuario} |    request.user.pk: {request.user.pk}')
 
         if usuario != request.user.pk:
@@ -197,9 +194,8 @@ def nota_retorna_atualiza_deleta(request, pk):
   
     
     if request.method == 'POST':
-
         usuario = Lista.objects.get(pk=pk).usuario_id 
-     
+
         if usuario != request.user.pk:
             return JsonResponse({'message': 'vazio'}, status=status.HTTP_404_NOT_FOUND)       
        
@@ -215,16 +211,20 @@ def nota_retorna_atualiza_deleta(request, pk):
     elif request.method == 'PUT':
         nota_data = {"lista_id": lista_id, "tarefa_texto": request.data["tarefa_texto"], "status": request.data["status"]}  
         tarefa_data = nota_data 
+       
         tarefa_serializer = TarefaSerializer(tarefa, data=tarefa_data) 
         if tarefa_serializer.is_valid(): 
             tarefa_serializer.save() 
             return JsonResponse(tarefa_serializer.data, status=status.HTTP_200_OK) 
+       
         return JsonResponse(tarefa_serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
     
+
     elif request.method == 'PATCH':
         nota_data = {"lista_id": lista_id, "status": request.data["status"]}
         tarefa_data = nota_data
         tarefa_serializer = TarefaSerializer(tarefa, data=tarefa_data, partial=True)    
+       
         if tarefa_serializer.is_valid():
             tarefa_serializer.save()
             return JsonResponse(tarefa_serializer.data, status=status.HTTP_200_OK)
