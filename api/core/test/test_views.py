@@ -53,13 +53,13 @@ class RegisterAPI_TestCase(TestCase):
                 }
 
             self.invalid_user_pass =  {
-                "username": "username3", 
+                "username": "username5", 
                 "email": "usuario_test@email.com",
                 "password": "123"
                 } 
 
             self.valid_user_pass =  {
-                "username": "username3", 
+                "username": "username6", 
                 "email": "usuario_test@email.com",
                 "password": "1234"
                 }            
@@ -99,6 +99,7 @@ class RegisterAPI_TestCase(TestCase):
             )  
             self.assertEqual(request_response.status_code, status.HTTP_201_CREATED)
 
+
         def test_invalid_pass(self):
             request_response = client.post(
                 reverse('register'),
@@ -107,36 +108,59 @@ class RegisterAPI_TestCase(TestCase):
             )    
             self.assertEqual(request_response.status_code, status.HTTP_400_BAD_REQUEST)
         
+
         def test_valid_pass(self):
             request_response = client.post(
                 reverse('register'),
                 data=json.dumps(self.valid_user_pass),
                 content_type='application/json', 
             )    
-            self.assertEqual(request_response.status_code, status.HTTP_400_BAD_REQUEST)
+            self.assertEqual(request_response.status_code, status.HTTP_201_CREATED)
 
           
 
 
-            """
+class LoginAPI_TestCase(TestCase):
 
-               user0 = User.objects.filter(username='username1')
+    def setUp(self):
 
-            print(f'_________user0: {user0}')
+        mommy.make('User', username='username1', password='Password@123') 
+        mommy.make('User', username='username2', password='12345')
+        mommy.make('User', username='username3', password='12345') 
 
-              
-        
+        self.valid_user = {
+            "username": "username1", 
+            "password": "Password@123"
+        }
 
-        def test_valid_username(self):
-            response = client.post(
-                reverse('register'),
-                data=json.dumps(self.valid_user),
-                content_type='application/json', 
-            )
-            self.assertNotEqual(response['username'], User.objects.filter(username=response['username']))
+        self.invalid_user = {
+            "username": "username4", 
+            "password": "Password@123"
+        }
 
-            
-            """
+
+    def test_valid_user(self):
+        request_response = client.post(
+            reverse('login'),
+            data=json.dumps(self.valid_user),
+            content_type='application/json', 
+        )
+
+        print(f'********** request_response: {request_response.data}')
+
+        self.assertEqual(request_response.status_code, status.HTTP_201_CREATED)
+
+    def test_invalid_user(self):
+        request_response = client.post(
+            reverse('login'),
+            data=json.dumps(self.invalid_user),
+            content_type='application/json', 
+        )
+        self.assertEqual(request_response.status_code, status.HTTP_400_BAD_REQUEST)
+
+
+
+                   
 
           
             
