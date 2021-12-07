@@ -304,7 +304,7 @@ function loginFormularioDinamico(login){
             $('#info_login_error').text('* digite a senha')
         }
 
-        
+        e.preventDefault()
 
     }) 
 
@@ -923,6 +923,8 @@ function login_usario(user, pass) {
         dataType: 'json',
         contentType: 'application/json',
         error: function(jqxhr, settings, thrownError) {
+
+            $('#info_login_error').empty() 
             
             console.log('Houve um erro! ');    
 
@@ -941,20 +943,20 @@ function login_usario(user, pass) {
                     });
                 } 
             }
-            else if (thrownError){ 
-                
-                $('#info_login_error').empty()  
+            else if (thrownError){  
+
                 $('#info_login_error').append('* Descupe, houve um erro!<br>')
                 $('#info_login_error').append('* Erro: '+ jqxhr.status +' '+ thrownError)  
                 
             }
             else{
-                $('#info_login_error').empty()  
+               
                 $('#info_login_error').append('* Erro de conexão! ')
             } 
             
             
             status_code = jqxhr.status
+ 
         },
         success: function (data) {  
 
@@ -962,7 +964,12 @@ function login_usario(user, pass) {
 
             console.log('DATA USER NAME: ', data['user']['username']) 
 
-            registroLogou(data['token'], data['user']['username'])  
+            if(data['token'] && data['user']['username']){
+                
+                registroLogou(data['token'], data['user']['username'])  
+
+            }
+            
 
         },
         complete: function(data) {
@@ -990,6 +997,7 @@ function registra_usario(user, email, pass) {
         contentType: 'application/json',
         error: function(jqxhr, settings, thrownError) {
             
+
             console.log('Houve um erro: ', jqxhr.responseText); 
 
             if(jqxhr.responseText && eh_json(jqxhr.responseText)){
@@ -997,8 +1005,22 @@ function registra_usario(user, email, pass) {
                 response =  jQuery.parseJSON(jqxhr.responseText)
 
                 if(response['erro']){
-                    $('#info_registra_error').empty()  
-                    $('#info_registra_error').append('* '+response['erro'])  
+
+                    $('#info_registra_error').empty()
+                    
+                    if(Array.isArray((response['erro']))){
+                        $.map(response['erro'], function(val, key){
+    
+                            console.log('-------------- Value: ', val, ' |  key: ', key)
+        
+                            $('#info_registra_error').append('* '+val+'<br>')  
+        
+                        });
+                    }
+                    else{
+                        $('#info_registra_error').append('* '+response['erro'])
+                    }
+                      
                 } 
             }
             else if (thrownError){ 
@@ -1012,38 +1034,21 @@ function registra_usario(user, email, pass) {
                 $('#info_registra_error').empty()  
                 $('#info_registra_error').append('* Erro de conexão! ')
             }
- 
+            
+           
 
             status_code = jqxhr.status
         },
         success: function (data) { 
+ 
             
             console.log('DATA RETORNO: ', data)  
 
             console.log('***** DATA: ', data['erro'])
             
-            if(data['erro']){ 
-
-                $('#info_registra_error').empty()  
-
-                if(Array.isArray((data['erro']))){
-                    $.map(data['erro'], function(val, key){
-
-                        console.log('-------------- Value: ', val, ' |  key: ', key)
-    
-                        $('#info_registra_error').append('* '+val)  
-    
-                    });
-                }
-                else{
-                    $('#info_registra_error').append('* '+data['erro'])  
-                } 
-  
-            }
-            else if(data['token'] && data['user']['username']){ 
+           if(data['token'] && data['user']['username']){ 
                 
-                registroLogou(data['token'], data['user']['username']) 
-
+                registroLogou(data['token'], data['user']['username'])  
             }
 
         },
