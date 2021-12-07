@@ -124,9 +124,11 @@ class LoginAPI_TestCase(TestCase):
 
     def setUp(self):
 
-        mommy.make('User', username='username1', password='Password@123') 
+        # mommy.make('User', username='username1', password='Password@123') 
         mommy.make('User', username='username2', password='12345')
         mommy.make('User', username='username3', password='12345') 
+
+        User.objects.create(username='username1', password='Password@123')
 
         self.valid_user = {
             "username": "username1", 
@@ -148,7 +150,7 @@ class LoginAPI_TestCase(TestCase):
 
         print(f'********** request_response: {request_response.data}')
 
-        self.assertEqual(request_response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(request_response.status_code, status.HTTP_200_OK)
 
     def test_invalid_user(self):
         request_response = client.post(
