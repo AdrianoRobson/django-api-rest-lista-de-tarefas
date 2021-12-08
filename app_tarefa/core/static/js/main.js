@@ -32,11 +32,7 @@ $(document).ready(function () {
         location.reload()
 
     })
-
-    // **********************USER LOGIN***********************************
-
-
-    // *********************************************************
+ 
 
     $("#btn_edit_save").click(function () {
 
@@ -225,8 +221,8 @@ function loginFormularioDinamico(login) {
     if (login) {
         $('#login-form').append(
             '<form class="login-form">' +
-            '<input type="text" id="nomeLogin" placeholder="Nome" value="" autocomplete="off"/>' +
-            '<input type="password" id="senhalogin" value="" placeholder="Senha"/>' +
+            '<input type="text" id="nomeLogin" placeholder="Nome" value="usuario@test" autocomplete="off"/>' +
+            '<input type="password" id="senhalogin" value="12345" placeholder="Senha"/>' +
             '<span class="error text-danger" id="info_login_error"></span>' +
             '<button id="login_usuario">login</button>' +
             '<p class="message">Não é cadastrado? <a href="#">Criar uma conta</a></p>' +

@@ -279,17 +279,7 @@ class RegisterAPI_TestCase(TestCase):
                 HTTP_AUTHORIZATION=f'Token {token}',  
                 content_type='application/json',  
             )    
-            self.assertEqual(request_response.status_code, status.HTTP_204_NO_CONTENT)  
-
-
-
- 
-                    
-
-
-
-
-
+            self.assertEqual(request_response.status_code, status.HTTP_204_NO_CONTENT)   
 
 
         def test_create_invalid_user(self):
