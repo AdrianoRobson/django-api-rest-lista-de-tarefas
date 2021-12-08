@@ -221,7 +221,7 @@ function loginFormularioDinamico(login) {
     if (login) {
         $('#login-form').append(
             '<form class="login-form">' +
-            '<input type="text" id="nomeLogin" placeholder="Nome" value="usuario@test" autocomplete="off"/>' +
+            '<input type="text" id="nomeLogin" placeholder="Nome" value="usuario@test"/>' +
             '<input type="password" id="senhalogin" value="12345" placeholder="Senha"/>' +
             '<span class="error text-danger" id="info_login_error"></span>' +
             '<button id="login_usuario">login</button>' +
@@ -261,7 +261,7 @@ function loginFormularioDinamico(login) {
                 return
             }
 
-            registra_usario(nome, email, senha)
+            registra_usario(nome.toLowerCase(), email, senha)
 
         }
         else if ((senha && senha2) && (senha2 != senha)) {
@@ -873,7 +873,7 @@ function logout_usario() {
 
     $.ajax({
 
-        url: 'http://127.0.0.1:8000/api/logoutall/',
+        url: 'https://api-adr.herokuapp.com/api/logoutall/',
         type: 'POST',
         dataType: 'json',
         headers: { "Authorization": "Token " + JSON.parse(getLocalStorage('token')).token },
@@ -914,7 +914,7 @@ function login_usario(user, pass) {
 
     $.ajax({
 
-        url: 'http://127.0.0.1:8000/api/login/',
+        url: 'https://api-adr.herokuapp.com/api/login/',
         type: 'POST',
         data: JSON.stringify({ "username": user, "password": pass }),
         dataType: 'json',
@@ -987,7 +987,7 @@ function registra_usario(user, email, pass) {
 
     $.ajax({
 
-        url: 'http://127.0.0.1:8000/api/register/',
+        url: 'https://api-adr.herokuapp.com/api/register/',
         type: 'POST',
         data: JSON.stringify({ "username": user, "email": email, "password": pass }),
         dataType: 'json',
@@ -1075,7 +1075,7 @@ function criaLista(titulo) {
 
     $.ajax({
 
-        url: 'http://127.0.0.1:8000/api/lista/',
+        url: 'https://api-adr.herokuapp.com/api/lista/',
         type: 'POST',
         data: JSON.stringify({ "titulo": titulo }),
         dataType: 'json',
@@ -1117,7 +1117,7 @@ function cria_nota(nota, lista_id) {
 
     $.ajax({
 
-        url: 'http://127.0.0.1:8000/api/nota/' + lista_id + '/',
+        url: 'https://api-adr.herokuapp.com/api/nota/' + lista_id + '/',
         type: 'POST',
         data: JSON.stringify({ "tarefa_texto": nota }),
         dataType: 'json',
@@ -1160,7 +1160,7 @@ function atualizaLista(titulo, lista_id) {
 
     $.ajax({
 
-        url: 'http://127.0.0.1:8000/api/lista/' + lista_id + '/',
+        url: 'https://api-adr.herokuapp.com/api/lista/' + lista_id + '/',
         type: 'PUT',
         data: JSON.stringify({ "titulo": titulo }),
         dataType: 'json',
@@ -1202,7 +1202,7 @@ function atualiza_nota(nota, lista_id, nota_id, status = false) {
 
     $.ajax({
 
-        url: 'http://127.0.0.1:8000/api/nota/' + nota_id + '/',
+        url: 'https://api-adr.herokuapp.com/api/nota/' + nota_id + '/',
         type: 'PUT',
         data: JSON.stringify({ "tarefa_texto": nota, "status": status }),
         dataType: 'json',
@@ -1244,7 +1244,7 @@ function server_atualiza_nota_parcial(status, lista_id, nota_id) {
 
     $.ajax({
 
-        url: 'http://127.0.0.1:8000/api/nota/' + nota_id + '/',
+        url: 'https://api-adr.herokuapp.com/api/nota/' + nota_id + '/',
         type: 'PATCH',
         data: JSON.stringify({ "status": status }),
         dataType: 'json',
@@ -1286,7 +1286,7 @@ function deletaLista(lista_id) {
 
     $.ajax({
 
-        url: 'http://127.0.0.1:8000/api/lista/' + lista_id + '/',
+        url: 'https://api-adr.herokuapp.com/api/lista/' + lista_id + '/',
         type: 'DELETE',
         dataType: 'json',
         headers: { "Authorization": "Token " + JSON.parse(getLocalStorage('token')).token },
@@ -1328,7 +1328,7 @@ function excluir_nota(nota_id) {
 
     $.ajax({
 
-        url: 'http://127.0.0.1:8000/api/nota/' + nota_id + '/',
+        url: 'https://api-adr.herokuapp.com/api/nota/' + nota_id + '/',
         type: 'DELETE',
         dataType: 'json',
         contentType: 'application/json',
@@ -1383,7 +1383,7 @@ function server_listas() {
 
     $.ajax({
 
-        url: 'http://127.0.0.1:8000/api/lista/',
+        url: 'https://api-adr.herokuapp.com/api/lista/',
         type: 'GET',
         dataType: 'json',
         headers: { "Authorization": "Token " + JSON.parse(getLocalStorage('token')).token },
@@ -1426,7 +1426,7 @@ function carrega_notas_server(lista_id) {
 
     $.ajax({
 
-        url: 'http://127.0.0.1:8000/api/notas/' + lista_id,
+        url: 'https://api-adr.herokuapp.com/api/notas/' + lista_id,
         type: 'GET',
         dataType: 'json',
         headers: { "Authorization": "Token " + JSON.parse(getLocalStorage('token')).token },

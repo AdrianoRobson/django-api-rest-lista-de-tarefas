@@ -172,6 +172,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOWED_ORIGINS = [ 
     "http://127.0.0.1:8001", 
     "http://192.168.2.104:8001",
-    "https://app-org-task.herokuapp.com/",  
+    "https://app-org-task.herokuapp.com",  
 ]
  
