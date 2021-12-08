@@ -255,15 +255,17 @@ function loginFormularioDinamico(login) {
 
         if (((senha && senha2) && (senha == senha2)) && nome /*&& email*/) {
 
-            if (nome.split(" ").length > 1) {
-                nome = nome.split(" ")[0]
+            if (nome.trim().split(" ").length > 1) {
+                //nome = nome.split(" ")[0]
+                $('#info_registra_error').text('* Nome de usuário não pode ter espaço Ex: mara@julia')
+                return
             }
 
             registra_usario(nome, email, senha)
 
         }
         else if ((senha && senha2) && (senha2 != senha)) {
-            $('#info_registra_error').text('* segunda senha não corresponde com a primeira')
+            $('#info_registra_error').text('* Segunda senha não corresponde com a primeira')
         }
         else if (nome == '') {
             $('#info_registra_error').text('* Digite um nome')
