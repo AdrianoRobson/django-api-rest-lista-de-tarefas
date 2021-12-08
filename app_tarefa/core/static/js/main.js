@@ -6,9 +6,9 @@ var id_ult_edit = -1
 
 var status_checked = false
 
-var text_ult_edit = ''  
+var text_ult_edit = ''
 
-var identificador = 0 
+var identificador = 0
 
 var id_lista_storage = 0
 
@@ -16,58 +16,58 @@ var status_code = 0
 
 
 
-$(document).ready(function(){    
-    
-    SlickLoader.setText('Aguarde','carregando...'); 
-    
+$(document).ready(function () {
+
+    SlickLoader.setText('Aguarde', 'carregando...');
+
 
     carregaStorage()
-  
-    carregaListaTarefa() 
 
-    $('#home_lista').click(function(e){
-        
-        setListLocalStorage(0, 0) 
+    carregaListaTarefa()
+
+    $('#home_lista').click(function (e) {
+
+        setListLocalStorage(0, 0)
 
         location.reload()
 
     })
 
     // **********************USER LOGIN***********************************
- 
- 
+
+
     // *********************************************************
 
-    $("#btn_edit_save").click(function () {  
+    $("#btn_edit_save").click(function () {
 
-        if (!usuario_logado()){
+        if (!usuario_logado()) {
             return
         }
-        
-        console.log('icone: ', $("#btn_edit_save i").attr("class"))
-        
-        if(ehBotaoPadrao()){ 
-            
-            console.log('criar editar nota')
+
+
+
+        if (ehBotaoPadrao()) {
+
+
 
             tarefas(campoDigitaNota(), idUltimaNota(), botaoFechar())
         }
-        else if(ehBotaoSalvar()){
+        else if (ehBotaoSalvar()) {
 
-            if($("#anotacao_tarefa").is(":visible") && 
-                $("#anotacao_tarefa").val().trim().length > 0){
-                
-                console.log('envia para servidor') 
-                
+            if ($("#anotacao_tarefa").is(":visible") &&
+                $("#anotacao_tarefa").val().trim().length > 0) {
+
+
+
                 var nota = $("#anotacao_tarefa").val().trim()
 
-                if (id_ult_edit == -1){
-                    
-                    if(identificador != 0){
-  
-                        $("#linha"+idUltimaNota()).remove() 
-                        
-                        tarefas(nota, idUltimaNota())   
+                if (id_ult_edit == -1) {
+
+                    if (identificador != 0) {
+
+                        $("#linha" + idUltimaNota()).remove()
+
+                        tarefas(nota, idUltimaNota())
 
                         clickEventNotas()
 
@@ -81,13 +81,13 @@ $(document).ready(function(){
                         editReset()
 
                     }
-                    else{ 
+                    else {
 
-                        $("#linha"+idUltimaNota()).remove() 
-                        
-                        tarefas(nota, idUltimaNota(), botaoEditarLista(idUltimaNota()))   
+                        $("#linha" + idUltimaNota()).remove()
 
-                        clickEventNotas() 
+                        tarefas(nota, idUltimaNota(), botaoEditarLista(idUltimaNota()))
+
+                        clickEventNotas()
 
                         clickEventEditarLista()
 
@@ -98,283 +98,282 @@ $(document).ready(function(){
 
                         editReset()
                     }
-                    
+
 
 
 
                 }
-                else if(id_ult_edit != -1){  
+                else if (id_ult_edit != -1) {
 
-                    console.log('edit envia server: ', nota)
 
-                    if(identificador !=0){
 
-                        removeInput(id_ult_edit, nota, status_checked)  
-                        
+                    if (identificador != 0) {
+
+                        removeInput(id_ult_edit, nota, status_checked)
+
                         // ATUALIZA NOTA
-                        atualiza_nota(nota, id_lista_storage, lst_db[id_ult_edit], status_checked)   
-    
+                        atualiza_nota(nota, id_lista_storage, lst_db[id_ult_edit], status_checked)
+
                         editReset()
-    
+
                         botaoPadrao()
-    
+
                         checkEventNotas()
 
                     }
-                    else{
+                    else {
 
-                        removeInput(id_ult_edit, nota, status_checked)  
+                        removeInput(id_ult_edit, nota, status_checked)
 
                         // ATUALIZA LISTA
-                        atualizaLista(nota, lst_db[id_ult_edit])   
-                             
+                        atualizaLista(nota, lst_db[id_ult_edit])
+
                         editReset()
-    
-                        botaoPadrao() 
-    
+
+                        botaoPadrao()
+
                         checkEventNotas()
 
                     }
 
-                   
-                }
-                
-            } 
-             
-        }        
-    }); 
 
-    $(".slick-loader").click(function(e){ 
- 
-        
-        if ($("#anotacao_tarefa").is(":visible")){ 
+                }
+
+            }
+
+        }
+    });
+
+    $(".slick-loader").click(function (e) {
+
+
+        if ($("#anotacao_tarefa").is(":visible")) {
 
             var nota = $("#anotacao_tarefa").val().trim()
 
-        if(id_ult_edit != -1){  
-                console.log('edit envia server: ', nota)
-                if(identificador !=0){
-                    removeInput(id_ult_edit, nota, status_checked)    
+            if (id_ult_edit != -1) {
+
+                if (identificador != 0) {
+                    removeInput(id_ult_edit, nota, status_checked)
                     editReset()
                     botaoPadrao()
                     checkEventNotas()
                 }
-                else{
-                    removeInput(id_ult_edit, nota, status_checked)    
+                else {
+                    removeInput(id_ult_edit, nota, status_checked)
                     editReset()
-                    botaoPadrao() 
+                    botaoPadrao()
                     checkEventNotas()
                 }
-            
+
             }
 
-        } 
-
-        
+        }
 
 
-       
+
+
+
     })
-    
+
 });
 
 
 // ************ USER LOGIN ***************
- 
 
-function limpaCamposFormulario(){
+
+function limpaCamposFormulario() {
 
     $("#nome").val('')
     //$("#email").val('')
     $("#senha").val('')
-    $("#senha2").val('')   
+    $("#senha2").val('')
     $("#nomeLogin").val('')
-    $("#senhalogin").val('')     
+    $("#senhalogin").val('')
 
 }
 
-function info_erro_server(error_msg){
+function info_erro_server(error_msg) {
     $('#error_server').empty()
     $("#alert").unbind();
 
     $('#error_server').append(
-        '<div class="alert alert-warning alert-dismissible fade show" role="alert">'+
-        '<strong>Desculpe, houve um erro</strong><br>'+error_msg+'.'+
-        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-        '  <span aria-hidden="true">&times;</span>'+
-        '</button>'+
+        '<div class="alert alert-warning alert-dismissible fade show" role="alert">' +
+        '<strong>Desculpe, houve um erro</strong><br>' + error_msg + '.' +
+        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+        '  <span aria-hidden="true">&times;</span>' +
+        '</button>' +
         '</div>'
     )
 
-    $('.alert').click(function(e){
+    $('.alert').click(function (e) {
         location.reload()
     });
-
-    $('.alert').alert()
+ 
 }
 
-function loginFormularioDinamico(login){
+function loginFormularioDinamico(login) {
 
     $('#login-form').empty();
     $("#login_usuario").unbind();
     $("#registra_usuario").unbind();
     $("#logout_usuario").unbind();
-    $(".message a").unbind(); 
+    $(".message a").unbind();
 
     $('#info_registra_error').empty()
 
-    if(login){
+    if (login) {
         $('#login-form').append(
-            '<form class="login-form">'+
-            '<input type="text" id="nomeLogin" placeholder="Nome" value="luara" autocomplete="off"/>'+
-            '<input type="password" id="senhalogin" value="Password@123" placeholder="Senha"/>'+ 
-            '<span class="error text-danger" id="info_login_error"></span>'+
-            '<button id="login_usuario">login</button>'+
-            '<p class="message">Não é cadastrado? <a href="#">Criar uma conta</a></p>'+
+            '<form class="login-form">' +
+            '<input type="text" id="nomeLogin" placeholder="Nome" value="" autocomplete="off"/>' +
+            '<input type="password" id="senhalogin" value="" placeholder="Senha"/>' +
+            '<span class="error text-danger" id="info_login_error"></span>' +
+            '<button id="login_usuario">login</button>' +
+            '<p class="message">Não é cadastrado? <a href="#">Criar uma conta</a></p>' +
             '</form>'
         )
     }
-    else{
+    else {
         $('#login-form').append(
-            '<form class="login-form">'+ 
-            '<button id="logout_usuario">logout</button>'+
-            '<p class="message"><a href="#">Crie uma conta</a></p>'+
+            '<form class="login-form">' +
+            '<button id="logout_usuario">logout</button>' +
+            '<p class="message"><a href="#">Crie uma conta</a></p>' +
             '</form>'
         )
     }
 
 
-    $('#registra_usuario').click(function(e){ 
+    $('#registra_usuario').click(function (e) {
 
         $('#info_registra_error').empty()
-        
+
         let nome = $("#nome").val().trim()
 
         // Email não estará em uso por enquanto
         let email = "" //$("#email").val("").trim()
-        
+
         let senha = $("#senha").val().trim()
         let senha2 = $("#senha2").val().trim()
 
-        console.log('Nome: ', nome, ' | Emai: ', email,' | Senha: ', senha,' | Senha2: ', senha2) 
 
-        if(((senha && senha2) && (senha == senha2)) && nome /*&& email*/){
-            
-            if(nome.split(" ").length > 1){
+
+        if (((senha && senha2) && (senha == senha2)) && nome /*&& email*/) {
+
+            if (nome.split(" ").length > 1) {
                 nome = nome.split(" ")[0]
             }
 
             registra_usario(nome, email, senha)
 
         }
-        else if((senha && senha2) && (senha2 != senha)){
-            $('#info_registra_error').text('* segunda senha não corresponde com a primeira')  
-        } 
-        else if (nome==''){
-            $('#info_registra_error').text('* Digite um nome') 
+        else if ((senha && senha2) && (senha2 != senha)) {
+            $('#info_registra_error').text('* segunda senha não corresponde com a primeira')
+        }
+        else if (nome == '') {
+            $('#info_registra_error').text('* Digite um nome')
         }
         /*else if (email==''){
             $('#info_registra_error').text('* Digite um email válido') 
         }*/
-        else if (senha==''){
-            $('#info_registra_error').text('* Digite um senha') 
+        else if (senha == '') {
+            $('#info_registra_error').text('* Digite um senha')
         }
-        else if (senha2==''){
-            $('#info_registra_error').text('* Confirme a senha') 
+        else if (senha2 == '') {
+            $('#info_registra_error').text('* Confirme a senha')
         }
 
-    }) 
+    })
 
-    $('#login_usuario').click(function(e){ 
+    $('#login_usuario').click(function (e) {
 
         $('#info_login_error').empty()
-        
+
         let nome = $("#nomeLogin").val().trim()
-        let senha = $("#senhalogin").val().trim() 
+        let senha = $("#senhalogin").val().trim()
 
-        console.log('Nome: ', nome, ' | Senha: ', senha)
 
-        if((nome && senha)){
-            login_usario(nome, senha) 
+
+        if ((nome && senha)) {
+            login_usario(nome, senha)
         }
-        else if(nome==''){
+        else if (nome == '') {
             $('#info_login_error').text('* digite o nome de usuário')
         }
-        else if(senha==''){
+        else if (senha == '') {
             $('#info_login_error').text('* digite a senha')
         }
 
         e.preventDefault()
 
-    }) 
+    })
 
 
-    $('#logout_usuario').click(function(e){ 
-         
-        console.log('****************************************** logout')  
+    $('#logout_usuario').click(function (e) {
+
+
 
         logout_usario()
 
-    }) 
- 
+    })
 
-    $('.message a').click(function(){
-        $('form').animate({height: "toggle", opacity: "toggle"}, "slow");
+
+    $('.message a').click(function () {
+        $('form').animate({ height: "toggle", opacity: "toggle" }, "slow");
     });
-    
+
 }
- 
+
 
 // ***************************************
 
-function carregaStorage(){
+function carregaStorage() {
 
-     
-    if (JSON.parse(getLocalStorage('lista'))){ 
-        
+
+    if (JSON.parse(getLocalStorage('lista'))) {
+
         identificador = JSON.parse(getLocalStorage('lista')).identificador
 
-        id_lista_storage =  JSON.parse(getLocalStorage('lista')).id_lista 
-    } 
+        id_lista_storage = JSON.parse(getLocalStorage('lista')).id_lista
+    }
 
-   nomeUsuario()
-   
+    nomeUsuario()
+
 
 }
 
-function nomeUsuario(){ 
-    
+function nomeUsuario() {
 
-    if (JSON.parse(getLocalStorage('token'))){
 
-        $('#titulo_tarefa').text('Olá '+ JSON.parse(getLocalStorage('token')).user_name)
+    if (JSON.parse(getLocalStorage('token'))) {
+
+        $('#titulo_tarefa').text('Olá ' + JSON.parse(getLocalStorage('token')).user_name)
 
         loginFormularioDinamico(false)
-        
+
     }
-    else{
+    else {
         loginFormularioDinamico(true)
     }
 }
 
-function carregaListaTarefa(){
+function carregaListaTarefa() {
 
-    if(!usuario_logado()){
+    if (!usuario_logado()) {
         return
     }
 
-    console.log('PASSSSSSSSSSSSSSSSSSSSSSOU')
 
-    if(identificador == 0){
+
+    if (identificador == 0) {
         server_listas()
     }
-    else{ 
+    else {
 
         carrega_notas_server(id_lista_storage)
-    }   
+    }
 }
 
-function editReset(){
+function editReset() {
 
     id_ult_edit = -1
     text_ult_edit = ''
@@ -382,153 +381,153 @@ function editReset(){
 
 }
 
-function ehBotaoPadrao(){
-    
-    if($("#btn_edit_save i").attr("class").includes('fa-edit')){
-        
+function ehBotaoPadrao() {
+
+    if ($("#btn_edit_save i").attr("class").includes('fa-edit')) {
+
         return true
 
     }
 
-    return false    
+    return false
 }
 
 
-function ehBotaoSalvar(){
-    
-    if($("#btn_edit_save i").attr("class").includes('fa-check')){
-        
+function ehBotaoSalvar() {
+
+    if ($("#btn_edit_save i").attr("class").includes('fa-check')) {
+
         return true
 
     }
 
-    return false    
+    return false
 }
 
-function idUltimaNota(){ 
-         
+function idUltimaNota() {
+
     return lst_db.length
 
 }
 
-function extraiNumero(text){
-    return text.replace(/[^0-9]/g, '') 
+function extraiNumero(text) {
+    return text.replace(/[^0-9]/g, '')
 }
-  
-function campoDigitaNota(){
-        
-    form = '<input type="text" class="form-control" id="anotacao_tarefa"  maxlength="30" placeholder="30 caracteres no máximo" autocomplete="off">'     
-    
+
+function campoDigitaNota() {
+
+    form = '<input type="text" class="form-control" id="anotacao_tarefa"  maxlength="30" placeholder="30 caracteres no máximo" autocomplete="off">'
+
     return form
 }
 
-function check(id){
-   ret = '           <input class="custom-control-input" id="customCheck'+id+'" type="checkbox">'+ 
-    '           <label class="cursor-pointer custom-control-label" for="customCheck'+id+'"></label>'
+function check(id) {
+    ret = '           <input class="custom-control-input" id="customCheck' + id + '" type="checkbox">' +
+        '           <label class="cursor-pointer custom-control-label" for="customCheck' + id + '"></label>'
 
     return ret
 }
 
-function botaoFechar(){  
-    return '<i class="fas fa-times fa-2x" id="fechar"></i>'       
+function botaoFechar() {
+    return '<i class="fas fa-times fa-2x" id="fechar"></i>'
 }
 
-function botaoEditarLista(id){ 
+function botaoEditarLista(id) {
 
-    return '<i class="fas fa-pen-square fa-2x" id="editarLista'+id+'"></i>'
+    return '<i class="fas fa-pen-square fa-2x" id="editarLista' + id + '"></i>'
 }
 
 
-function tarefas(tarefa_texto, id, elemento=check(id)){ 
+function tarefas(tarefa_texto, id, elemento = check(id)) {
 
-    if(identificador != 0){
+    if (identificador != 0) {
 
-        $('#tarefa_lista').append('<li class="list-group-item rounded-0" id="linha'+id+'">'+    
-        '    <div class="row">'+         
-        '      <div class="col-10 list-group-item-action" id="textoId'+id+'" >'+ 
-        '        <div id="nota'+id+'"> '+tarefa_texto+' </div>'+
-        '      </div>'+    
-        '      <div class="col-2">'+  
-        '        <div class="custom-control custom-checkbox" id="checkId'+id+'">'+
-                    elemento+
-        '        </div>'+ 
-        '      </div>'+    
-        '    </div>'+   
-        '</li>')
+        $('#tarefa_lista').append('<li class="list-group-item rounded-0" id="linha' + id + '">' +
+            '    <div class="row">' +
+            '      <div class="col-10 list-group-item-action" id="textoId' + id + '" >' +
+            '        <div id="nota' + id + '"> ' + tarefa_texto + ' </div>' +
+            '      </div>' +
+            '      <div class="col-2">' +
+            '        <div class="custom-control custom-checkbox" id="checkId' + id + '">' +
+            elemento +
+            '        </div>' +
+            '      </div>' +
+            '    </div>' +
+            '</li>')
 
-        if (elemento.startsWith("<i class")){
+        if (elemento.startsWith("<i class")) {
 
-            $("#fechar").click(function () {   
-     
+            $("#fechar").click(function () {
+
                 botaoPadrao()
-    
-                 $("#linha"+idUltimaNota()).remove()  
-    
-            });        
-    
-            botaoSalvar()  
-        } 
+
+                $("#linha" + idUltimaNota()).remove()
+
+            });
+
+            botaoSalvar()
+        }
 
     }
-    else{
+    else {
 
         $('#tarefa_lista').append(
-        '<li class="list-group-item rounded-0" id="linha'+id+'">'+    
-       
-        '    <div class="row">'+         
-        '      <div class="col-10 list-group-item-action" id="textoId'+id+'" >'+ 
-        '        <div id="nota'+id+'"> '+tarefa_texto+' </div>'+
-        '      </div>'+    
-        '      <div class="col-2">'+  
-        '        <div class="custom-control custom-checkbox" id="checkId'+id+'">'+
-                    elemento+
-        '        </div>'+ 
-        '      </div>'+    
-        '    </div>'+   
-        '</li>' 
+            '<li class="list-group-item rounded-0" id="linha' + id + '">' +
+
+            '    <div class="row">' +
+            '      <div class="col-10 list-group-item-action" id="textoId' + id + '" >' +
+            '        <div id="nota' + id + '"> ' + tarefa_texto + ' </div>' +
+            '      </div>' +
+            '      <div class="col-2">' +
+            '        <div class="custom-control custom-checkbox" id="checkId' + id + '">' +
+            elemento +
+            '        </div>' +
+            '      </div>' +
+            '    </div>' +
+            '</li>'
         )
 
-      //  console.log('teste.................: ', elemento)
-         
-        
+        //  
 
-        if (elemento.startsWith('<i class="fas fa-times fa-2x"')){
 
-           
-            $("#fechar").click(function () {    
-                
+
+        if (elemento.startsWith('<i class="fas fa-times fa-2x"')) {
+
+
+            $("#fechar").click(function () {
+
                 botaoPadrao()
-    
-                 $("#linha"+idUltimaNota()).remove()  
-    
-            });   
-            
-            
-    
-           botaoSalvar()  
-        } 
+
+                $("#linha" + idUltimaNota()).remove()
+
+            });
+
+
+
+            botaoSalvar()
+        }
 
     }
-   
 
-    
- 
+
+
+
 
 }
 
-function botaoExcluir(id){
+function botaoExcluir(id) {
 
-    $("#fechar").click(function () {    
+    $("#fechar").click(function () {
 
-        if(identificador != 0){
+        if (identificador != 0) {
             // EXCLUIR UMA NOTA
-            excluir_nota(lst_db[id]) 
+            excluir_nota(lst_db[id])
         }
-        else{
+        else {
             // EXLCLUI LISTA
             deletaLista(lst_db[id])
         }
-        
+
 
         location.reload()
 
@@ -537,227 +536,225 @@ function botaoExcluir(id){
     botaoSalvar()
 }
 
-function botaoPadrao(){
-    $("#btn_edit_save i").remove()             
+function botaoPadrao() {
+    $("#btn_edit_save i").remove()
     $("#btn_edit_save").append('<i class="fas fa-edit fa-2x" id="icon"></i>')
 }
 
-function botaoSalvar(){
+function botaoSalvar() {
     $("#btn_edit_save i").remove()
     $("#btn_edit_save").append('<i class="fas fa-check fa-2x"></i>')
 }
 
-function carregaTarefa(data){ 
+function carregaTarefa(data) {
 
     lst_db = []
 
-    $("#tarefa_lista li").remove(); 
+    $("#tarefa_lista li").remove();
 
-    if(Array.isArray((data))){
+    if (Array.isArray((data))) {
 
-        console.log('é array')
 
-        for(i=0; i<data.length; i++){
 
-            if(identificador != 0){
+        for (i = 0; i < data.length; i++) {
 
-                console.log('datas: ',data[i].tarefa_texto)
+            if (identificador != 0) {
+
+
 
                 lst_db.push(data[i].id)
-        
-                tarefas(data[i].tarefa_texto, i)            
-                
-                $("#customCheck"+i).prop( "checked", data[i].status );
+
+                tarefas(data[i].tarefa_texto, i)
+
+                $("#customCheck" + i).prop("checked", data[i].status);
             }
-            else{
+            else {
 
-                console.log('datas: ',data[i].titulo)
+
 
                 lst_db.push(data[i].id)
-        
-                tarefas(data[i].titulo, i, botaoEditarLista(i))    
 
-            } 
-    
-        }   
+                tarefas(data[i].titulo, i, botaoEditarLista(i))
+
+            }
+
+        }
     }
-    else{
-        console.log('___data: ', data) 
-    } 
+    else {
 
-    clickEventNotas()  
+    }
 
-    if(identificador != 0){
+    clickEventNotas()
+
+    if (identificador != 0) {
         checkEventNotas()
     }
-    else{
+    else {
         clickEventEditarLista()
     }
-    
+
 }
 
 
- 
 
-function clickEventNotas(){
+
+function clickEventNotas() {
 
     lst_tarefa = []
 
     lst_tarefa = document.querySelectorAll('.list-group-item-action')
 
-    for(let i = 0; i < lst_tarefa.length; i++){  
-        
-        $("#textoId"+i).unbind();
+    for (let i = 0; i < lst_tarefa.length; i++) {
 
-        $("#textoId"+i).mousedown(function (e) {   
- 
+        $("#textoId" + i).unbind();
 
-            if (identificador != 0){
-                
-                console.log('ID: ',    lst_tarefa[i].id)
+        $("#textoId" + i).mousedown(function (e) {
 
-                 
 
-                if ($("#anotacao_tarefa").is(":visible") && id_ult_edit==-1){ 
-                    
-                    console.log('ENTROU')
+            if (identificador != 0) {
+
+
+
+
+
+                if ($("#anotacao_tarefa").is(":visible") && id_ult_edit == -1) {
+
+
 
                     $("#anotacao_tarefa").css('border-color', 'red');
- 
+
                     return
                 }
 
-                if($(this).text().trim().length == 0){
+                if ($(this).text().trim().length == 0) {
 
-                  
-                    console.log('entro')
+
+
 
                     return
-                } 
+                }
 
-                let nota = $(this).text().trim()      
+                let nota = $(this).text().trim()
 
-                if( id_ult_edit != -1){
-                    
-                    console.log('EDIT ATIVADO: ', id_ult_edit )  
+                if (id_ult_edit != -1) {
+
+
 
                     removeInput(id_ult_edit, text_ult_edit, status_checked)
                 }
 
-                if(nota)
-                {
-                    adicionaIput(i, nota, statuCheckBox(i)) 
+                if (nota) {
+                    adicionaIput(i, nota, statuCheckBox(i))
 
                     botaoSalvar()
                 }
             }
-            else{
+            else {
 
-                if ($("#anotacao_tarefa").is(":visible") && id_ult_edit==-1){  
+                if ($("#anotacao_tarefa").is(":visible") && id_ult_edit == -1) {
 
                     $("#anotacao_tarefa").css('border-color', 'red');
 
                     return
                 }
 
-                if($(this).text().trim().length == 0){
-                    
-                    console.log('entro')
+                if ($(this).text().trim().length == 0) {
+
+
 
                     return
-                } 
- 
-                setListTitleLocalStorage($('#nota'+i).text())   
+                }
 
-                carrega_notas_server(lst_db[i])  
+                setListTitleLocalStorage($('#nota' + i).text())
 
-                identificador = 1 
-                
-                console.log(lst_db[i])
-            } 
+                carrega_notas_server(lst_db[i])
 
-        }); 
-    
-    } 
+                identificador = 1
+
+
+            }
+
+        });
+
+    }
 }
 
 
 
-function clickEventEditarLista(){
-  
+function clickEventEditarLista() {
+
     lst = document.querySelectorAll('.list-group-item-action')
 
-    for(let i = 0; i < lst.length; i++){   
+    for (let i = 0; i < lst.length; i++) {
 
-        $("#editarLista"+i).unbind(); 
+        $("#editarLista" + i).unbind();
 
-        $("#editarLista"+i).click(function (e){   
-              
-            console.log('ID: ',    lst_tarefa[i].id)
+        $("#editarLista" + i).click(function (e) {
 
-            if ($("#anotacao_tarefa").is(":visible") && id_ult_edit==-1){  
+
+
+            if ($("#anotacao_tarefa").is(":visible") && id_ult_edit == -1) {
 
                 return
             }
 
-            if($("#nota"+i).text().trim().length == 0){
-                
-                console.log('entro')
+            if ($("#nota" + i).text().trim().length == 0) {
+
+
 
                 return
-            } 
+            }
 
-            let nota = $("#nota"+i).text().trim()      
+            let nota = $("#nota" + i).text().trim()
 
-            if( id_ult_edit != -1){
-                
-                console.log('EDIT ATIVADO: ', id_ult_edit )  
+            if (id_ult_edit != -1) {
+
+
 
                 removeInput(id_ult_edit, text_ult_edit)
             }
 
-            if(nota)
-            {
-                adicionaIput(i, nota, statuCheckBox(i)) 
+            if (nota) {
+                adicionaIput(i, nota, statuCheckBox(i))
 
                 botaoSalvar()
             }
 
-           console.log('id', i) 
+
 
         });
-    
-    } 
+
+    }
 }
 
 
 
 
-function checkEventNotas(){
-  
+function checkEventNotas() {
+
     lst = document.querySelectorAll('.list-group-item-action')
 
-    for(let i = 0; i < lst.length; i++){   
+    for (let i = 0; i < lst.length; i++) {
 
-        $("#customCheck"+i).unbind(); 
+        $("#customCheck" + i).unbind();
 
-        $("#customCheck"+i).change(function (e){ 
+        $("#customCheck" + i).change(function (e) {
 
-            server_atualiza_nota_parcial(statuCheckBox(i), id_lista_storage, lst_db[i])   
+            server_atualiza_nota_parcial(statuCheckBox(i), id_lista_storage, lst_db[i])
 
-            e.preventDefault() 
+            e.preventDefault()
 
         });
-    
-    } 
+
+    }
 }
 
 
-function statuCheckBox(id){
+function statuCheckBox(id) {
 
-    let check = $("#customCheck"+id).is(":checked") ? true : false;
+    let check = $("#customCheck" + id).is(":checked") ? true : false;
 
-    console.log(' ________________________STATUS CHECKBOX: ', check)
+
 
     return check
 
@@ -766,36 +763,36 @@ function statuCheckBox(id){
 
 
 
- 
-function removeInput(id, texto_nota, status=false){
 
-    $("#textoId"+id).empty()
+function removeInput(id, texto_nota, status = false) {
 
-    $("#textoId"+id).append('<div id="nota'+id+'"> '+texto_nota+' </div>') 
+    $("#textoId" + id).empty()
 
-    $("#checkId"+id).empty()
+    $("#textoId" + id).append('<div id="nota' + id + '"> ' + texto_nota + ' </div>')
 
-    if(identificador!=0){
+    $("#checkId" + id).empty()
 
-        $("#checkId"+id).append(check(id))
+    if (identificador != 0) {
 
-        $("#customCheck"+id).prop("checked", status); 
+        $("#checkId" + id).append(check(id))
+
+        $("#customCheck" + id).prop("checked", status);
     }
-    else{
+    else {
 
-        $("#checkId"+id).append(botaoEditarLista(id)) 
+        $("#checkId" + id).append(botaoEditarLista(id))
 
         clickEventEditarLista()
 
     }
-    
+
 }
 
-function adicionaIput(id, nota, status=false){
+function adicionaIput(id, nota, status = false) {
 
-    $("#textoId"+id).empty()
-                
-    $("#textoId"+id).append(campoDigitaNota())
+    $("#textoId" + id).empty()
+
+    $("#textoId" + id).append(campoDigitaNota())
 
     $("#anotacao_tarefa").val(nota)
 
@@ -805,57 +802,57 @@ function adicionaIput(id, nota, status=false){
 
     status_checked = status
 
-    $("#checkId"+id_ult_edit).empty()
+    $("#checkId" + id_ult_edit).empty()
 
-    $("#checkId"+id_ult_edit).append(botaoFechar())
+    $("#checkId" + id_ult_edit).append(botaoFechar())
 
     botaoExcluir(id)
 
 }
 
 
-function registroLogou(token, nome){
-    
+function registroLogou(token, nome) {
+
     setTokenLocalStorage(token, nome)
 
     nomeUsuario()
 
-    $('#exampleModalCenter').modal('hide') 
+    $('#exampleModalCenter').modal('hide')
 
-    limpaCamposFormulario() 
-    
-    location.reload() 
-    
+    limpaCamposFormulario()
+
+    location.reload()
+
 }
 
 
 
-function status_code_request(status_code, error_msg='', thrownError=''){ 
+function status_code_request(status_code, error_msg = '', thrownError = '') {
 
-    SlickLoader.disable(); 
+    SlickLoader.disable();
 
-    if(status_code==401){ 
+    if (status_code == 401) {
         clearLocalStorage()
         usuario_logado(true)
     }
-    else if(error_msg){
+    else if (error_msg) {
         info_erro_server(error_msg)
     }
-    else if(thrownError){
+    else if (thrownError) {
         info_erro_server(thrownError)
     }
-    else{
+    else {
         info_erro_server('Verifique sua conexão com a internet!')
-    } 
+    }
 }
 
-function eh_json(obj_str){
-    try{ 
-        JSON.parse(obj_str) 
+function eh_json(obj_str) {
+    try {
+        JSON.parse(obj_str)
         return true
     }
-    catch(err){
-        console.log('Não é json: ', err.message)
+    catch (err) {
+
     }
 
     return false
@@ -865,503 +862,503 @@ function eh_json(obj_str){
 
 
 function logout_usario() {
-    
+
     status_code = 0
 
-    if(!usuario_logado()){
+    if (!usuario_logado()) {
         return
     }
 
-    loadingInfo("Aguarde...", "Deslogando usuário!") 
+    loadingInfo("Aguarde...", "Deslogando usuário!")
 
-    $.ajax({ 
-          
+    $.ajax({
+
         url: 'http://127.0.0.1:8000/api/logoutall/',
-        type: 'POST', 
+        type: 'POST',
         dataType: 'json',
-        headers: {"Authorization": "Token " + JSON.parse(getLocalStorage('token')).token},
+        headers: { "Authorization": "Token " + JSON.parse(getLocalStorage('token')).token },
         contentType: 'application/json',
-        error: function(jqxhr, settings, thrownError) {
-            
-            console.log('Houve um erro! '); 
-            
+        error: function (jqxhr, settings, thrownError) {
+
+
+
             status_code = jqxhr.status
         },
-        success: function (data) {   
-          
-            
+        success: function (data) {
+
+
         },
-        complete: function(data) {
+        complete: function (data) {
 
             clearLocalStorage()
-            
-            SlickLoader.disable();  
+
+            SlickLoader.disable();
 
             location.reload()
 
-            
-        
-        } 
+
+
+        }
     });
 
-    
+
 }
 
 
 
 function login_usario(user, pass) {
-    
+
     status_code = 0
 
-    loadingInfo("Aguarde...", "Logando usuário!") 
+    loadingInfo("Aguarde...", "Logando usuário!")
 
-    $.ajax({ 
-          
+    $.ajax({
+
         url: 'http://127.0.0.1:8000/api/login/',
         type: 'POST',
-        data: JSON.stringify({"username": user, "password": pass}),
+        data: JSON.stringify({ "username": user, "password": pass }),
         dataType: 'json',
         contentType: 'application/json',
-        error: function(jqxhr, settings, thrownError) {
+        error: function (jqxhr, settings, thrownError) {
 
-            $('#info_login_error').empty() 
-            
-            console.log('Houve um erro! ');    
+            $('#info_login_error').empty()
 
-            if(jqxhr.responseText && eh_json(jqxhr.responseText)){
 
-                response =  jQuery.parseJSON(jqxhr.responseText)
 
-                if(response['erro']){
+            if (jqxhr.responseText && eh_json(jqxhr.responseText)) {
 
-                    $.map(response['erro'], function(val, key){
+                response = jQuery.parseJSON(jqxhr.responseText)
 
-                        console.log('-------------- Value: ', val, ' |  key: ', key)
-    
-                        $('#info_login_error').append('* '+val+'<br>')  
-    
+                if (response['erro']) {
+
+                    $.map(response['erro'], function (val, key) {
+
+
+
+                        $('#info_login_error').append('* ' + val + '<br>')
+
                     });
-                } 
+                }
             }
-            else if (thrownError){  
+            else if (thrownError) {
 
                 $('#info_login_error').append('* Descupe, houve um erro!<br>')
-                $('#info_login_error').append('* Erro: '+ jqxhr.status +' '+ thrownError)  
-                
+                $('#info_login_error').append('* Erro: ' + jqxhr.status + ' ' + thrownError)
+
             }
-            else{
-               
+            else {
+
                 $('#info_login_error').append('* Erro de conexão! ')
-            } 
-            
-            
+            }
+
+
             status_code = jqxhr.status
- 
+
         },
-        success: function (data) {  
+        success: function (data) {
 
-            console.log('DATA RETORNO: ', data)   
 
-            console.log('DATA USER NAME: ', data['user']['username']) 
 
-            if(data['token'] && data['user']['username']){
-                
-                registroLogou(data['token'], data['user']['username'])  
+
+
+            if (data['token'] && data['user']['username']) {
+
+                registroLogou(data['token'], data['user']['username'])
 
             }
-            
+
 
         },
-        complete: function(data) {
+        complete: function (data) {
 
-            SlickLoader.disable();  
-        
-        } 
+            SlickLoader.disable();
+
+        }
     });
 }
 
 
 
-function registra_usario(user, email, pass) { 
+function registra_usario(user, email, pass) {
 
     status_code = 0
 
-    loadingInfo("Aguarde...", "Registrando usuário!") 
+    loadingInfo("Aguarde...", "Registrando usuário!")
 
-    $.ajax({ 
-          
+    $.ajax({
+
         url: 'http://127.0.0.1:8000/api/register/',
         type: 'POST',
-        data: JSON.stringify({"username": user, "email": email, "password": pass}),
+        data: JSON.stringify({ "username": user, "email": email, "password": pass }),
         dataType: 'json',
         contentType: 'application/json',
-        error: function(jqxhr, settings, thrownError) {
-            
+        error: function (jqxhr, settings, thrownError) {
 
-            console.log('Houve um erro: ', jqxhr.responseText); 
 
-            if(jqxhr.responseText && eh_json(jqxhr.responseText)){
 
-                response =  jQuery.parseJSON(jqxhr.responseText)
 
-                if(response['erro']){
+            if (jqxhr.responseText && eh_json(jqxhr.responseText)) {
+
+                response = jQuery.parseJSON(jqxhr.responseText)
+
+                if (response['erro']) {
 
                     $('#info_registra_error').empty()
-                    
-                    if(Array.isArray((response['erro']))){
-                        $.map(response['erro'], function(val, key){
-    
-                            console.log('-------------- Value: ', val, ' |  key: ', key)
-        
-                            $('#info_registra_error').append('* '+val+'<br>')  
-        
+
+                    if (Array.isArray((response['erro']))) {
+                        $.map(response['erro'], function (val, key) {
+
+
+
+                            $('#info_registra_error').append('* ' + val + '<br>')
+
                         });
                     }
-                    else{
-                        $('#info_registra_error').append('* '+response['erro'])
+                    else {
+                        $('#info_registra_error').append('* ' + response['erro'])
                     }
-                      
-                } 
+
+                }
             }
-            else if (thrownError){ 
-                
-                $('#info_registra_error').empty()  
+            else if (thrownError) {
+
+                $('#info_registra_error').empty()
                 $('#info_registra_error').append('* Descupe, houve um erro!<br>')
-                $('#info_registra_error').append('* Erro: '+ jqxhr.status +' '+ thrownError)  
-                
+                $('#info_registra_error').append('* Erro: ' + jqxhr.status + ' ' + thrownError)
+
             }
-            else{
-                $('#info_registra_error').empty()  
+            else {
+                $('#info_registra_error').empty()
                 $('#info_registra_error').append('* Erro de conexão! ')
             }
-            
-           
+
+
 
             status_code = jqxhr.status
         },
-        success: function (data) { 
- 
-            
-            console.log('DATA RETORNO: ', data)  
+        success: function (data) {
 
-            console.log('***** DATA: ', data['erro'])
-            
-           if(data['token'] && data['user']['username']){ 
-                
-                registroLogou(data['token'], data['user']['username'])  
+
+
+
+
+
+            if (data['token'] && data['user']['username']) {
+
+                registroLogou(data['token'], data['user']['username'])
             }
 
         },
-        complete: function(data) {
+        complete: function (data) {
 
-            SlickLoader.disable();  
-        
-        } 
+            SlickLoader.disable();
+
+        }
     });
 }
- 
 
-function loadingInfo(info1, info2){
-    SlickLoader.setText(info1, info2); 
+
+function loadingInfo(info1, info2) {
+    SlickLoader.setText(info1, info2);
     SlickLoader.enable();
 }
 
-function criaLista(titulo) { 
+function criaLista(titulo) {
 
-    if (!usuario_logado()){
+    if (!usuario_logado()) {
         return
     }
 
     status_code = 0
-    
-    loadingInfo('Aguarde...',"Salvando lista!")
 
-    $.ajax({ 
-          
+    loadingInfo('Aguarde...', "Salvando lista!")
+
+    $.ajax({
+
         url: 'http://127.0.0.1:8000/api/lista/',
         type: 'POST',
-        data: JSON.stringify({"titulo": titulo}),
+        data: JSON.stringify({ "titulo": titulo }),
         dataType: 'json',
-        headers: {"Authorization": "Token " + JSON.parse(getLocalStorage('token')).token},
+        headers: { "Authorization": "Token " + JSON.parse(getLocalStorage('token')).token },
         contentType: 'application/json',
-        error: function(jqxhr, settings, thrownError) {
-            
-            console.log('Houve um erro! ');   
+        error: function (jqxhr, settings, thrownError) {
+
+
 
             status_code = jqxhr.status
 
             status_code_request(jqxhr.status, jqxhr.responseTex, thrownError)
         },
-        success: function (data) { 
-            
-            console.log('DATA RETORNO: ', data)  
+        success: function (data) {
+
+
 
             lst_db.push(data.id)
 
         },
-        complete: function(data) {
+        complete: function (data) {
 
-            SlickLoader.disable();  
-        
-        } 
+            SlickLoader.disable();
+
+        }
     });
 }
- 
 
-function cria_nota(nota, lista_id) {    
 
-    if (!usuario_logado()){
+function cria_nota(nota, lista_id) {
+
+    if (!usuario_logado()) {
         return
     }
 
     status_code = 0
 
-    loadingInfo('Aguarde...',"Salvando nota!")
+    loadingInfo('Aguarde...', "Salvando nota!")
 
-    $.ajax({ 
-          
-        url: 'http://127.0.0.1:8000/api/nota/'+lista_id+'/',
+    $.ajax({
+
+        url: 'http://127.0.0.1:8000/api/nota/' + lista_id + '/',
         type: 'POST',
-        data: JSON.stringify({"tarefa_texto": nota}),
+        data: JSON.stringify({ "tarefa_texto": nota }),
         dataType: 'json',
-        headers: {"Authorization": "Token " + JSON.parse(getLocalStorage('token')).token},
+        headers: { "Authorization": "Token " + JSON.parse(getLocalStorage('token')).token },
         contentType: 'application/json',
-        error: function(jqxhr, settings, thrownError) {
-            
-            console.log('Houve um erro! ');   
+        error: function (jqxhr, settings, thrownError) {
+
+
 
             status_code = jqxhr.status
 
             status_code_request(jqxhr.status, jqxhr.responseTex, thrownError)
         },
-        success: function (data) { 
-            
-            console.log('DATA RETORNO: ', data)  
+        success: function (data) {
+
+
 
             lst_db.push(data.id)
 
         },
-        complete: function(data) {
+        complete: function (data) {
 
-            SlickLoader.disable();  
-        
-        } 
+            SlickLoader.disable();
+
+        }
     });
 }
 
 
 
-function atualizaLista(titulo, lista_id) { 
+function atualizaLista(titulo, lista_id) {
 
-    if (!usuario_logado()){
+    if (!usuario_logado()) {
         return
     }
 
     status_code = 0
-    
-    loadingInfo('Aguarde...',"Atualizando lista!")
 
-    $.ajax({ 
-          
-        url: 'http://127.0.0.1:8000/api/lista/'+lista_id+'/',
+    loadingInfo('Aguarde...', "Atualizando lista!")
+
+    $.ajax({
+
+        url: 'http://127.0.0.1:8000/api/lista/' + lista_id + '/',
         type: 'PUT',
-        data: JSON.stringify({"titulo": titulo}),
+        data: JSON.stringify({ "titulo": titulo }),
         dataType: 'json',
-        headers: {"Authorization": "Token " + JSON.parse(getLocalStorage('token')).token},
+        headers: { "Authorization": "Token " + JSON.parse(getLocalStorage('token')).token },
         contentType: 'application/json',
-        error: function(jqxhr, settings, thrownError) {
-            
-            console.log('Houve um erro! ');   
+        error: function (jqxhr, settings, thrownError) {
+
+
 
             status_code = jqxhr.status
 
             status_code_request(jqxhr.status, jqxhr.responseTex, thrownError)
         },
-        success: function (data) { 
-            
-            console.log('DATA RETORNO: ', data)  
+        success: function (data) {
+
+
 
         },
-        complete: function(data) {
+        complete: function (data) {
 
-            SlickLoader.disable();  
-        
-        } 
+            SlickLoader.disable();
+
+        }
     });
 }
 
 
 
 
-function atualiza_nota(nota, lista_id, nota_id, status=false) {  
+function atualiza_nota(nota, lista_id, nota_id, status = false) {
 
-     if (!usuario_logado()){
-            return
-        }
+    if (!usuario_logado()) {
+        return
+    }
 
     status_code = 0
-    
-    loadingInfo('Aguarde...',"Atualizando nota!")
 
-    $.ajax({ 
-          
-        url: 'http://127.0.0.1:8000/api/nota/'+nota_id+'/',
+    loadingInfo('Aguarde...', "Atualizando nota!")
+
+    $.ajax({
+
+        url: 'http://127.0.0.1:8000/api/nota/' + nota_id + '/',
         type: 'PUT',
-        data: JSON.stringify({"tarefa_texto": nota, "status": status}),
+        data: JSON.stringify({ "tarefa_texto": nota, "status": status }),
         dataType: 'json',
-        headers: {"Authorization": "Token " + JSON.parse(getLocalStorage('token')).token},
+        headers: { "Authorization": "Token " + JSON.parse(getLocalStorage('token')).token },
         contentType: 'application/json',
-        error: function(jqxhr, settings, thrownError) {
-            
-            console.log('Houve um erro! ');   
+        error: function (jqxhr, settings, thrownError) {
+
+
 
             status_code = jqxhr.status
 
-            status_code_request(jqxhr.status, jqxhr.responseTex, thrownError) 
+            status_code_request(jqxhr.status, jqxhr.responseTex, thrownError)
         },
-        success: function (data) { 
-            
-            console.log('DATA RETORNO: ', data)  
+        success: function (data) {
+
+
 
         },
-        complete: function(data) {
+        complete: function (data) {
 
-            SlickLoader.disable();  
-        
-        } 
+            SlickLoader.disable();
+
+        }
     });
 }
 
 
 
 
-function server_atualiza_nota_parcial(status, lista_id, nota_id) { 
+function server_atualiza_nota_parcial(status, lista_id, nota_id) {
 
-    if (!usuario_logado()){
+    if (!usuario_logado()) {
         return
     }
-    
+
     status_code = 0
-    
-    loadingInfo('Aguarde...',"Atualizando check!")
 
-    $.ajax({  
+    loadingInfo('Aguarde...', "Atualizando check!")
 
-        url: 'http://127.0.0.1:8000/api/nota/'+nota_id+'/',
+    $.ajax({
+
+        url: 'http://127.0.0.1:8000/api/nota/' + nota_id + '/',
         type: 'PATCH',
-        data: JSON.stringify({"status": status}),
+        data: JSON.stringify({ "status": status }),
         dataType: 'json',
-        headers: {"Authorization": "Token " + JSON.parse(getLocalStorage('token')).token},
+        headers: { "Authorization": "Token " + JSON.parse(getLocalStorage('token')).token },
         contentType: 'application/json',
-        error: function(jqxhr, settings, thrownError) {
-            
-            console.log('Houve um erro! ');   
-
-            status_code = jqxhr.status
-
-            status_code_request(jqxhr.status, jqxhr.responseTex, thrownError) 
-        },
-        success: function (data) { 
-            
-            console.log('DATA RETORNO: ', data)  
+        error: function (jqxhr, settings, thrownError) {
 
 
-        },
-        complete: function(data) {
-
-            SlickLoader.disable();  
-        
-        } 
-    });
-}
-
-
-
-function deletaLista(lista_id) {    
-
-    if (!usuario_logado()){
-        return
-    }
-
-    status_code = 0
-
-    loadingInfo('Aguarde...',"Deletando lista!")
-
-    $.ajax({ 
-          
-        url: 'http://127.0.0.1:8000/api/lista/'+lista_id+'/',
-        type: 'DELETE', 
-        dataType: 'json',
-        headers: {"Authorization": "Token " + JSON.parse(getLocalStorage('token')).token},
-        contentType: 'application/json',
-        error: function(jqxhr, settings, thrownError) {
-            
-            console.log('Houve um erro! ');   
 
             status_code = jqxhr.status
 
             status_code_request(jqxhr.status, jqxhr.responseTex, thrownError)
         },
-        success: function (data) { 
-            
-            console.log('DATA RETORNO: ', data)  
+        success: function (data) {
+
+
+
 
         },
-        complete: function(data) {
+        complete: function (data) {
 
-            SlickLoader.disable();  
-        
+            SlickLoader.disable();
+
         }
-        
-        
     });
 }
 
 
 
-function excluir_nota(nota_id) { 
+function deletaLista(lista_id) {
 
-    if (!usuario_logado()){
+    if (!usuario_logado()) {
         return
     }
 
     status_code = 0
-    
+
+    loadingInfo('Aguarde...', "Deletando lista!")
+
+    $.ajax({
+
+        url: 'http://127.0.0.1:8000/api/lista/' + lista_id + '/',
+        type: 'DELETE',
+        dataType: 'json',
+        headers: { "Authorization": "Token " + JSON.parse(getLocalStorage('token')).token },
+        contentType: 'application/json',
+        error: function (jqxhr, settings, thrownError) {
+
+
+
+            status_code = jqxhr.status
+
+            status_code_request(jqxhr.status, jqxhr.responseTex, thrownError)
+        },
+        success: function (data) {
+
+
+
+        },
+        complete: function (data) {
+
+            SlickLoader.disable();
+
+        }
+
+
+    });
+}
+
+
+
+function excluir_nota(nota_id) {
+
+    if (!usuario_logado()) {
+        return
+    }
+
+    status_code = 0
+
     loadingInfo("Aguarde...", "Excluindo nota!")
 
-    $.ajax({ 
-          
-        url: 'http://127.0.0.1:8000/api/nota/'+nota_id+'/',
-        type: 'DELETE', 
+    $.ajax({
+
+        url: 'http://127.0.0.1:8000/api/nota/' + nota_id + '/',
+        type: 'DELETE',
         dataType: 'json',
         contentType: 'application/json',
-        headers: {"Authorization": "Token " + JSON.parse(getLocalStorage('token')).token},
-        error: function(jqxhr, settings, thrownError) {
-            
-            console.log('Houve um erro! ');   
+        headers: { "Authorization": "Token " + JSON.parse(getLocalStorage('token')).token },
+        error: function (jqxhr, settings, thrownError) {
+
+
 
             status_code = jqxhr.status
 
             status_code_request(jqxhr.status, jqxhr.responseTex, thrownError)
         },
-        success: function (data) { 
-            
-            console.log('DATA RETORNO: ', data)  
+        success: function (data) {
+
+
 
         },
-        complete: function(data) {
+        complete: function (data) {
 
-            SlickLoader.disable();  
-        
-        } 
+            SlickLoader.disable();
+
+        }
     });
 }
 
 
-function usuario_logado(forcado=false){
-   
-    if (!JSON.parse(getLocalStorage('token')) || forcado){    
-        
+function usuario_logado(forcado = false) {
+
+    if (!JSON.parse(getLocalStorage('token')) || forcado) {
+
         $('#exampleModalCenter').modal('show')
 
         loginFormularioDinamico(true)
@@ -1372,14 +1369,14 @@ function usuario_logado(forcado=false){
     return true
 }
 
- 
 
-function server_listas(){ 
 
-    if (!usuario_logado()){
+function server_listas() {
+
+    if (!usuario_logado()) {
         return
     }
- 
+
     status_code = 0
 
     loadingInfo("Aguarde...", "Carregando listas!")
@@ -1387,39 +1384,39 @@ function server_listas(){
     $.ajax({
 
         url: 'http://127.0.0.1:8000/api/lista/',
-        type: 'GET', 
+        type: 'GET',
         dataType: 'json',
-        headers: {"Authorization": "Token " + JSON.parse(getLocalStorage('token')).token},
+        headers: { "Authorization": "Token " + JSON.parse(getLocalStorage('token')).token },
         contentType: "application/json;charset=utf-8",
-        success: function (data) { 
+        success: function (data) {
 
-            console.log('DATA: ',typeof( data))  
 
-            carregaTarefa(data) 
 
-        }, 
-        error: function(jqxhr, settings, thrownError) {
-            
-            console.log('Houve um erro! CODE: ',jqxhr.status) 
+            carregaTarefa(data)
 
-            status_code = jqxhr.status  
+        },
+        error: function (jqxhr, settings, thrownError) {
+
+
+
+            status_code = jqxhr.status
 
             status_code_request(jqxhr.status, jqxhr.responseTex, thrownError)
         },
-        complete: function(data) {
+        complete: function (data) {
 
-            SlickLoader.disable();  
-        
+            SlickLoader.disable();
+
         }
-     
+
     });
 }
 
- 
 
-function carrega_notas_server(lista_id) { 
 
-     if(!usuario_logado()){
+function carrega_notas_server(lista_id) {
+
+    if (!usuario_logado()) {
         return
     }
 
@@ -1429,81 +1426,81 @@ function carrega_notas_server(lista_id) {
 
     $.ajax({
 
-        url: 'http://127.0.0.1:8000/api/notas/'+lista_id,
-        type: 'GET', 
+        url: 'http://127.0.0.1:8000/api/notas/' + lista_id,
+        type: 'GET',
         dataType: 'json',
-        headers: {"Authorization": "Token " + JSON.parse(getLocalStorage('token')).token},
+        headers: { "Authorization": "Token " + JSON.parse(getLocalStorage('token')).token },
         contentType: "application/json;charset=utf-8",
-        success: function (data) { 
+        success: function (data) {
 
-            console.log('DATA: ',typeof( data))
-            
+
+
             carregaTarefa(data)
 
-            setListLocalStorage(1, lista_id) 
+            setListLocalStorage(1, lista_id)
 
             carregaStorage()
 
-            if (JSON.parse(getLocalStorage('titulo'))){ 
-        
+            if (JSON.parse(getLocalStorage('titulo'))) {
+
                 $('#titulo_tarefa').text(JSON.parse(getLocalStorage('titulo')).titulo)
 
-            } 
+            }
 
-            
-     
-        }, 
-        error: function(jqxhr, settings, thrownError) {
-            
-            console.log('Houve um erro! ');  
+
+
+        },
+        error: function (jqxhr, settings, thrownError) {
+
+
 
             status_code = jqxhr.status
 
             status_code_request(jqxhr.status, jqxhr.responseTex, thrownError)
- 
-        },
-        complete: function(data) {
 
-            SlickLoader.disable();  
-        
+        },
+        complete: function (data) {
+
+            SlickLoader.disable();
+
         }
-     
+
     });
 }
 
-function setTokenLocalStorage(token, user_name=''){
-    window.localStorage.setItem('token', JSON.stringify({'token': token, 'user_name': user_name}))
+function setTokenLocalStorage(token, user_name = '') {
+    window.localStorage.setItem('token', JSON.stringify({ 'token': token, 'user_name': user_name }))
 }
 
-function setListLocalStorage(identificador, id_lista, titulo=''){  
-    window.localStorage.setItem('lista', JSON.stringify( {identificador: identificador, id_lista: id_lista} )) 
+function setListLocalStorage(identificador, id_lista, titulo = '') {
+    window.localStorage.setItem('lista', JSON.stringify({ identificador: identificador, id_lista: id_lista }))
 }
 
-function setListTitleLocalStorage(lista_titulo){
+function setListTitleLocalStorage(lista_titulo) {
 
-    if(lista_titulo.length > 20){
-        lista_titulo = lista_titulo.substring(0,20)+'...'
+    if (lista_titulo.length > 20) {
+        lista_titulo = lista_titulo.substring(0, 20) + '...'
     }
-    
-    window.localStorage.setItem('titulo', JSON.stringify({titulo: lista_titulo}))
+
+    window.localStorage.setItem('titulo', JSON.stringify({ titulo: lista_titulo }))
 }
 
- 
-function getLocalStorage(key){
+
+function getLocalStorage(key) {
     return window.localStorage.getItem(key);
 }
 
-function removeItemLocalStorage(key){
+function removeItemLocalStorage(key) {
     localStorage.removeItem(key)
 }
 
-function clearLocalStorage(){
+function clearLocalStorage() {
     localStorage.clear()
-    console.log("clear records");
+
 }
 
 
 
 
 
- 
+
