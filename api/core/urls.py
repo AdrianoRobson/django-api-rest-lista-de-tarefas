@@ -10,7 +10,7 @@ from knox import views as knox_views
 urlpatterns = [ 
     
     # Retorna id, name, email usuario autênticado
-    path('api/user/', UserAPI.as_view()),    
+    path('api/user/', UserAPI.as_view(), name="user"),    
 
     # path('api/user/logout/', knox_views.LogoutAllView.as_view()), 
 
@@ -22,10 +22,7 @@ urlpatterns = [
 
     # Logout usuário
     path('api/logout/', knox_views.LogoutAllView.as_view(), name='logout'),
-
-
-
-
+ 
     # Retorna notas
     path('api/notas/<str:pk>/', nota_lista_retorna, name='nota_lista_retorna'),
 
