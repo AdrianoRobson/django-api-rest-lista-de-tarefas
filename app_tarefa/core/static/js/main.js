@@ -813,6 +813,8 @@ function registroLogou(token, nome) {
 
     setTokenLocalStorage(token, nome)
 
+    setListLocalStorage(0, 0)
+
     nomeUsuario()
 
     $('#exampleModalCenter').modal('hide')
