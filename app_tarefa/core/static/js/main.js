@@ -897,7 +897,7 @@ function logout_usario() {
 
     $.ajax({
 
-        url: 'http://127.0.0.1:8000/api/logoutall/',
+        url: 'http://127.0.0.1:8000/api/logout/',
         type: 'POST',
         dataType: 'json',
         headers: { "Authorization": "Token " + JSON.parse(getLocalStorage('token')).token },
