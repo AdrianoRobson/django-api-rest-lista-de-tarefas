@@ -21,7 +21,7 @@ urlpatterns = [
     path('api/login/', LoginAPI.as_view(), name='login'),
 
     # Logout usuário
-    path('api/logout/', knox_views.LogoutAllView.as_view(), name='logout'),
+    path('api/logout/', knox_views.LogoutView.as_view(), name='logout'),
  
     # Retorna notas
     path('api/notas/<str:pk>/', nota_lista_retorna, name='nota_lista_retorna'),
