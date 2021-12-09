@@ -226,8 +226,8 @@ function loginFormularioDinamico(login) {
     if (login) {
         $('#login-form').append(
             '<form class="login-form">' +
-            '<input type="search"  id="nomeLogin" placeholder="Nome" value="usuario@test" autocomplete="false"/>' +
-            '<input type="password" id="senhalogin" value="12345" placeholder="Senha"/>' +
+            '<input type="search" maxlength="50" id="nomeLogin" placeholder="Nome" value="usuario@test" autocomplete="false"/>' +
+            '<input type="password" maxlength="6" id="senhalogin" value="12345" placeholder="Senha"/>' +
             '<span class="error text-danger" id="info_login_error"></span>' +
             '<button type="submit" id="login_usuario">login</button>' +
             '<p class="message">Não é cadastrado? <a href="#">Criar uma conta</a></p>' +
@@ -259,6 +259,22 @@ function loginFormularioDinamico(login) {
     });
 
 
+    $("#senhalogin").keyup(function(e){   
+       
+        if($(this).val().includes(" ")){
+            $('#info_login_error').text('Senha não pode ter espaço!')
+        }
+    
+        $(this).val($(this).val().toLowerCase().trim());  
+        txt = $(this).val()  
+        $(this).val(txt) 
+    });
+
+
+
+  
+
+
     $('#registra_usuario').click(function (e) {
 
         $('#info_registra_error').empty()
@@ -271,9 +287,31 @@ function loginFormularioDinamico(login) {
         let senha = $("#senha").val().trim()
         let senha2 = $("#senha2").val().trim()
 
+        console.log('senha.length: ', senha.length)
 
-
-        if (((senha && senha2) && (senha == senha2)) && nome /*&& email*/) {
+        if (nome == '') {
+            $('#info_registra_error').text('* Digite um nome')
+        }
+        /*else if (email==''){
+            $('#info_registra_error').text('* Digite um email válido') 
+        }*/
+        else if (senha == '') {
+            $('#info_registra_error').text('* Digite uma senha')
+        }
+        else if (senha2 == '') {
+            $('#info_registra_error').text('* Confirme a senha')
+        }
+        else if(senha.length<4){  
+            $('#info_registra_error').text('* Tamanho mínimo para senha é de 4 caracteres e o máximo 6')  
+        } 
+        else if(senha.length>6){
+            $('#info_registra_error').text('* Senha não deve ser maior que 6 caracteres!') 
+        } 
+        else if ((senha && senha2) && (senha2 != senha)) {
+            $('#info_registra_error').text('* Segunda senha não corresponde com a primeira')
+        } 
+       
+        else if (((senha && senha2) && (senha == senha2)) && nome /*&& email*/) { 
 
             if (nome.trim().split(" ").length > 1) {
                 //nome = nome.split(" ")[0]
@@ -283,21 +321,6 @@ function loginFormularioDinamico(login) {
 
             registra_usario(nome.toLowerCase(), email, senha)
 
-        }
-        else if ((senha && senha2) && (senha2 != senha)) {
-            $('#info_registra_error').text('* Segunda senha não corresponde com a primeira')
-        }
-        else if (nome == '') {
-            $('#info_registra_error').text('* Digite um nome')
-        }
-        /*else if (email==''){
-            $('#info_registra_error').text('* Digite um email válido') 
-        }*/
-        else if (senha == '') {
-            $('#info_registra_error').text('* Digite um senha')
-        }
-        else if (senha2 == '') {
-            $('#info_registra_error').text('* Confirme a senha')
         }
 
         e.preventDefault()
@@ -437,7 +460,8 @@ function extraiNumero(text) {
 function campoDigitaNota() {
 
     form = '<input type="text" class="form-control" id="anotacao_tarefa"  maxlength="30" placeholder="30 caracteres no máximo" autocomplete="off">'
-
+    
+      
     return form
 }
 
@@ -897,7 +921,7 @@ function logout_usario() {
 
     $.ajax({
 
-        url: 'http://127.0.0.1:8000/api/logout/',
+        url: 'https://api-adr.herokuapp.com/api/logout/',
         type: 'POST',
         dataType: 'json',
         headers: { "Authorization": "Token " + JSON.parse(getLocalStorage('token')).token },
@@ -938,7 +962,7 @@ function login_usario(user, pass) {
 
     $.ajax({
 
-        url: 'http://127.0.0.1:8000/api/login/',
+        url: 'https://api-adr.herokuapp.com/api/login/',
         type: 'POST',
         data: JSON.stringify({ "username": user, "password": pass }),
         dataType: 'json',
@@ -1011,7 +1035,7 @@ function registra_usario(user, email, pass) {
 
     $.ajax({
 
-        url: 'http://127.0.0.1:8000/api/register/',
+        url: 'https://api-adr.herokuapp.com/api/register/',
         type: 'POST',
         data: JSON.stringify({ "username": user, "email": email, "password": pass }),
         dataType: 'json',
@@ -1099,7 +1123,7 @@ function criaLista(titulo) {
 
     $.ajax({
 
-        url: 'http://127.0.0.1:8000/api/lista/',
+        url: 'https://api-adr.herokuapp.com/api/lista/',
         type: 'POST',
         data: JSON.stringify({ "titulo": titulo }),
         dataType: 'json',
@@ -1141,7 +1165,7 @@ function cria_nota(nota, lista_id) {
 
     $.ajax({
 
-        url: 'http://127.0.0.1:8000/api/nota/' + lista_id + '/',
+        url: 'https://api-adr.herokuapp.com/api/nota/' + lista_id + '/',
         type: 'POST',
         data: JSON.stringify({ "tarefa_texto": nota }),
         dataType: 'json',
@@ -1184,7 +1208,7 @@ function atualizaLista(titulo, lista_id) {
 
     $.ajax({
 
-        url: 'http://127.0.0.1:8000/api/lista/' + lista_id + '/',
+        url: 'https://api-adr.herokuapp.com/api/lista/' + lista_id + '/',
         type: 'PUT',
         data: JSON.stringify({ "titulo": titulo }),
         dataType: 'json',
@@ -1226,7 +1250,7 @@ function atualiza_nota(nota, lista_id, nota_id, status = false) {
 
     $.ajax({
 
-        url: 'http://127.0.0.1:8000/api/nota/' + nota_id + '/',
+        url: 'https://api-adr.herokuapp.com/api/nota/' + nota_id + '/',
         type: 'PUT',
         data: JSON.stringify({ "tarefa_texto": nota, "status": status }),
         dataType: 'json',
@@ -1268,7 +1292,7 @@ function server_atualiza_nota_parcial(status, lista_id, nota_id) {
 
     $.ajax({
 
-        url: 'http://127.0.0.1:8000/api/nota/' + nota_id + '/',
+        url: 'https://api-adr.herokuapp.com/api/nota/' + nota_id + '/',
         type: 'PATCH',
         data: JSON.stringify({ "status": status }),
         dataType: 'json',
@@ -1310,7 +1334,7 @@ function deletaLista(lista_id) {
 
     $.ajax({
 
-        url: 'http://127.0.0.1:8000/api/lista/' + lista_id + '/',
+        url: 'https://api-adr.herokuapp.com/api/lista/' + lista_id + '/',
         type: 'DELETE',
         dataType: 'json',
         headers: { "Authorization": "Token " + JSON.parse(getLocalStorage('token')).token },
@@ -1352,7 +1376,7 @@ function excluir_nota(nota_id) {
 
     $.ajax({
 
-        url: 'http://127.0.0.1:8000/api/nota/' + nota_id + '/',
+        url: 'https://api-adr.herokuapp.com/api/nota/' + nota_id + '/',
         type: 'DELETE',
         dataType: 'json',
         contentType: 'application/json',
@@ -1407,7 +1431,7 @@ function server_listas() {
 
     $.ajax({
 
-        url: 'http://127.0.0.1:8000/api/lista/',
+        url: 'https://api-adr.herokuapp.com/api/lista/',
         type: 'GET',
         dataType: 'json',
         headers: { "Authorization": "Token " + JSON.parse(getLocalStorage('token')).token },
@@ -1450,7 +1474,7 @@ function carrega_notas_server(lista_id) {
 
     $.ajax({
 
-        url: 'http://127.0.0.1:8000/api/notas/' + lista_id,
+        url: 'https://api-adr.herokuapp.com/api/notas/' + lista_id,
         type: 'GET',
         dataType: 'json',
         headers: { "Authorization": "Token " + JSON.parse(getLocalStorage('token')).token },
@@ -1517,6 +1541,21 @@ $("#nome").keyup(function(e){
   
     $(this).val(txt) 
 });
+
+$("#senha, #senha2").keyup(function(e){
+    
+    if($(this).val().includes(" ")){
+        $('#info_registra_error').text('Senha não pode ter espaço!')
+    }
+
+    $(this).val($(this).val().toLowerCase().trim());  
+    txt = $(this).val()  
+    $(this).val(txt) 
+});
+
+
+ 
+
 
 
 

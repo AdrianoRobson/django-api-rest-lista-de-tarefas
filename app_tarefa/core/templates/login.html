@@ -8,13 +8,13 @@
                       
                       <form class="register-form" id="form_registra" autocomplete="off">   
 
-                        <input type="search" id="nome" value="" placeholder="Nome de usuario Ex: maria@julia" required autocomplete="false"/>      
+                        <input type="search" id="nome" maxlength="50" value="" placeholder="Nome de usuario Ex: maria@julia" required autocomplete="false"/>      
                        
                         <input type="email" id="email" placeholder="Email" hidden/> 
                         
-                        <input type="password" id="senha" value="" placeholder="Senha" required/> 
+                        <input type="password" id="senha" maxlength="6" value="" placeholder="Senha" required/> 
                          
-                        <input type="password" id="senha2" value="" placeholder="Confirme a senha" required/>
+                        <input type="password" id="senha2" maxlength="6" value="" placeholder="Confirme a senha" required/>
 
                         <span class="error text-danger" id="info_registra_error"></span>    
 
