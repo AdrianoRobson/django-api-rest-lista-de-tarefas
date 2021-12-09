@@ -139,10 +139,7 @@ $(document).ready(function () {
 
         }
         
-
-
-                 
-
+ 
 
     });
 
@@ -232,7 +229,7 @@ function loginFormularioDinamico(login) {
             '<input type="search"  id="nomeLogin" placeholder="Nome" value="usuario@test" autocomplete="false"/>' +
             '<input type="password" id="senhalogin" value="12345" placeholder="Senha"/>' +
             '<span class="error text-danger" id="info_login_error"></span>' +
-            '<button id="login_usuario">login</button>' +
+            '<button type="submit" id="login_usuario">login</button>' +
             '<p class="message">Não é cadastrado? <a href="#">Criar uma conta</a></p>' +
             '</form>'
         )
@@ -245,6 +242,21 @@ function loginFormularioDinamico(login) {
             '</form>'
         )
     }
+
+
+    $("#nomeLogin").keyup(function(e){   
+    
+        $(this).val($(this).val().toLowerCase().trim());  
+        txt = $(this).val()   
+    
+        if(txt.match(/[^a-z0-9@#$]/)){ 
+            $('#info_login_error').text('Caracteres válidos para o nome de usuário @ # $') 
+        } 
+       
+        txt = txt.replace(/[^a-z0-9@#$]/g,'')
+      
+        $(this).val(txt) 
+    });
 
 
     $('#registra_usuario').click(function (e) {
@@ -287,6 +299,8 @@ function loginFormularioDinamico(login) {
         else if (senha2 == '') {
             $('#info_registra_error').text('* Confirme a senha')
         }
+
+        e.preventDefault()
 
     })
 
@@ -446,7 +460,8 @@ function botaoEditarLista(id) {
 
 function tarefas(tarefa_texto, id, elemento = check(id)) {
 
-    if (identificador != 0) {
+    if (identificador != 0) { 
+        
 
         $('#tarefa_lista').append('<li class="list-group-item rounded-0" id="linha' + id + '">' +
             '    <div class="row">' +
@@ -476,6 +491,7 @@ function tarefas(tarefa_texto, id, elemento = check(id)) {
 
     }
     else {
+         
 
         $('#tarefa_lista').append(
             '<li class="list-group-item rounded-0" id="linha' + id + '">' +
@@ -485,7 +501,7 @@ function tarefas(tarefa_texto, id, elemento = check(id)) {
             '        <div id="nota' + id + '"> ' + tarefa_texto + ' </div>' +
             '      </div>' +
             '      <div class="col-2">' +
-            '        <div class="custom-control custom-checkbox" id="checkId' + id + '">' +
+            '        <div class="custom-control  custom-checkbox" id="checkId' + id + '">' +
             elemento +
             '        </div>' +
             '      </div>' +
@@ -1475,6 +1491,34 @@ function carrega_notas_server(lista_id) {
 
     });
 }
+
+/*$("#nome").keyup(function(e){
+
+    $(this).val($(this).val().toLowerCase().trim()); 
+  
+    space = $(this).val().split(" ")  
+
+    if(space.length>0){
+        console.log('tem espaço -----')
+    }
+ 
+});*/
+
+$("#nome").keyup(function(e){   
+
+    $(this).val($(this).val().toLowerCase().trim());  
+    txt = $(this).val()   
+
+    if(txt.match(/[^a-z0-9@#$]/)){ 
+        $('#info_registra_error').text('Caracteres válidos para o nome de usuário @ # $')
+    } 
+   
+    txt = txt.replace(/[^a-z0-9@#$]/g,'')
+  
+    $(this).val(txt) 
+});
+
+
 
 function setTokenLocalStorage(token, user_name = '') {
     window.localStorage.setItem('token', JSON.stringify({ 'token': token, 'user_name': user_name }))
