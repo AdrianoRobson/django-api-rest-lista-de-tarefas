@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path 
 
+from os import path
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -25,7 +27,7 @@ SECRET_KEY = 'django-insecure-)^)o7yb(=nk6bc^xy7db9y$1=wya=$sa$m*d@$95$#dxqz^b6w
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['app-task-org.herokuapp.com','*']
 
 
 # Application definition
@@ -120,9 +122,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
  
 STATIC_URL = '/static/' 
-STATIC_ROOT = Path(BASE_DIR, 'staticfiles')
+STATIC_ROOT = path.join(BASE_DIR, 'staticfiles')
 MEDIA_URL = 'media/'
-MEDIA_ROOT = Path(BASE_DIR, 'media')  
+MEDIA_ROOT = path.join(BASE_DIR, 'media')  
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

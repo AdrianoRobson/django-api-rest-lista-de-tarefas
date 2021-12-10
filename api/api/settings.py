@@ -27,7 +27,8 @@ SECRET_KEY = 'django-insecure-%8j4k^br*7=o%vtj)+o1-)$*g3w18wfc^*uc$8*zbid-#kvi%3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+# 
+ALLOWED_HOSTS = ['api-adr.herokuapp.com','*']
 
 
 # Application definition
@@ -103,11 +104,15 @@ WSGI_APPLICATION = 'api.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 
+
+
 """  
 import dj_database_url
 DATABASES = {
         'default': dj_database_url.config()
 }
+
+
 """
 
 DATABASES = {
@@ -120,7 +125,6 @@ DATABASES = {
         'PORT': '3306',
     }
 }
-
 
 
 # Password validation
@@ -174,6 +178,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOWED_ORIGINS = [ 
     "http://127.0.0.1:8001", 
     "http://192.168.2.104:8001",
-    "https://app-org-task.herokuapp.com",  
+    "https://app-task-org.herokuapp.com",  
 ]
  
