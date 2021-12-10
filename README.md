@@ -14,8 +14,7 @@ Este projeto é o conjunto de 2 aplicões web(APP + API) desenvolvidas usando Dj
 
  Acesse essa aplicação cliclando no [link](https://app-task-org.herokuapp.com/)
 
-![](demo1.gif) ![](demo2.png)
-
+![](demo1.gif) ![](demo2.png) 
 
 
 
@@ -66,9 +65,7 @@ Caso não tenha docker instalado na sua máquina, siga essa [documentação](htt
 
 ## Meta
 
-Adriano Robson - [Linkedin](https://www.linkedin.com/in/adriano-robson/)  [Gmail](adriano08andrade@gmail.com)
-
-
-
+Adriano Robson - [Linkedin](https://www.linkedin.com/in/adriano-robson/)  
+Gmail - adriano08andrade@gmail.com  
  
 [django-api-rest-lista-de-tarefas](https://github.com/AdrianoRobson/django-api-rest-lista-de-tarefas)
