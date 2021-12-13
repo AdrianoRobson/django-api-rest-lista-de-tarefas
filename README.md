@@ -27,7 +27,7 @@ Este projeto é 100% Dockerizado. Para executar esse projeto você vai precisar 
 
 Tanto para Linux quanto para Mac & Windows você vai executar os seguintes comandos pelo terminal ou cmd dentro do diretório onde se encontra o arquivo _docker-compose.yaml_
 
-Vamos executar o docker-compose para buildar e criar os 3 containers do serviços(db, web_api, web)
+Vamos executar o docker-compose para bildar e criar os 3 containers do serviços(db, web_api, web)
 
 ```sh
 docker-compose up
