@@ -10,7 +10,7 @@ A API web foi 100% testada seguindo o conceito de testes TDD (Test-Driven Develo
 ![](tdd-teste.png)
 
 
-Este projeto é o conjunto de 2 aplicões web(APP + API) desenvolvidas usando Django e Django REST framework com validação via token ao acesso à API usando django-rest-knox para agilizar o desenvolvimento e dar mais securança as requisições feitas à API. O banco de dados utilizado na API é Mysql 5.7
+Este projeto é o conjunto de 2 aplicões web(APP + API) desenvolvidas usando Django e Django REST framework com validação via token ao acesso à API usando django-rest-knox para agilizar o desenvolvimento e dar mais segurança as requisições feitas à API. O banco de dados utilizado na API é Mysql 5.7
 
  Acesse essa aplicação cliclando no [link](https://app-task-org.herokuapp.com/)
 
