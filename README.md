@@ -33,7 +33,7 @@ Vamos executar o docker-compose para bildar e criar os 3 containers do serviços
 docker-compose up
 ```
 
-Após a criação dos 3 containers, vamos derrubar esses containers com as teclas de atalho(CTRL + C) no terminal ou cmd e rodar novamente o docker-compse up pois a aplicação mysql pode quebrar no build de criaçao da imagem e execução do container.
+Após a criação dos 3 containers, vamos derrubar esses containers com as teclas de atalho(CTRL + C) no terminal ou cmd e rodar novamente o docker-compose up pois a aplicação mysql pode quebrar no build de criaçao da imagem e execução do container.
 
 Agora precisamos criar as tabelas no banco de dados Mysql no container _api-tarefa_container_. Vamos abrir outro terminal ou cmd dentro do diretório do projeto onde se encontra o arquivo docker-compose.yaml e executar o seguinte comando
 
